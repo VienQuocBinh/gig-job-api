@@ -10,9 +10,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@OpenAPIDefinition(info = @Info(title = "GIG JOB",
-        description = "Gig job for student"))
+@OpenAPIDefinition(info = @Info(title = "GIG JOB", description = "Gig job for student"))
 public class SwaggerConfig {
+    // http://localhost:8080/swagger-ui/index.html
     @Bean
     public OpenAPI customizeOpenAPI() {
         final String securitySchemeName = "bearerAuth";
