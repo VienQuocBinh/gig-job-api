@@ -31,4 +31,5 @@ public class AccountController {
         ResponseObject responseObject = new ResponseObject(HttpStatus.OK.toString(), "Get all successfully", accountDTOS);
         return ResponseEntity.status(HttpStatus.OK).body(responseObject);
     }
+
 }

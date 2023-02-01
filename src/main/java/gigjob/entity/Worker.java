@@ -37,5 +37,4 @@ public class Worker {
     private String education;
     private String avatarUrl;
 
-
 }

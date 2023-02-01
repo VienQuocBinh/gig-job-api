@@ -27,8 +27,8 @@ public class Wallet {
     private Double balance;
 
     @OneToOne
-    @JoinColumn(name = "account_id", referencedColumnName = "id")
-    private Account account;
+    @JoinColumn(name = "account_id", referencedColumnName = "id", unique = true)
+    private Account account; // if more than 1 account has the same wallet throws DataIntegrityViolationException
 
     @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL)
     private List<Transaction> transactions;
