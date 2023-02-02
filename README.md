@@ -1,6 +1,8 @@
 # gig-job
 The web app for student who want to find a job to earn extra money
 
+### BE Server Swagger: https://ec2-13-229-119-84.ap-southeast-1.compute.amazonaws.com/swagger-ui/index.html
+
 ## Requirements
 The fully fledged server uses the following:
 
@@ -17,5 +19,4 @@ You will need:
 - Maven 3.1.1 or higher
 - Git
 Clone the project and use Maven to build the server
-
 `$ mvn clean install`
