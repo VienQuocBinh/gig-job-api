@@ -2,7 +2,7 @@
 
 The web app for student who want to find a job to earn extra money
 
-### BE Server Swagger: https://ec2-13-229-119-84.ap-southeast-1.compute.amazonaws.com/swagger-ui/index.html
+### BE Server Swagger: http://ec2-13-229-119-84.ap-southeast-1.compute.amazonaws.com/swagger-ui/index.html
 
 ## Requirements
 
