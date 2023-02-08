@@ -1,0 +1,74 @@
+
+
+plugins {
+    id 'java'
+    id 'java-library'
+    id 'maven-publish'
+    id "org.springframework.boot" version "2.7.8"
+}
+apply plugin: "org.springframework.boot"
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url = uri('https://repo.maven.apache.org/maven2/')
+    }
+}
+
+dependencies {
+    api 'org.springframework.boot:spring-boot-starter-data-jpa:2.7.8'
+    api 'org.springframework.boot:spring-boot-configuration-processor:2.7.8'
+    api 'org.springframework.boot:spring-boot-starter-web:2.7.8'
+    api 'org.springframework.boot:spring-boot-starter-security:2.7.8'
+    api 'org.springframework.boot:spring-boot-starter-jdbc:2.7.8'
+    api "org.springframework.boot:spring-boot-gradle-plugin:2.7.8"
+    api 'javax.validation:validation-api:2.0.1.Final'
+    api 'org.modelmapper:modelmapper:2.4.4'
+    api 'org.springdoc:springdoc-openapi-ui:1.6.11'
+    api 'org.springframework.boot:spring-boot-starter-cache:2.7.4'
+    api 'com.google.firebase:firebase-admin:9.1.1'
+    api 'io.jsonwebtoken:jjwt-api:0.11.5'
+    api 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    api 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    runtimeOnly 'org.springframework.boot:spring-boot-devtools:2.7.8'
+    runtimeOnly 'com.mysql:mysql-connector-j:8.0.32'
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.8'
+}
+
+sourceCompatibility = 17
+targetCompatibility = 17
+
+
+group = 'gigjob'
+version = '0.0.1-SNAPSHOT'
+description = 'gig-job'
+java.sourceCompatibility = JavaVersion.VERSION_17
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Javadoc) {
+    options.encoding = 'UTF-8'
+}
+
+
+jar {
+    manifest {
+        attributes(
+                'Class-Path': configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) },
+                'Main-Class': 'gigjob.GigJobApplication'
+        )
+    }
+}
