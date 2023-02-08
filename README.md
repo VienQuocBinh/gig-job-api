@@ -8,7 +8,7 @@ The web app for student who want to find a job to earn extra money
 
 The fully fledged server uses the following:
 
-- Spring Framework
+- Spring Framework 5.x.x
 - SpringBoot
 
 ## Dependencies
@@ -20,9 +20,9 @@ libraries and versions used.
 
 You will need:
 
-- Java JDK 17 or higher
-- MySQL 8.0.1 or higher
-- Maven 3.1.1 or higher
+- Java JDK 17 or higher. [Installation guide](https://docs.oracle.com/en/java/javase/17/install/index.html)
+- MySQL 8.0.1 or higher. [Installation guide](https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/)
+- Gradle 7.0 or higher. [Installation guide](https://gradle.org/install/)
 - Git
-  Clone the project and use Maven to build the server
-  `$ mvn clean install`
+  Clone the project and use Gradle to build the server
+  `$ gradle clean install`
