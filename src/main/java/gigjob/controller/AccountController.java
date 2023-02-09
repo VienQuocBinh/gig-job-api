@@ -1,6 +1,7 @@
 package gigjob.controller;
 
 import gigjob.dto.AccountDTO;
+import gigjob.dto.AuthRequest;
 import gigjob.entity.ResponseObject;
 import gigjob.repository.AccountRepository;
 import gigjob.service.JwtService;
@@ -19,8 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@Log4j2
 @RequestMapping(value = "/api/v1/account")
+@Log4j2
 public class AccountController {
     @Autowired
     private AccountRepository accountRepository;
