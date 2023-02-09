@@ -7,27 +7,25 @@ import gigjob.entity.Wallet;
 import gigjob.repository.AccountRepository;
 import gigjob.repository.WalletRepository;
 import gigjob.util.WalletMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
 @Log4j2
-@RequestMapping(value = "/api/v1/wallet")
+@RestController
+@RequestMapping(value = "/api")
+@RequiredArgsConstructor
 public class WalletController {
-    @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private WalletRepository walletRepository;
-    @Autowired
-    private AccountRepository accountRepository;
+    private final ModelMapper modelMapper;
+    private final WalletRepository walletRepository;
+    private final AccountRepository accountRepository;
 
-    @GetMapping
+    @GetMapping("/v1/wallet")
     public ResponseEntity<ResponseObject> getAll() {
         List<WalletDTO> walletDTOS = walletRepository.findAll()
                 .stream()
@@ -37,7 +35,7 @@ public class WalletController {
         return ResponseEntity.status(HttpStatus.OK).body(responseObject);
     }
 
-    @PostMapping
+    @PostMapping("/v1/wallet")
     public ResponseEntity<ResponseObject> create(@RequestBody WalletDTO walletDTO) {
         Wallet wallet = modelMapper.map(walletDTO, Wallet.class);
         Account account = accountRepository.findById(walletDTO.getAccountId()).orElse(null);
@@ -51,6 +49,6 @@ public class WalletController {
             status = HttpStatus.NOT_FOUND;
             responseObject = new ResponseObject(HttpStatus.NOT_FOUND.toString(), "Not found account", null);
         }
-        return new ResponseEntity<ResponseObject>(responseObject, status);
+        return new ResponseEntity<>(responseObject, status);
     }
 }
