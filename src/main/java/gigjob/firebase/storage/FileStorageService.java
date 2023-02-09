@@ -2,7 +2,7 @@ package gigjob.firebase.storage;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Bucket;
-import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.StorageClient;
@@ -26,7 +26,8 @@ public class FileStorageService {
     private String bucketName;
     @Value("${firebase.image-url}")
     private String imageUrl;
-    private Storage storage;
+
+    private StorageOptions storageOptions;
 
     @EventListener
     public void initialize(ApplicationReadyEvent event) {
@@ -37,6 +38,8 @@ public class FileStorageService {
                     .setCredentials(googleCredentials)
                     .setStorageBucket(bucketName)
                     .build();
+            this.storageOptions = StorageOptions.newBuilder()
+                    .setCredentials(googleCredentials).build();
             FirebaseApp.initializeApp(options);
         } catch (Exception e) {
             e.printStackTrace();
@@ -45,15 +48,20 @@ public class FileStorageService {
 
     public String saveFile(MultipartFile file) throws IOException {
         Bucket bucket = StorageClient.getInstance().bucket();
-        String bucketName = "image";
+        String bucketName = "image/";
         String filenameExtension = StringUtils.getFilenameExtension(file.getOriginalFilename());
-        String fileName = bucketName + "/" + UUID.randomUUID() + "." + filenameExtension;
-        bucket.create(fileName, file.getBytes(), file.getContentType());
-
+        String fileId = UUID.randomUUID().toString();
+        String fileName = fileId + "." + filenameExtension;
+        String filePath = bucketName + fileName;
+        bucket.create(filePath, file.getBytes(), file.getContentType());
         return fileName;
     }
 
-    public String getImageUrl(String name) {
-        return String.format(imageUrl, name);
+    // Need access permissions
+    public String getImageUrl(String fileName) {
+        // '/' is different from '%2F'
+        // '/' is for file path
+        // '%2F' is for GET method when calling image url
+        return String.format(imageUrl, "image%2F" + fileName);
     }
 }
