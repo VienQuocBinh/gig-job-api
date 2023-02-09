@@ -16,10 +16,11 @@ public class ResourceController {
     private final FileStorageService fileStorageService;
 
     @PostMapping("/test/upload")
-    public ResponseEntity create(@RequestParam(name = "file") MultipartFile file) {
+    public ResponseEntity<Object> upload(@RequestParam(name = "file") MultipartFile file) {
         try {
             String fileName = fileStorageService.saveFile(file);
             String imageUrl = fileStorageService.getImageUrl(fileName);
+            System.out.println("ResourceController.create" + imageUrl);
             log.info("Upload " + fileName + " image url: " + imageUrl);
         } catch (Exception e) {
             e.printStackTrace();
