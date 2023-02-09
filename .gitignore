@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Gradle ###
+.gradle
+/build/
+# Ignore Gradle GUI config
+gradle-app.setting
