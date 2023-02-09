@@ -1,4 +1,4 @@
-package gigjob.controller;
+package gigjob.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
