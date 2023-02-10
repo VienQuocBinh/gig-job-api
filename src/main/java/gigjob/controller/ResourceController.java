@@ -19,7 +19,7 @@ public class ResourceController {
         try {
             String fileName = fileStorageService.saveFile(file);
             String imageUrl = fileStorageService.getImageUrl(fileName);
-            System.out.println("ResourceController.create" + imageUrl);
+            System.out.println("[ResourceController.create] " + imageUrl);
             log.info("Upload " + fileName + " image url: " + imageUrl);
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,8 +1,8 @@
 package gigjob.controller;
 
 import com.google.firebase.messaging.BatchResponse;
-import gigjob.firebase.messaging.Notice;
-import gigjob.service.NotificationService;
+import gigjob.firebase.messaging.Notification;
+import gigjob.firebase.messaging.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +18,7 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @PostMapping("/v1/send-notification")
-    public BatchResponse sendNotification(@RequestBody Notice notice) {
-        return notificationService.sendNotification(notice);
+    public BatchResponse sendNotification(@RequestBody Notification notification) {
+        return notificationService.sendNotification(notification);
     }
 }
