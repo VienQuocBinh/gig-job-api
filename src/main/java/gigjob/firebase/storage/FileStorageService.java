@@ -36,8 +36,7 @@ public class FileStorageService {
                     .setCredentials(googleCredentials)
                     .setStorageBucket(bucketName)
                     .build();
-            this.storageOptions = StorageOptions.newBuilder()
-                    .setCredentials(googleCredentials).build();
+
             FirebaseApp.initializeApp(options);
         } catch (Exception e) {
             e.printStackTrace();
