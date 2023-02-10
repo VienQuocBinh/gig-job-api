@@ -2,7 +2,6 @@ package gigjob.firebase.storage;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Bucket;
-import com.google.cloud.storage.StorageOptions;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.StorageClient;
@@ -20,14 +19,13 @@ import java.util.UUID;
 @Service
 public class FileStorageService {
 
+    private final String FOLDER = "image/";
     @Value("${firebase.google-credentials}")
     private String googleCredential;
     @Value("${firebase.bucket-name}")
     private String bucketName;
     @Value("${firebase.image-url}")
     private String imageUrl;
-
-    private StorageOptions storageOptions;
 
     @EventListener
     public void initialize(ApplicationReadyEvent event) {
@@ -48,11 +46,10 @@ public class FileStorageService {
 
     public String saveFile(MultipartFile file) throws IOException {
         Bucket bucket = StorageClient.getInstance().bucket();
-        String bucketName = "image/";
         String filenameExtension = StringUtils.getFilenameExtension(file.getOriginalFilename());
         String fileId = UUID.randomUUID().toString();
         String fileName = fileId + "." + filenameExtension;
-        String filePath = bucketName + fileName;
+        String filePath = FOLDER + fileName;
         bucket.create(filePath, file.getBytes(), file.getContentType());
         return fileName;
     }
@@ -63,5 +60,10 @@ public class FileStorageService {
         // '/' is for file path
         // '%2F' is for GET method when calling image url
         return String.format(imageUrl, "image%2F" + fileName);
+    }
+
+    public boolean deleteImage(String fileName) {
+        Bucket bucket = StorageClient.getInstance().bucket(bucketName);
+        return bucket.get(FOLDER + fileName).delete();
     }
 }
