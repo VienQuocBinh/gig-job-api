@@ -4,6 +4,7 @@ plugins {
     id 'maven-publish'
     id "org.springframework.boot" version "2.7.8"
     id "com.palantir.docker" version "0.34.0"
+    id "com.palantir.docker-run" version "0.34.0"
 }
 apply plugin: "org.springframework.boot"
 
@@ -68,6 +69,13 @@ docker {
     name imageName
     files "build/libs/${bootJar.archiveFileName.get()}"
     buildArgs([JAR_FILE: bootJar.archiveFileName.get()])
+}
+
+dockerRun {
+    name project.name
+    image imageName
+    ports '8081:8080'
+    clean true
 }
 
 jar {
