@@ -1,4 +1,4 @@
-package gigjob.firebase;
+package gigjob.firebase.messaging;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -14,7 +14,7 @@ import java.io.IOException;
 
 @Configuration
 @RequiredArgsConstructor
-public class FirebaseConfig {
+public class FirebaseMessagingConfig {
     @Value("${firebase.google-credentials}")
     private String googleCredential;
 
