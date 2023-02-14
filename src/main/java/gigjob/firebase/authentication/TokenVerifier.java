@@ -2,10 +2,12 @@ package gigjob.firebase.authentication;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.json.gson.GsonFactory;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
 
+@Component
 public class TokenVerifier {
     private final String GOOGLE_CLIENT_ID = "395540117439-hkbj5lk2hnrtcteihk7cv8gtsmmmbp3u.apps.googleusercontent.com";
     // 3 Authorized Parties: Android, iOS, Web apps
