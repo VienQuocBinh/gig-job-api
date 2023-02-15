@@ -1,11 +1,15 @@
 package gigjob.controller;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import gigjob.config.UserInfoUserDetails;
 import gigjob.dto.AccountDTO;
 import gigjob.dto.AuthRequest;
+import gigjob.dto.ShopDTO;
 import gigjob.entity.ResponseObject;
+import gigjob.entity.Shop;
 import gigjob.firebase.authentication.TokenVerifier;
 import gigjob.repository.AccountRepository;
+import gigjob.repository.ShopRepository;
 import gigjob.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -27,10 +31,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AccountController {
     private final AccountRepository accountRepository;
+    private final ShopRepository shopRepository;
     private final ModelMapper modelMapper;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final TokenVerifier tokenVerifier;
+
+    @PostMapping("/v1/create-shop")
+    public ShopDTO createShopAcc(@RequestBody ShopDTO shopDTO) {
+        Shop shop = modelMapper.map(shopDTO, Shop.class);
+        shopRepository.save(shop);
+        return shopDTO;
+    }
+
+    @PostMapping("/v1/create")
+    public UserInfoUserDetails createUserInfo(@RequestBody UserInfoUserDetails userInfoUser) {
+        
+
+        return userInfoUser;
+    }
 
     @GetMapping("/v1/account")
     public ResponseEntity<ResponseObject> findAll() {
