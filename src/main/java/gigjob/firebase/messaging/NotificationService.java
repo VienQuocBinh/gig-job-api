@@ -1,7 +1,6 @@
 package gigjob.firebase.messaging;
 
 import com.google.firebase.messaging.*;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
@@ -9,10 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 @Log4j2
 public class NotificationService {
-    private final FirebaseMessaging firebaseMessaging;
 
     public BatchResponse sendNotification(Notification notice) {
         List<String> registrationTokens = notice.getRegistrationTokens();
@@ -30,7 +27,7 @@ public class NotificationService {
 
         BatchResponse batchResponse = null;
         try {
-            batchResponse = firebaseMessaging.sendMulticast(message);
+            batchResponse = FirebaseMessaging.getInstance().sendMulticast(message);
         } catch (FirebaseMessagingException e) {
             log.info("Firebase error {}", e.getMessage());
         }
