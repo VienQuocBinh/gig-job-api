@@ -1,6 +1,8 @@
 package gigjob.controller;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
 import gigjob.config.UserInfoUserDetails;
 import gigjob.dto.AccountDTO;
 import gigjob.dto.AuthRequest;
@@ -8,6 +10,7 @@ import gigjob.dto.ShopDTO;
 import gigjob.entity.ResponseObject;
 import gigjob.entity.Shop;
 import gigjob.firebase.authentication.TokenVerifier;
+import gigjob.firebase.authentication.UserManagementService;
 import gigjob.repository.AccountRepository;
 import gigjob.repository.ShopRepository;
 import gigjob.service.JwtService;
@@ -36,6 +39,12 @@ public class AccountController {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final TokenVerifier tokenVerifier;
+    private final UserManagementService userManagementService;
+
+    @GetMapping("/v1/firebase-user/{uid}")
+    public UserRecord getUserById(@PathVariable String uid) throws FirebaseAuthException {
+        return userManagementService.getFirebaseUserById(uid);
+    }
 
     @PostMapping("/v1/create-shop")
     public ShopDTO createShopAcc(@RequestBody ShopDTO shopDTO) {
@@ -46,7 +55,7 @@ public class AccountController {
 
     @PostMapping("/v1/create")
     public UserInfoUserDetails createUserInfo(@RequestBody UserInfoUserDetails userInfoUser) {
-        
+
 
         return userInfoUser;
     }

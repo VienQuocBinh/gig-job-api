@@ -1,11 +1,11 @@
 package gigjob.entity;
 
-import gigjob.common.meta.Position;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.annotation.Nullable;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -15,17 +15,21 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table
-public class History {
+public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @OneToOne
-    @JoinColumn(name = "worker_id")
-    private Worker worker;
+    @ManyToOne
+    @JoinColumn(name = "address_id")
+    private Account account;
     @NotNull
-    @Enumerated(EnumType.STRING)
-    private Position position;
+    private String street;
     @NotNull
-    private Double duration;
+    private String district;
+    @NotNull
+    private String city;
+    @Nullable
+    private String province;
+    @NotNull
+    private String country;
 }
