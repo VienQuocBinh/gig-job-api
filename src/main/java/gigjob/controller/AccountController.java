@@ -1,22 +1,28 @@
 package gigjob.controller;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import gigjob.config.UserInfoUserDetails;
 import gigjob.dto.AccountDTO;
 import gigjob.dto.AuthRequest;
+import gigjob.dto.ShopDTO;
 import gigjob.entity.ResponseObject;
+import gigjob.entity.Shop;
+import gigjob.firebase.authentication.TokenVerifier;
 import gigjob.repository.AccountRepository;
+import gigjob.repository.ShopRepository;
 import gigjob.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @Log4j2
@@ -25,18 +31,38 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AccountController {
     private final AccountRepository accountRepository;
+    private final ShopRepository shopRepository;
     private final ModelMapper modelMapper;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final TokenVerifier tokenVerifier;
+
+    @PostMapping("/v1/create-shop")
+    public ShopDTO createShopAcc(@RequestBody ShopDTO shopDTO) {
+        Shop shop = modelMapper.map(shopDTO, Shop.class);
+        shopRepository.save(shop);
+        return shopDTO;
+    }
+
+    @PostMapping("/v1/create")
+    public UserInfoUserDetails createUserInfo(@RequestBody UserInfoUserDetails userInfoUser) {
+        
+
+        return userInfoUser;
+    }
 
     @GetMapping("/v1/account")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<ResponseObject> findAll() {
         List<AccountDTO> accountDTOS = accountRepository.findAll()
                 .stream()
                 .map(acc -> modelMapper.map(acc, AccountDTO.class)).toList();
         ResponseObject responseObject = new ResponseObject(HttpStatus.OK.toString(), "Get all successfully", accountDTOS);
         return ResponseEntity.status(HttpStatus.OK).body(responseObject);
+    }
+
+    @PostMapping("/v1/account/authenticate-google")
+    public GoogleIdToken.Payload authenticateAndGetToken(@RequestHeader String idTokenString) throws IOException {
+        return tokenVerifier.validate(idTokenString);
     }
 
     @PostMapping("/v1/account/authenticate")
