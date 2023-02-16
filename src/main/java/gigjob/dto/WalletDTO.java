@@ -12,5 +12,6 @@ import java.util.UUID;
 public class WalletDTO {
     private UUID id;
     private Double balance;
-    private UUID accountId;
+    //    private UUID accountId;
+    private String accountId;
 }

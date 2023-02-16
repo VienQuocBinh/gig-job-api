@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.util.Date;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -12,7 +11,8 @@ import java.util.UUID;
 @Getter
 @Setter
 public class AccountDTO {
-    private UUID id;
+    //    private UUID id;
+    private String id; // Get from Firebase
     private String username;
     private String password;
     private String email;

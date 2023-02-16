@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -17,7 +15,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Getter
@@ -28,11 +25,12 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 public class Account {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(updatable = false, unique = true)
-    @Type(type = "org.hibernate.type.UUIDCharType")
-    private UUID id;
+//    @GeneratedValue(generator = "UUID")
+//    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+//    @Column(updatable = false, unique = true)
+//    @Type(type = "org.hibernate.type.UUIDCharType")
+//    private UUID id;
+    private String id; // Get from Firebase
     @NotNull
     private String username;
     private String password;
