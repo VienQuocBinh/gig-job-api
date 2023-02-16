@@ -1,6 +1,6 @@
 package gigjob.service;
 
-import gigjob.config.UserInfoUserDetails;
+import gigjob.dto.UserInfoUserDetails;
 import gigjob.entity.Account;
 import gigjob.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;

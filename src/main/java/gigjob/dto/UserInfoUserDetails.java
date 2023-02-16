@@ -1,7 +1,9 @@
-package gigjob.config;
+package gigjob.dto;
 
+import gigjob.common.meta.Role;
 import gigjob.entity.Account;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
@@ -9,7 +11,6 @@ import java.util.Collection;
 import java.util.List;
 
 public class UserInfoUserDetails implements UserDetails {
-
 
     private final String name;
     private final String password;
@@ -19,6 +20,8 @@ public class UserInfoUserDetails implements UserDetails {
         name = userInfo.getUsername();
         password = userInfo.getPassword();
         authorities = new ArrayList<>();
+        Role role = userInfo.getRole();
+        authorities.add(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override

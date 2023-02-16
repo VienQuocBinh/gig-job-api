@@ -1,10 +1,14 @@
 package gigjob.service;
 
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
+import gigjob.firebase.authentication.UserManagementService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +20,10 @@ import java.util.function.Function;
 
 @Component
 public class JwtService {
-    public static final String SECRET = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
-    public static final long EXPIRED_TIME = 1000 * 60 * 30; // 30 minutes
+    @Value("${security.secret}")
+    private String SECRET;
+    @Value("${security.jwt.expiration}")
+    private long EXPIRED_TIME;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -52,15 +58,34 @@ public class JwtService {
 
 
     public String generateToken(String userName) {
-        // Put extra information in the token
+//         Put extra information in the token
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userName);
+        return createTokenByUsername(claims, userName);
     }
 
-    private String createToken(Map<String, Object> claims, String userName) {
+    public String generateTokenByEmail(String email) throws FirebaseAuthException {
+        // Get Firebase user information by email from login
+        UserManagementService userManagementService = new UserManagementService();
+        UserRecord userRecord = userManagementService.getFirebaseUserByEmail(email);
+        // Put extra information in the token
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("user", userRecord);
+
+        return createTokenByEmail(claims, email);
+    }
+
+    private String createTokenByUsername(Map<String, Object> claims, String userName) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userName)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRED_TIME))
+                .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
+    }
+
+    private String createTokenByEmail(Map<String, Object> claims, String email) {
+        return Jwts.builder()
+                .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRED_TIME))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();

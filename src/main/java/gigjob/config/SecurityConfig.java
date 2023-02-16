@@ -34,14 +34,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         return http.csrf().disable()
-                .authorizeHttpRequests()
-                .antMatchers("/", "/test/**", "/api/v1/**").permitAll()
+                .authorizeRequests()
+                .antMatchers("/", "/v3/api-docs/**", "/swagger-ui/**",
+                        "/api/v1/wallet", "/api/v1/account/authenticate", "/api/v1/account/authenticate-google").permitAll()
                 .and()
-                .authorizeHttpRequests().antMatchers("/product")
-                .authenticated()
+                .authorizeRequests().antMatchers("/product", "/api/v1/account").hasAuthority("ADMIN")
+                .anyRequest().authenticated()
                 .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class)

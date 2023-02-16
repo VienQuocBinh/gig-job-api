@@ -3,10 +3,10 @@ package gigjob.controller;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
-import gigjob.config.UserInfoUserDetails;
 import gigjob.dto.AccountDTO;
 import gigjob.dto.AuthRequest;
 import gigjob.dto.ShopDTO;
+import gigjob.dto.UserInfoUserDetails;
 import gigjob.entity.ResponseObject;
 import gigjob.entity.Shop;
 import gigjob.firebase.authentication.TokenVerifier;
@@ -70,8 +70,9 @@ public class AccountController {
     }
 
     @PostMapping("/v1/account/authenticate-google")
-    public GoogleIdToken.Payload authenticateAndGetToken(@RequestHeader String idTokenString) throws IOException {
-        return tokenVerifier.validate(idTokenString);
+    public String authenticateAndGetToken(@RequestHeader String idTokenString) throws IOException, FirebaseAuthException {
+        GoogleIdToken.Payload payload = tokenVerifier.validate(idTokenString);
+        return jwtService.generateTokenByEmail(payload.getEmail());
     }
 
     @PostMapping("/v1/account/authenticate")

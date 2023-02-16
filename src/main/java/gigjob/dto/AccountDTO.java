@@ -22,4 +22,6 @@ public class AccountDTO {
     private Date updatedDate;
     private boolean isLocked;
     private boolean isDisable;
+    private String imageUrl;
+    private String role;
 }
