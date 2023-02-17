@@ -14,17 +14,21 @@ import gigjob.firebase.authentication.UserManagementService;
 import gigjob.repository.AccountRepository;
 import gigjob.repository.ShopRepository;
 import gigjob.service.JwtService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -61,6 +65,7 @@ public class AccountController {
     }
 
     @GetMapping("/v1/account")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseObject> findAll() {
         List<AccountDTO> accountDTOS = accountRepository.findAll()
                 .stream()
@@ -69,13 +74,15 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(responseObject);
     }
 
-    @PostMapping("/v1/account/authenticate-google")
-    public String authenticateAndGetToken(@RequestHeader String idTokenString) throws IOException, FirebaseAuthException {
+    @PostMapping("/v1/account/login-google")
+    @SecurityRequirement(name = "google")
+    @Operation(summary = "For login", description = "Login from Google")
+    public ResponseEntity<String> authenticateAndGetToken(@Valid @RequestHeader String idTokenString) throws IOException, FirebaseAuthException {
         GoogleIdToken.Payload payload = tokenVerifier.validate(idTokenString);
-        return jwtService.generateTokenByEmail(payload.getEmail());
+        return ResponseEntity.ok(jwtService.generateTokenByEmail(payload.getEmail()));
     }
 
-    @PostMapping("/v1/account/authenticate")
+    @PostMapping("/v1/account/login")
     public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
         if (authentication.isAuthenticated()) {

@@ -1,14 +1,16 @@
 package gigjob.config;
 
 import gigjob.filter.JwtAuthFilter;
+import gigjob.filter.JwtEntryPoint;
 import gigjob.service.UserInfoUserDetailsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -19,8 +21,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig {
+    @Autowired
+    private JwtEntryPoint jwtEntryPoint;
+
     @Bean
     public JwtAuthFilter jwtTokenFilter() {
         return new JwtAuthFilter();
@@ -36,15 +41,17 @@ public class SecurityConfig {
         return http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/", "/v3/api-docs/**", "/swagger-ui/**",
-                        "/api/v1/wallet", "/api/v1/account/authenticate", "/api/v1/account/authenticate-google").permitAll()
-                .and()
-                .authorizeRequests().antMatchers("/product", "/api/v1/account").hasAuthority("ADMIN")
+                        "/api/v1/account/login", "/api/v1/account/login-google", "/api/v1/account").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authenticationProvider(authenticationProvider())
+                .exceptionHandling().authenticationEntryPoint(jwtEntryPoint)
+                .and()
                 .addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class)
+                .httpBasic()
+                .and()
                 .build();
     }
 

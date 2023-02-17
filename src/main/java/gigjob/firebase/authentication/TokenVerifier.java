@@ -24,7 +24,7 @@ public class TokenVerifier {
     /**
      * Verify id token from Firebase
      *
-     * @param idTokenString - the id token string
+     * @param idTokenString {@code String}
      * @return {@code GoogleIdToken.Payload}
      * @throws IOException - if an I/O error occurs
      * @author Vien Binh
