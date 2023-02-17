@@ -3,7 +3,7 @@ package gigjob.config;
 import gigjob.filter.JwtAuthFilter;
 import gigjob.filter.JwtEntryPoint;
 import gigjob.service.UserInfoUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,9 +22,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
+@RequiredArgsConstructor
 public class SecurityConfig {
-    @Autowired
-    private JwtEntryPoint jwtEntryPoint;
+    private final JwtEntryPoint jwtEntryPoint;
 
     @Bean
     public JwtAuthFilter jwtTokenFilter() {
@@ -41,7 +41,8 @@ public class SecurityConfig {
         return http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/", "/v3/api-docs/**", "/swagger-ui/**",
-                        "/api/v1/account/login", "/api/v1/account/login-google", "/api/v1/account").permitAll()
+                        "/v1/register",
+                        "/api/v1/account/login", "/api/v1/account/login-google").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -50,8 +51,6 @@ public class SecurityConfig {
                 .exceptionHandling().authenticationEntryPoint(jwtEntryPoint)
                 .and()
                 .addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class)
-                .httpBasic()
-                .and()
                 .build();
     }
 

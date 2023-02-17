@@ -27,4 +27,10 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException(id + " not found"));
         return modelMapper.map(account, AccountDTO.class);
     }
+
+    @Override
+    public AccountDTO getAccountByUsername(String username) throws UserNotFoundException {
+        Account account = accountRepository.findAccountByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username + " not found"));
+        return modelMapper.map(account, AccountDTO.class);
+    }
 }

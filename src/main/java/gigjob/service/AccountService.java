@@ -7,4 +7,6 @@ public interface AccountService {
     AccountDTO getAccountByEmail(String email) throws UserNotFoundException;
 
     AccountDTO getAccountById(String id) throws UserNotFoundException;
+
+    AccountDTO getAccountByUsername(String username) throws UserNotFoundException;
 }

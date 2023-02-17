@@ -10,17 +10,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * The custom model to use UserDetails of Spring Security
+ */
 public class UserInfoUserDetails implements UserDetails {
 
-    private final String name;
+    private final String email;
     private final String password;
     private final List<GrantedAuthority> authorities;
 
-    public UserInfoUserDetails(Account userInfo) {
-        name = userInfo.getUsername();
-        password = userInfo.getPassword();
+    public UserInfoUserDetails(Account account) {
+        email = account.getEmail();
+        password = account.getPassword();
         authorities = new ArrayList<>();
-        Role role = userInfo.getRole();
+        Role role = account.getRole();
         authorities.add(new SimpleGrantedAuthority(role.name()));
     }
 
@@ -36,7 +39,7 @@ public class UserInfoUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return name;
+        return email;
     }
 
     @Override
