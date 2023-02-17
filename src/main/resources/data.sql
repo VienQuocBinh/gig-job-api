@@ -1,7 +1,7 @@
-insert into Account (id, username, password, email, is_disable, is_locked, created_date, updated_date, image_url, role)
+insert into account (id, username, password, email, is_disable, is_locked, created_date, updated_date, image_url, role)
 values ('eST4k1Y5o1g5CDHek9wGSjbyfFA3', 'admin', '1', 'thuynvuanh2412@gmail.com', false, false,
         '2023-01-15', '2022-07-19', '', 0);
-insert into Account (id, username, password, email, is_disable, is_locked, created_date, updated_date, image_url, role)
+insert into account (id, username, password, email, is_disable, is_locked, created_date, updated_date, image_url, role)
 values ('Uy3z8txHALNF43J9V1hXxlX33Os2', 'worker', '2', 'taictse161569@fpt.edu.vn', true, false,
         '2022-02-10', '2022-12-16', '', 1);
 

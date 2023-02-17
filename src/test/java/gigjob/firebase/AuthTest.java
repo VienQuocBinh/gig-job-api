@@ -7,6 +7,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootTest
 public class AuthTest {
@@ -35,5 +37,11 @@ public class AuthTest {
         System.out.println(PREFIX + "_" + generatedString);
     }
 
+    @Test
+    void PasswordEncode() {
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        boolean result = passwordEncoder.matches("1", "$2a$10$i4O71WZuR8OJQdQ.aRTBqOMwwOrVS/NNygShu8rZuU6S9HrV76gMG");
+        Assertions.assertTrue(result);
+    }
 
 }
