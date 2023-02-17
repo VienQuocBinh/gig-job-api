@@ -5,6 +5,7 @@ import gigjob.common.exception.model.UserNotFoundException;
 import gigjob.dto.ErrorResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -21,7 +22,7 @@ import java.util.Date;
 @CrossOrigin
 @RestControllerAdvice
 @Log4j2
-public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
+public class DomainExceptionHandler extends ResponseEntityExceptionHandler {
     /**
      * Handle JWT authentication cause by unauthorized user
      *
@@ -33,7 +34,20 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorResponse handleJwtTokenException(JwtTokenException exception) {
         log.error(exception.getMessage());
-        return new ErrorResponse(new Date(), HttpStatus.UNAUTHORIZED.toString(), exception.getMessage());
+        return new ErrorResponse(new Date(), HttpStatus.UNAUTHORIZED.toString(), "JWT Unauthorized: " + exception.getMessage());
+    }
+
+    /**
+     * Wrong login information
+     *
+     * @param ex {@code AuthenticationException}
+     * @return {@link ErrorResponse}
+     * @author Vien Binh
+     */
+    @ExceptionHandler(AuthenticationException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorResponse handleAuthenticationException(Exception ex) {
+        return new ErrorResponse(new Date(), HttpStatus.UNAUTHORIZED.toString(), "Authentication failed. Wrong email or password");
     }
 
     /**
@@ -49,4 +63,6 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         log.error(exception.getMessage());
         return new ErrorResponse(new Date(), HttpStatus.NOT_FOUND.toString(), exception.getMessage());
     }
+
+
 }
