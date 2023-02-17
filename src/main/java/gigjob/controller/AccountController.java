@@ -5,8 +5,8 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import gigjob.dto.AccountDTO;
 import gigjob.dto.AuthRequest;
+import gigjob.dto.JwtResponse;
 import gigjob.dto.ShopDTO;
-import gigjob.dto.UserInfoUserDetails;
 import gigjob.entity.ResponseObject;
 import gigjob.entity.Shop;
 import gigjob.firebase.authentication.TokenVerifier;
@@ -57,15 +57,13 @@ public class AccountController {
         return shopDTO;
     }
 
-    @PostMapping("/v1/create")
-    public UserInfoUserDetails createUserInfo(@RequestBody UserInfoUserDetails userInfoUser) {
-
-
-        return userInfoUser;
+    @PostMapping("/v1/register")
+    public AccountDTO registerUser(@RequestBody AccountDTO accountDTO) {
+        return accountDTO;
     }
 
-    @GetMapping("/v1/account")
     @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/v1/account")
     public ResponseEntity<ResponseObject> findAll() {
         List<AccountDTO> accountDTOS = accountRepository.findAll()
                 .stream()
@@ -76,17 +74,17 @@ public class AccountController {
 
     @PostMapping("/v1/account/login-google")
     @SecurityRequirement(name = "google")
-    @Operation(summary = "For login", description = "Login from Google")
-    public ResponseEntity<String> authenticateAndGetToken(@Valid @RequestHeader String idTokenString) throws IOException, FirebaseAuthException {
+    @Operation(summary = "For login by Google", description = "Get idToken from Google and decode")
+    public ResponseEntity<JwtResponse> authenticateAndGetToken(@Valid @RequestHeader String idTokenString) throws IOException, FirebaseAuthException {
         GoogleIdToken.Payload payload = tokenVerifier.validate(idTokenString);
-        return ResponseEntity.ok(jwtService.generateTokenByEmail(payload.getEmail()));
+        return ResponseEntity.ok(new JwtResponse(jwtService.generateToken(payload.getEmail())));
     }
 
     @PostMapping("/v1/account/login")
-    public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+    public ResponseEntity<JwtResponse> authenticateAndGetToken(@RequestBody AuthRequest authRequest) throws FirebaseAuthException {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
         if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(authRequest.getUsername());
+            return ResponseEntity.ok(new JwtResponse(jwtService.generateToken(authRequest.getEmail())));
         } else {
             throw new UsernameNotFoundException("invalid user request !");
         }
