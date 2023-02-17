@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.checkerframework.common.aliasing.qual.Unique;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -35,8 +36,11 @@ public class Account {
     private String username;
     private String password;
     @NotNull
+    @Unique
     @Email(message = "Invalid email format")
     private String email;
+    @Unique
+    private String phone;
     @CreatedDate
     private Date createdDate;
     @LastModifiedDate
