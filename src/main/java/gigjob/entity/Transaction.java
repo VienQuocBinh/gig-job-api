@@ -11,6 +11,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.util.UUID;
 
@@ -28,8 +29,11 @@ public class Transaction {
     @Column(updatable = false, unique = true)
     @Type(type = "org.hibernate.type.UUIDCharType")
     private UUID id;
+    @NotNull
     private Double amount;
+    @NotNull
     private String hashValue;
+    @NotNull
     private String previousHash;
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;

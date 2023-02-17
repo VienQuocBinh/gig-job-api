@@ -32,9 +32,6 @@ public class Worker {
     private String firstName;
     private String lastName;
     private String middleName;
-    private String address;
     private Date birthday;
     private String education;
-    private String avatarUrl;
-
 }

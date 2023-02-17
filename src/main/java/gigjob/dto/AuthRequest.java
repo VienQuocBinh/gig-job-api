@@ -1,5 +1,6 @@
 package gigjob.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AuthRequest {
 
-    private String username;
+    @Schema(name = "email", example = "thuynvuanh2412@gmail.com")
+    private String email;
+    @Schema(name = "password", example = "1")
     private String password;
 }

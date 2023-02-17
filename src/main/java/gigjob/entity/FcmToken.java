@@ -1,6 +1,5 @@
 package gigjob.entity;
 
-import gigjob.common.meta.Position;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,17 +14,15 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table
-public class History {
+public class FcmToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @OneToOne
-    @JoinColumn(name = "worker_id")
-    private Worker worker;
     @NotNull
-    @Enumerated(EnumType.STRING)
-    private Position position;
+    @ManyToOne
+    @JoinColumn(name = "address_id")
+    private Account account;
+    
     @NotNull
-    private Double duration;
+    private String value;
 }

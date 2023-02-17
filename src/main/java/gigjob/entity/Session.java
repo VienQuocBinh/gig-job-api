@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Getter
@@ -20,5 +21,6 @@ public class Session {
     private Long id;
     @Enumerated(EnumType.STRING)
     private Shift shift;
+    @NotNull
     private Integer duration; // hours
 }

@@ -10,6 +10,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.annotation.Nonnull;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -24,21 +25,35 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Autowired
     private UserInfoUserDetailsService userDetailsService;
 
+    /**
+     * Verify the JWT has valid User information
+     * and set the User information to the SecurityContext
+     *
+     * @param request     {@link HttpServletRequest}
+     * @param response    {@link HttpServletResponse}
+     * @param filterChain {@link FilterChain}
+     * @throws ServletException - Not satisfy filter conditions chains
+     * @throws IOException      - Invalid JWT credentials
+     * @author Vien Binh
+     */
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, @Nonnull HttpServletResponse response, @Nonnull FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
         String token = null;
-        String username = null;
+        String email = null;
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
-            username = jwtService.extractUsername(token);
+            token = authHeader.replace("Bearer", "");
+            // Subject of JWT is set as Email
+            email = jwtService.extractSubject(token);
         }
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            // Get UserDetails from the UserInfoUserDetailsService - implementation of the UserDetailsService
+            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
             if (jwtService.validateToken(token, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                // Set the User information to the SecurityContext
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
