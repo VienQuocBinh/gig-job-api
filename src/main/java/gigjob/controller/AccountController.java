@@ -11,17 +11,17 @@ import gigjob.model.request.AuthRequest;
 import gigjob.model.response.AccountResponse;
 import gigjob.model.response.JwtResponse;
 import gigjob.model.response.ShopResponse;
-import gigjob.repository.AccountRepository;
 import gigjob.repository.ShopRepository;
+import gigjob.service.AccountService;
 import gigjob.service.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -37,7 +37,7 @@ import java.util.List;
 @RequestMapping(value = "/api")
 @RequiredArgsConstructor
 public class AccountController {
-    private final AccountRepository accountRepository;
+    private final AccountService accountService;
     private final ShopRepository shopRepository;
     private final ModelMapper modelMapper;
     private final JwtService jwtService;
@@ -62,12 +62,20 @@ public class AccountController {
         return accountResponse;
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    //    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/v1/account")
+    @Operation(summary = "ADMIN")
     public ResponseEntity<ResponseObject> findAll() {
-        List<AccountResponse> accountResponses = accountRepository.findAll()
-                .stream()
-                .map(acc -> modelMapper.map(acc, AccountResponse.class)).toList();
+        List<AccountResponse> accountResponses = accountService.getAccountList();
+        ResponseObject responseObject = new ResponseObject(HttpStatus.OK.toString(), "Get all successfully", accountResponses);
+        return ResponseEntity.status(HttpStatus.OK).body(responseObject);
+    }
+
+    @GetMapping("/v1/account/redis")
+    @Operation(summary = "ADMIN")
+    @Cacheable(key = "#id", value = "AccountResponse")
+    public ResponseEntity<ResponseObject> findAllRedis() {
+        List<AccountResponse> accountResponses = accountService.getAccountListRedis();
         ResponseObject responseObject = new ResponseObject(HttpStatus.OK.toString(), "Get all successfully", accountResponses);
         return ResponseEntity.status(HttpStatus.OK).body(responseObject);
     }
