@@ -3,14 +3,14 @@ package gigjob.controller;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
-import gigjob.dto.AccountDTO;
-import gigjob.dto.AuthRequest;
-import gigjob.dto.JwtResponse;
-import gigjob.dto.ShopDTO;
 import gigjob.entity.ResponseObject;
 import gigjob.entity.Shop;
 import gigjob.firebase.authentication.TokenVerifier;
 import gigjob.firebase.authentication.UserManagementService;
+import gigjob.model.request.AuthRequest;
+import gigjob.model.response.AccountResponse;
+import gigjob.model.response.JwtResponse;
+import gigjob.model.response.ShopResponse;
 import gigjob.repository.AccountRepository;
 import gigjob.repository.ShopRepository;
 import gigjob.service.JwtService;
@@ -51,24 +51,24 @@ public class AccountController {
     }
 
     @PostMapping("/v1/create-shop")
-    public ShopDTO createShopAcc(@RequestBody ShopDTO shopDTO) {
-        Shop shop = modelMapper.map(shopDTO, Shop.class);
+    public ShopResponse createShopAcc(@RequestBody ShopResponse shopResponse) {
+        Shop shop = modelMapper.map(shopResponse, Shop.class);
         shopRepository.save(shop);
-        return shopDTO;
+        return shopResponse;
     }
 
     @PostMapping("/v1/register")
-    public AccountDTO registerUser(@RequestBody AccountDTO accountDTO) {
-        return accountDTO;
+    public AccountResponse registerUser(@RequestBody AccountResponse accountResponse) {
+        return accountResponse;
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/v1/account")
     public ResponseEntity<ResponseObject> findAll() {
-        List<AccountDTO> accountDTOS = accountRepository.findAll()
+        List<AccountResponse> accountResponses = accountRepository.findAll()
                 .stream()
-                .map(acc -> modelMapper.map(acc, AccountDTO.class)).toList();
-        ResponseObject responseObject = new ResponseObject(HttpStatus.OK.toString(), "Get all successfully", accountDTOS);
+                .map(acc -> modelMapper.map(acc, AccountResponse.class)).toList();
+        ResponseObject responseObject = new ResponseObject(HttpStatus.OK.toString(), "Get all successfully", accountResponses);
         return ResponseEntity.status(HttpStatus.OK).body(responseObject);
     }
 

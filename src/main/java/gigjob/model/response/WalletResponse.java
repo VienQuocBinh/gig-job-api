@@ -1,4 +1,4 @@
-package gigjob.dto;
+package gigjob.model.response;
 
 import lombok.*;
 
@@ -9,7 +9,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-public class WalletDTO {
+public class WalletResponse {
     private UUID id;
     private Double balance;
     //    private UUID accountId;

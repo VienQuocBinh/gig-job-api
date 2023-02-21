@@ -1,4 +1,4 @@
-package gigjob.dto;
+package gigjob.model.response;
 
 import lombok.*;
 
@@ -10,7 +10,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ShopDTO {
+public class ShopResponse {
     private UUID id;
     private String name;
     private String location;
