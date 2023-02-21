@@ -18,7 +18,7 @@ import java.util.List;
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final ModelMapper modelMapper;
-    private final RedisTemplate redisTemplate;
+    private final RedisTemplate<Object, Object> redisTemplate;
 
     @Override
     public AccountResponse getAccountByEmail(String email) throws UserNotFoundException {
@@ -40,21 +40,18 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<AccountResponse> getAccountList() {
-        System.out.println("get from db");
+//        System.out.println("Get from db");
         List<AccountResponse> accountResponses = accountRepository.findAll()
                 .stream()
                 .map(acc -> modelMapper.map(acc, AccountResponse.class))
                 .toList();
-        accountResponses.forEach(acc -> {
-            redisTemplate.opsForHash().put("account", acc.getId(), acc);
-        });
+        accountResponses.forEach(acc -> redisTemplate.opsForHash().put("account", acc.getId(), acc));
         return accountResponses;
     }
 
     @Override
     public List<AccountResponse> getAccountListRedis() {
         List<Object> account = redisTemplate.opsForHash().values("account");
-
         return account.stream().map(acc -> modelMapper.map(acc, AccountResponse.class)).toList();
     }
 }
