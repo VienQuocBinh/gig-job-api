@@ -1,4 +1,4 @@
-package gigjob.dto;
+package gigjob.model.domain;
 
 import gigjob.common.meta.Role;
 import gigjob.entity.Account;

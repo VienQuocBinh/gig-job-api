@@ -2,7 +2,7 @@ package gigjob.common.exception.handler;
 
 import gigjob.common.exception.model.AudienceMismatchException;
 import gigjob.common.exception.model.ClientIdMismatchException;
-import gigjob.dto.ErrorResponse;
+import gigjob.model.response.ErrorResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;

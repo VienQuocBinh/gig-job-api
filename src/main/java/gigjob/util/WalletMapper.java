@@ -1,15 +1,15 @@
 package gigjob.util;
 
-import gigjob.dto.WalletDTO;
 import gigjob.entity.Wallet;
+import gigjob.model.request.WalletRequest;
 import org.modelmapper.ModelMapper;
 
 public class WalletMapper {
 
-    public static WalletDTO toDto(Wallet wallet) {
+    public static WalletRequest toDto(Wallet wallet) {
         ModelMapper modelMapper = new ModelMapper();
-        WalletDTO walletDTO = modelMapper.map(wallet, WalletDTO.class);
-        walletDTO.setAccountId(wallet.getAccount().getId());
-        return walletDTO;
+        WalletRequest walletRequest = modelMapper.map(wallet, WalletRequest.class);
+        walletRequest.setAccountId(wallet.getAccount().getId());
+        return walletRequest;
     }
 }

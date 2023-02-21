@@ -1,12 +1,12 @@
 package gigjob.service;
 
 import gigjob.common.exception.model.UserNotFoundException;
-import gigjob.dto.AccountDTO;
+import gigjob.model.request.AccountRequest;
 
 public interface AccountService {
-    AccountDTO getAccountByEmail(String email) throws UserNotFoundException;
+    AccountRequest getAccountByEmail(String email) throws UserNotFoundException;
 
-    AccountDTO getAccountById(String id) throws UserNotFoundException;
+    AccountRequest getAccountById(String id) throws UserNotFoundException;
 
-    AccountDTO getAccountByUsername(String username) throws UserNotFoundException;
+    AccountRequest getAccountByUsername(String username) throws UserNotFoundException;
 }

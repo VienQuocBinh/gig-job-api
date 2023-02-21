@@ -1,4 +1,4 @@
-package gigjob.dto;
+package gigjob.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
