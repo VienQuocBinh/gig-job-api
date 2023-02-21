@@ -1,4 +1,4 @@
-package gigjob.model.request;
+package gigjob.model.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
@@ -10,7 +10,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Getter
 @Setter
-public class AccountRequest {
+public class AccountResponse {
     //    private UUID id;
     private String id; // Get from Firebase
     private String username;

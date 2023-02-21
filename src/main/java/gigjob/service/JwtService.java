@@ -5,7 +5,7 @@ import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import gigjob.firebase.authentication.UserManagementService;
-import gigjob.model.request.AccountRequest;
+import gigjob.model.response.AccountResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -80,7 +80,7 @@ public class JwtService {
 
     public String generateToken(String email) throws FirebaseAuthException {
         // Find user in DB by email
-        AccountRequest accountRequest = accountService.getAccountByEmail(email);
+        AccountResponse accountResponse = accountService.getAccountByEmail(email);
         // Get Firebase user information by email from login
         UserManagementService userManagementService = new UserManagementService();
         UserRecord userRecord = userManagementService.getFirebaseUserByEmail(email);
@@ -91,7 +91,7 @@ public class JwtService {
         }
         // Put extra information in the token
         Map<String, Object> claims = new HashMap<>();
-        claims.put("account", accountRequest);
+        claims.put("account", accountResponse);
         // Set the subject is the user email
         return createToken(claims, email);
     }

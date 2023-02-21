@@ -7,8 +7,8 @@ import gigjob.entity.ResponseObject;
 import gigjob.entity.Shop;
 import gigjob.firebase.authentication.TokenVerifier;
 import gigjob.firebase.authentication.UserManagementService;
-import gigjob.model.request.AccountRequest;
 import gigjob.model.request.AuthRequest;
+import gigjob.model.response.AccountResponse;
 import gigjob.model.response.JwtResponse;
 import gigjob.model.response.ShopResponse;
 import gigjob.repository.AccountRepository;
@@ -58,17 +58,17 @@ public class AccountController {
     }
 
     @PostMapping("/v1/register")
-    public AccountRequest registerUser(@RequestBody AccountRequest accountRequest) {
-        return accountRequest;
+    public AccountResponse registerUser(@RequestBody AccountResponse accountResponse) {
+        return accountResponse;
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/v1/account")
     public ResponseEntity<ResponseObject> findAll() {
-        List<AccountRequest> accountRequests = accountRepository.findAll()
+        List<AccountResponse> accountResponses = accountRepository.findAll()
                 .stream()
-                .map(acc -> modelMapper.map(acc, AccountRequest.class)).toList();
-        ResponseObject responseObject = new ResponseObject(HttpStatus.OK.toString(), "Get all successfully", accountRequests);
+                .map(acc -> modelMapper.map(acc, AccountResponse.class)).toList();
+        ResponseObject responseObject = new ResponseObject(HttpStatus.OK.toString(), "Get all successfully", accountResponses);
         return ResponseEntity.status(HttpStatus.OK).body(responseObject);
     }
 

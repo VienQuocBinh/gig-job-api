@@ -3,7 +3,7 @@ package gigjob.controller;
 import gigjob.entity.Account;
 import gigjob.entity.ResponseObject;
 import gigjob.entity.Wallet;
-import gigjob.model.request.WalletRequest;
+import gigjob.model.response.WalletResponse;
 import gigjob.repository.AccountRepository;
 import gigjob.repository.WalletRepository;
 import gigjob.util.WalletMapper;
@@ -29,24 +29,24 @@ public class WalletController {
 
     @GetMapping("/v1/wallet")
     public ResponseEntity<ResponseObject> getAll() {
-        List<WalletRequest> walletRequests = walletRepository.findAll()
+        List<WalletResponse> walletResponses = walletRepository.findAll()
                 .stream()
                 .map(WalletMapper::toDto)
                 .toList();
-        ResponseObject responseObject = new ResponseObject(HttpStatus.OK.toString(), "Get all successfully", walletRequests);
+        ResponseObject responseObject = new ResponseObject(HttpStatus.OK.toString(), "Get all successfully", walletResponses);
         return ResponseEntity.status(HttpStatus.OK).body(responseObject);
     }
 
     @PostMapping("/v1/wallet")
-    public ResponseEntity<ResponseObject> create(@RequestBody WalletRequest walletRequest) {
-        Wallet wallet = modelMapper.map(walletRequest, Wallet.class);
-        Account account = accountRepository.findById(walletRequest.getAccountId()).orElse(null);
+    public ResponseEntity<ResponseObject> create(@RequestBody WalletResponse walletResponse) {
+        Wallet wallet = modelMapper.map(walletResponse, Wallet.class);
+        Account account = accountRepository.findById(walletResponse.getAccountId()).orElse(null);
         ResponseObject responseObject;
         HttpStatus status = HttpStatus.OK;
         if (account != null) {
             wallet.setAccount(account);
             walletRepository.save(wallet);
-            responseObject = new ResponseObject(HttpStatus.OK.toString(), "Get all successfully", walletRequest);
+            responseObject = new ResponseObject(HttpStatus.OK.toString(), "Get all successfully", walletResponse);
         } else {
             status = HttpStatus.NOT_FOUND;
             responseObject = new ResponseObject(HttpStatus.NOT_FOUND.toString(), "Not found account", null);
