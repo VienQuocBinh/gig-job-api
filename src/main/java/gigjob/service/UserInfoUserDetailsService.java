@@ -37,15 +37,9 @@ public class UserInfoUserDetailsService implements UserDetailsService {
         Optional<Account> userInfo = repository.findAccountByEmail(email);
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return userInfo.map(acc -> {
-                            Account account = userInfo.get();
-                            String rawPassword = acc.getPassword();
-                            // Not encode rawPassword again
-                            if (passwordEncoder.matches(acc.getPassword(), passwordEncoder.encode(rawPassword))) {
-                                account.setPassword(rawPassword);
-                            }
+                            acc.setPassword(passwordEncoder.encode(acc.getPassword()));
                             // Set email, password, authorities to UserDetails through UserInfoUserDetails class
-                            account.setPassword(passwordEncoder.encode(rawPassword));
-                            return new UserInfoUserDetails(account);
+                            return new UserInfoUserDetails(acc);
                         }
                 )
                 .orElseThrow(() -> new UsernameNotFoundException("user not found " + email));
