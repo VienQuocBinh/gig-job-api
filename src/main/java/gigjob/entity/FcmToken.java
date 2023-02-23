@@ -20,9 +20,9 @@ public class FcmToken {
     private Long id;
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "address_id")
+    @JoinColumn(name = "account_id")
     private Account account;
-    
+
     @NotNull
     private String value;
 }
