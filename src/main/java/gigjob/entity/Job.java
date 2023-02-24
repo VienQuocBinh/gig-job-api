@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
@@ -16,9 +18,10 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicUpdate
 @Table
 @EntityListeners(AuditingEntityListener.class)
-public class Job {
+public class Job implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,8 +39,10 @@ public class Job {
     private String skill;
     private String benefit;
     @CreatedDate
+    @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
     @LastModifiedDate
+    @Temporal(TemporalType.TIMESTAMP)
     private Date updatedDate;
     private Date expiredDate;
 }
