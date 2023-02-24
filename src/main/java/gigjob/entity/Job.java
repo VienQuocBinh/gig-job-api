@@ -40,6 +40,7 @@ public class Job implements Serializable {
     private String benefit;
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(updatable = false)
     private Date createdDate;
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
