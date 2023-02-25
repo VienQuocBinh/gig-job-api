@@ -24,6 +24,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public JobResponse addJob(JobRequest jobRequest) {
         Job job = jobRepository.save(modelMapper.map(jobRequest, Job.class));
+        // add the job to Redis cache if not exist
         redisTemplate.opsForHash().putIfAbsent(KEY, job.getId(), job);
         return modelMapper.map(job, JobResponse.class);
     }
@@ -36,11 +37,12 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public List<JobResponse> getJob() {
-        System.out.println("Get from db");
+//        System.out.println("Get from db");
         return jobRepository.findAll()
                 .stream()
                 .map(job ->
                 {
+                    // Put the job into the REDIS cache if not existing
                     redisTemplate.opsForHash().putIfAbsent(KEY, job.getId(), job);
                     return modelMapper.map(job, JobResponse.class);
                 }).toList();
@@ -59,5 +61,12 @@ public class JobServiceImpl implements JobService {
         // Set created date for updated job, if not it will be null
         requestJob.setCreatedDate(oldJob.getCreatedDate());
         return modelMapper.map(jobRepository.save(requestJob), JobResponse.class);
+    }
+
+    @Override
+    public String deleteJob(Long id) {
+        jobRepository.deleteById(id);
+        redisTemplate.opsForHash().delete(KEY, id);
+        return "Delete Job " + id + " successfully";
     }
 }

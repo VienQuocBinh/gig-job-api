@@ -19,9 +19,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -62,7 +62,7 @@ public class AccountController {
         return accountResponse;
     }
 
-    //    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/v1/account")
     @Operation(summary = "ADMIN")
     public ResponseEntity<ResponseObject> findAll() {
@@ -73,7 +73,6 @@ public class AccountController {
 
     @GetMapping("/v1/account/redis")
     @Operation(summary = "ADMIN")
-    @Cacheable(key = "#id", value = "AccountResponse")
     public ResponseEntity<ResponseObject> findAllRedis() {
         List<AccountResponse> accountResponses = accountService.getAccountListRedis();
         ResponseObject responseObject = new ResponseObject(HttpStatus.OK.toString(), "Get all successfully", accountResponses);

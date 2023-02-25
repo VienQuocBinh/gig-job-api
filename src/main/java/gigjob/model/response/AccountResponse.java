@@ -3,7 +3,6 @@ package gigjob.model.response;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
-import java.io.Serializable;
 import java.util.Date;
 
 @Data
@@ -11,9 +10,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Getter
 @Setter
-//@RedisHash("AccountResponse")
-public class AccountResponse implements Serializable {
-    //    private UUID id;
+public class AccountResponse {
     private String id; // Get from Firebase
     private String username;
     private String password;

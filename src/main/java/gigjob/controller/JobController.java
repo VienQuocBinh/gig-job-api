@@ -46,4 +46,9 @@ public class JobController {
     public ResponseEntity<JobResponse> updateJob(@RequestBody JobRequest jobRequest) {
         return ResponseEntity.status(HttpStatus.OK).body(jobService.updateJob(jobRequest));
     }
+
+    @DeleteMapping("/v1/job")
+    public ResponseEntity<String> deleteJob(@RequestBody Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(jobService.deleteJob(id));
+    }
 }
