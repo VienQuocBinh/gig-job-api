@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class NotificationController {
     private final NotificationService notificationService;
 
-    @PostMapping("/v1/send-notification")
+    @PostMapping("/v1/notification/send")
     public BatchResponse sendNotification(@RequestBody Notification notification) {
         return notificationService.sendNotification(notification);
     }

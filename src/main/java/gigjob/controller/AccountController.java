@@ -45,12 +45,12 @@ public class AccountController {
     private final TokenVerifier tokenVerifier;
     private final UserManagementService userManagementService;
 
-    @GetMapping("/v1/firebase-user/{uid}")
+    @GetMapping("/v1/firebase/user/{uid}")
     public UserRecord getUserById(@PathVariable String uid) throws FirebaseAuthException {
         return userManagementService.getFirebaseUserById(uid);
     }
 
-    @PostMapping("/v1/create-shop")
+    @PostMapping("/v1/shop")
     public ShopResponse createShopAcc(@RequestBody ShopResponse shopResponse) {
         Shop shop = modelMapper.map(shopResponse, Shop.class);
         shopRepository.save(shop);
@@ -79,7 +79,7 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(responseObject);
     }
 
-    @PostMapping("/v1/account/login-google")
+    @PostMapping("/v1/account/login/google")
     @SecurityRequirement(name = "google")
     @Operation(summary = "For login by Google", description = "Get idToken from Google and decode")
     public ResponseEntity<JwtResponse> authenticateAndGetToken(@Valid @RequestHeader String idTokenString) throws IOException, FirebaseAuthException {

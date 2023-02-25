@@ -34,7 +34,7 @@ public class ResourceController {
         return ResponseEntity.ok(imageUrl);
     }
 
-    @DeleteMapping("/v1/resource/delete")
+    @DeleteMapping("/v1/resource")
     public ResponseEntity<Object> delete(String fileName) {
         try {
             if (fileStorageService.deleteImage(fileName)) {
