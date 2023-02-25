@@ -26,11 +26,11 @@ public class JobController {
         return ResponseEntity.status(HttpStatus.OK).body(jobResponseList);
     }
 
-    @GetMapping("/v1/job/redis")
-    public ResponseEntity<List<JobResponse>> getJobListRedis() {
-        List<JobResponse> jobResponseList = jobService.getJobListRedis();
-        return ResponseEntity.status(HttpStatus.OK).body(jobResponseList);
-    }
+//    @GetMapping("/v1/job/redis")
+//    public ResponseEntity<List<JobResponse>> getJobListRedis() {
+//        List<JobResponse> jobResponseList = jobService.getJobListRedis();
+//        return ResponseEntity.status(HttpStatus.OK).body(jobResponseList);
+//    }
 
     @GetMapping("/v1/job/{id}")
     public ResponseEntity<JobResponse> getJobById(@PathVariable Long id) {

@@ -8,7 +8,7 @@ import java.util.List;
 public interface JobService {
     JobResponse addJob(JobRequest jobRequest);
 
-    List<JobResponse> getJobListRedis();
+//    List<JobResponse> getJobListRedis();
 
     List<JobResponse> getJob();
 

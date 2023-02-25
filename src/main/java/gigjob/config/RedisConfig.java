@@ -19,7 +19,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfig {
     @Value("${redis.host}")
     private String redisHost;
-
     @Value("${redis.port}")
     private int redisPort;
 
@@ -31,17 +30,22 @@ public class RedisConfig {
 
     @Bean
     @Primary
-    public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<?, ?> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         // tạo ra một RedisTemplate
         // Với Key là Object
         // Value là Object
         // RedisTemplate giúp chúng ta thao tác với Redis
-        RedisTemplate<Object, Object> template = new RedisTemplate<>();
+        RedisTemplate<?, ?> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
         template.setKeySerializer(new StringRedisSerializer());
         template.setHashKeySerializer(new StringRedisSerializer());
         template.setHashKeySerializer(new JdkSerializationRedisSerializer());
         template.setValueSerializer(new JdkSerializationRedisSerializer());
+
+//        Jackson2JsonRedisSerializer<Object> jsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
+//        template.setDefaultSerializer(jsonRedisSerializer);
+//        template.setHashKeySerializer(jsonRedisSerializer);
+//        template.setHashValueSerializer(jsonRedisSerializer);
         template.setEnableTransactionSupport(true);
         template.afterPropertiesSet();
         return template;
