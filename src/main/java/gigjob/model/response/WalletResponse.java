@@ -12,6 +12,5 @@ import java.util.UUID;
 public class WalletResponse {
     private UUID id;
     private Double balance;
-    //    private UUID accountId;
     private String accountId;
 }

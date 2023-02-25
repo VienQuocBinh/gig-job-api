@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -24,13 +25,8 @@ import java.util.List;
 @AllArgsConstructor
 @Table
 @EntityListeners(AuditingEntityListener.class)
-public class Account {
+public class Account implements Serializable {
     @Id
-//    @GeneratedValue(generator = "UUID")
-//    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-//    @Column(updatable = false, unique = true)
-//    @Type(type = "org.hibernate.type.UUIDCharType")
-//    private UUID id;
     private String id; // Get from Firebase
     @NotNull
     private String username;
@@ -53,7 +49,7 @@ public class Account {
     @Enumerated(EnumType.ORDINAL)
     private Role role;
 
-    @OneToOne(mappedBy = "account")
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private Shop shop;
     @OneToOne(mappedBy = "account")
     private Wallet wallet;

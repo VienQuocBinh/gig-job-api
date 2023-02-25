@@ -13,10 +13,7 @@ import java.util.UUID;
 public class ShopResponse {
     private UUID id;
     private String name;
-    private String location;
     private String description;
-    private String phone;
-    private String email;
-    private UUID accountId;
+    private String accountId;
     private List<Long> jobIds;
 }

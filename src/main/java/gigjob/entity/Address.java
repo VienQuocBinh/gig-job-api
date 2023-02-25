@@ -20,7 +20,7 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "address_id")
+    @JoinColumn(name = "account_id")
     private Account account;
     @NotNull
     private String street;

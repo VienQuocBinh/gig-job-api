@@ -47,7 +47,7 @@ public class DomainExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorResponse handleAuthenticationException(Exception ex) {
-        return new ErrorResponse(new Date(), HttpStatus.UNAUTHORIZED.toString(), "Authentication failed. Wrong email or password");
+        return new ErrorResponse(new Date(), HttpStatus.UNAUTHORIZED.toString(), "Authentication failed. Wrong credentials " + ex.toString());
     }
 
     /**

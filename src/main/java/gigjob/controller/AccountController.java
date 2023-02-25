@@ -11,8 +11,8 @@ import gigjob.model.request.AuthRequest;
 import gigjob.model.response.AccountResponse;
 import gigjob.model.response.JwtResponse;
 import gigjob.model.response.ShopResponse;
-import gigjob.repository.AccountRepository;
 import gigjob.repository.ShopRepository;
+import gigjob.service.AccountService;
 import gigjob.service.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -37,7 +37,7 @@ import java.util.List;
 @RequestMapping(value = "/api")
 @RequiredArgsConstructor
 public class AccountController {
-    private final AccountRepository accountRepository;
+    private final AccountService accountService;
     private final ShopRepository shopRepository;
     private final ModelMapper modelMapper;
     private final JwtService jwtService;
@@ -45,12 +45,12 @@ public class AccountController {
     private final TokenVerifier tokenVerifier;
     private final UserManagementService userManagementService;
 
-    @GetMapping("/v1/firebase-user/{uid}")
+    @GetMapping("/v1/firebase/user/{uid}")
     public UserRecord getUserById(@PathVariable String uid) throws FirebaseAuthException {
         return userManagementService.getFirebaseUserById(uid);
     }
 
-    @PostMapping("/v1/create-shop")
+    @PostMapping("/v1/shop")
     public ShopResponse createShopAcc(@RequestBody ShopResponse shopResponse) {
         Shop shop = modelMapper.map(shopResponse, Shop.class);
         shopRepository.save(shop);
@@ -64,15 +64,22 @@ public class AccountController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/v1/account")
+    @Operation(summary = "ADMIN")
     public ResponseEntity<ResponseObject> findAll() {
-        List<AccountResponse> accountResponses = accountRepository.findAll()
-                .stream()
-                .map(acc -> modelMapper.map(acc, AccountResponse.class)).toList();
+        List<AccountResponse> accountResponses = accountService.getAccountList();
         ResponseObject responseObject = new ResponseObject(HttpStatus.OK.toString(), "Get all successfully", accountResponses);
         return ResponseEntity.status(HttpStatus.OK).body(responseObject);
     }
 
-    @PostMapping("/v1/account/login-google")
+    @GetMapping("/v1/account/redis")
+    @Operation(summary = "ADMIN")
+    public ResponseEntity<ResponseObject> findAllRedis() {
+        List<AccountResponse> accountResponses = accountService.getAccountListRedis();
+        ResponseObject responseObject = new ResponseObject(HttpStatus.OK.toString(), "Get all successfully", accountResponses);
+        return ResponseEntity.status(HttpStatus.OK).body(responseObject);
+    }
+
+    @PostMapping("/v1/account/login/google")
     @SecurityRequirement(name = "google")
     @Operation(summary = "For login by Google", description = "Get idToken from Google and decode")
     public ResponseEntity<JwtResponse> authenticateAndGetToken(@Valid @RequestHeader String idTokenString) throws IOException, FirebaseAuthException {
