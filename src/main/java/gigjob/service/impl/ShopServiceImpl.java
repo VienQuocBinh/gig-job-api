@@ -1,5 +1,7 @@
 package gigjob.service.impl;
 
+import gigjob.entity.Shop;
+import gigjob.model.request.ShopRequest;
 import gigjob.model.response.ShopResponse;
 import gigjob.repository.ShopRepository;
 import gigjob.service.ShopService;
@@ -20,9 +22,14 @@ public class ShopServiceImpl implements ShopService {
     public List<ShopResponse> getShopList() {
         return shopRepository.findAll().stream().map(shop -> {
             ShopResponse response = modelMapper.map(shop, ShopResponse.class);
-//            response.setEmail(shop.getAccount().getEmail());
-//            response.setPhone(shop.getAccount().getPhone());
             return modelMapper.map(shop, ShopResponse.class);
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public ShopResponse addShop(ShopRequest shopRequest) {
+        Shop shop = modelMapper.map(shopRequest, Shop.class);
+        shopRepository.save(shop);
+        return modelMapper.map(shop, ShopResponse.class);
     }
 }

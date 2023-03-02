@@ -57,7 +57,6 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-//    @CacheEvict(key = "#jobRequest.id")
     public JobResponse updateJob(JobRequest jobRequest) {
         Job oldJob = jobRepository.findById(jobRequest.getId()).orElseThrow(() -> new NotFoundException("Job not found"));
         Job requestJob = modelMapper.map(jobRequest, Job.class);

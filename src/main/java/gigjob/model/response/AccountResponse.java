@@ -2,6 +2,7 @@ package gigjob.model.response;
 
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
@@ -9,7 +10,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Getter
 @Setter
-public class AccountResponse {
+public class AccountResponse implements Serializable {
     private String id; // Get from Firebase
     private String username;
     private String password;

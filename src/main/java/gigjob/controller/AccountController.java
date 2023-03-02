@@ -4,14 +4,11 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import gigjob.entity.ResponseObject;
-import gigjob.entity.Shop;
 import gigjob.firebase.authentication.TokenVerifier;
 import gigjob.firebase.authentication.UserManagementService;
 import gigjob.model.request.AuthRequest;
 import gigjob.model.response.AccountResponse;
 import gigjob.model.response.JwtResponse;
-import gigjob.model.response.ShopResponse;
-import gigjob.repository.ShopRepository;
 import gigjob.service.AccountService;
 import gigjob.service.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,7 +35,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AccountController {
     private final AccountService accountService;
-    private final ShopRepository shopRepository;
     private final ModelMapper modelMapper;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -50,12 +46,6 @@ public class AccountController {
         return userManagementService.getFirebaseUserById(uid);
     }
 
-    @PostMapping("/v1/shop")
-    public ShopResponse createShopAcc(@RequestBody ShopResponse shopResponse) {
-        Shop shop = modelMapper.map(shopResponse, Shop.class);
-        shopRepository.save(shop);
-        return shopResponse;
-    }
 
     @PostMapping("/v1/register")
     public AccountResponse registerUser(@RequestBody AccountResponse accountResponse) {
