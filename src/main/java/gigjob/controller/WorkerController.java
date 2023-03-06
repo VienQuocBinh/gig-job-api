@@ -1,0 +1,63 @@
+package gigjob.controller;
+
+import java.util.List;
+import java.util.NoSuchElementException;
+
+import gigjob.entity.Worker;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import gigjob.service.WorkerService;
+
+@RestController
+public class WorkerController {
+    
+
+    @Autowired 
+    private WorkerService service;
+
+    @GetMapping("/workers")
+    public List<Worker> List(){
+        return service.ListAll();
+    }
+
+    @GetMapping("/workers/{id}")
+    public ResponseEntity<Worker> get(@PathVariable Integer id) {
+        try{
+        Worker worker = service.get(id);
+        return new ResponseEntity<Worker>(worker ,HttpStatus.OK);
+        }catch (NoSuchElementException e) {
+              return new ResponseEntity<Worker>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @PostMapping("/workers")
+    public void add(@RequestBody Worker worker) {
+        service.save(worker);
+    }
+    @PutMapping("/workers/{id}")
+    public ResponseEntity<?> update(@RequestBody Worker worker,
+            @PathVariable Integer id) {
+            try{
+                Worker existWorker = service.get(id);
+                service.save(worker);
+                
+                return new ResponseEntity<>(HttpStatus.OK);
+            }catch (NoSuchElementException e){
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }
+    @DeleteMapping("/workers/{id}")
+    public void Delete(@PathVariable Integer id) {
+        service.Delete(id);
+    }    
+        
+    
+}

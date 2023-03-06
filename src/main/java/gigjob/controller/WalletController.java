@@ -14,9 +14,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import gigjob.entity.Worker;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
-
+import java.util.UUID;
+import gigjob.service.WorkerService;
 @Log4j2
 @RestController
 @RequestMapping(value = "/api")
@@ -52,5 +62,21 @@ public class WalletController {
             responseObject = new ResponseObject(HttpStatus.NOT_FOUND.toString(), "Not found account", null);
         }
         return new ResponseEntity<>(responseObject, status);
+    }
+    @PutMapping("/Wallets/{id}")
+    public ResponseEntity<?> update(@RequestBody Wallet wallet,
+            @PathVariable UUID id) {
+            try{
+                Wallet existWallet = service.get(id);
+                service.save(wallet);
+                
+                return new ResponseEntity<>(HttpStatus.OK);
+            }catch (NoSuchElementException e){
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }
+    @DeleteMapping("/Wallets/{id}")
+    public void delete(@PathVariable Integer id) {
+        service.delete(id);
     }
 }
