@@ -1,16 +1,16 @@
 package gigjob.common.meta;
 
-public enum TransactionStatus {
+public enum ApplicationStatus {
     /**
      * Constant ordinal: 0
      */
     PENDING,
     /**
-     * Constant ordinal: 0
+     * Constant ordinal: 1
      */
-    SUCCESS,
+    ACCEPTED,
     /**
-     * Constant ordinal: 0
+     * Constant ordinal: 2
      */
-    FAIL
+    REJECTED
 }

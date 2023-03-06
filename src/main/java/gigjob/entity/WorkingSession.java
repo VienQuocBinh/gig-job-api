@@ -1,5 +1,6 @@
 package gigjob.entity;
 
+import gigjob.common.embeddedkey.WorkingSessionId;
 import lombok.*;
 
 import javax.persistence.EmbeddedId;
@@ -14,7 +15,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Builder
 public class WorkingSession implements Serializable {
-    // Association class for Worker, Job and Wage
+    // Association class for Worker, Job, Session and Wage
     @EmbeddedId
     private WorkingSessionId id;
 
