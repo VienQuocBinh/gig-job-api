@@ -8,7 +8,6 @@ import gigjob.repository.JobRepository;
 import gigjob.service.JobService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
@@ -19,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JobServiceImpl implements JobService {
     private static final String KEY = "jobs";
-    //    private static final String REDIS_KEY = "jobs::SimpleKey []";
+    private static final String REDIS_KEY = "jobs::SimpleKey []";
     private final JobRepository jobRepository;
     private final ModelMapper modelMapper;
     private final RedisTemplate<String, List<JobResponse>> redisTemplate;
@@ -45,10 +44,17 @@ public class JobServiceImpl implements JobService {
      * @author Vien Binh
      */
     @Override
-    @Cacheable(KEY)
     public List<JobResponse> getJob() {
-//        Cache the result of the operation
-        return jobRepository.findAll().stream().map(job -> modelMapper.map(job, JobResponse.class)).toList();
+        List<JobResponse> result;
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(KEY))) {
+            result = redisTemplate.opsForValue().get(KEY);
+        } else {
+            result = jobRepository.findAll().stream()
+                    .map(job -> modelMapper.map(job, JobResponse.class))
+                    .toList();
+            redisTemplate.opsForValue().set(KEY, result);
+        }
+        return result;
     }
 
     @Override
