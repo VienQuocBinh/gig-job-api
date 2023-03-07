@@ -2,6 +2,7 @@ package gigjob.service.impl;
 
 import gigjob.entity.Job;
 import gigjob.model.request.JobRequest;
+import gigjob.model.response.JobDetailResponse;
 import gigjob.model.response.JobResponse;
 import gigjob.repository.JobRepository;
 import gigjob.service.JobService;
@@ -18,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JobServiceImpl implements JobService {
     private static final String KEY = "jobs";
-    private static final String REDIS_KEY = "jobs::SimpleKey []";
+    //    private static final String REDIS_KEY = "jobs::SimpleKey []";
     private final JobRepository jobRepository;
     private final ModelMapper modelMapper;
     private final RedisTemplate<String, List<JobResponse>> redisTemplate;
@@ -51,14 +52,14 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public JobResponse getJobById(Long id) {
-        Job job = jobRepository.findById(id).orElseThrow(() -> new NotFoundException("Job not found"));
-        return modelMapper.map(job, JobResponse.class);
+    public JobDetailResponse getJobById(Long id) {
+        Job job = jobRepository.findById(id).orElseThrow(() -> new NotFoundException("Job not found " + id));
+        return modelMapper.map(job, JobDetailResponse.class);
     }
 
     @Override
     public JobResponse updateJob(JobRequest jobRequest) {
-        Job oldJob = jobRepository.findById(jobRequest.getId()).orElseThrow(() -> new NotFoundException("Job not found"));
+        Job oldJob = jobRepository.findById(jobRequest.getId()).orElseThrow(() -> new NotFoundException("Job not found " + jobRequest.getId()));
         Job requestJob = modelMapper.map(jobRequest, Job.class);
         // Set created date for updated job, if not it will be null
         requestJob.setCreatedDate(oldJob.getCreatedDate());

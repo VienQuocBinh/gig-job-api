@@ -1,6 +1,7 @@
 package gigjob.service;
 
 import gigjob.model.request.JobRequest;
+import gigjob.model.response.JobDetailResponse;
 import gigjob.model.response.JobResponse;
 
 import java.util.List;
@@ -12,7 +13,7 @@ public interface JobService {
 
     List<JobResponse> getJob();
 
-    JobResponse getJobById(Long id);
+    JobDetailResponse getJobById(Long id);
 
     JobResponse updateJob(JobRequest jobRequest);
 
