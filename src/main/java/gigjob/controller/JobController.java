@@ -1,6 +1,7 @@
 package gigjob.controller;
 
 import gigjob.model.request.JobRequest;
+import gigjob.model.response.JobDetailResponse;
 import gigjob.model.response.JobResponse;
 import gigjob.service.JobService;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class JobController {
 //    }
 
     @GetMapping("/v1/job/{id}")
-    public ResponseEntity<JobResponse> getJobById(@PathVariable Long id) {
+    public ResponseEntity<JobDetailResponse> getJobById(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(jobService.getJobById(id));
     }
 

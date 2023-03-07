@@ -1,10 +1,14 @@
 package gigjob.model.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class JobRequest {
     private Long id;
     private UUID shopId;
