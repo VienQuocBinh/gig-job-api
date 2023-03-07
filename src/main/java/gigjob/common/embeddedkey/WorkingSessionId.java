@@ -1,5 +1,9 @@
-package gigjob.entity;
+package gigjob.common.embeddedkey;
 
+import gigjob.entity.Job;
+import gigjob.entity.Session;
+import gigjob.entity.Wage;
+import gigjob.entity.Worker;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,16 +20,6 @@ import java.io.Serializable;
 @Builder
 @Embeddable
 public class WorkingSessionId implements Serializable {
-    // Association id for Association clas WorkingSessionId
-//    @Column(name = "worker_id")
-//    @Type(type = "org.hibernate.type.UUIDCharType")
-//    private UUID workerId;
-//    @Column(name = "job_id")
-//    private Long jobId;
-//    @Column(name = "wage_id")
-//    private Long wageId;
-//    @Column(name = "session_id")
-//    private Long sessionId;
     @ManyToOne
     @JoinColumn(name = "worker_id")
     private Worker worker;
