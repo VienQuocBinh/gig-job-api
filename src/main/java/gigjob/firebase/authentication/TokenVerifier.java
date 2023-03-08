@@ -16,13 +16,17 @@ import java.util.List;
  */
 @Component
 public class TokenVerifier {
-    private final String GOOGLE_CLIENT_ID = "395540117439-hkbj5lk2hnrtcteihk7cv8gtsmmmbp3u.apps.googleusercontent.com";
+    // Audience ids
+    private final List<String> GOOGLE_CLIENT_ID = List.of(new String[]{
+            "395540117439-hkbj5lk2hnrtcteihk7cv8gtsmmmbp3u.apps.googleusercontent.com",
+            "395540117439-tu54if77tfdh8j07r7uoeikkudq7scbq.apps.googleusercontent.com"});
     // 3 Authorized Parties: Android, iOS, Web apps
     private final List<String> GOOGLE_AUTHORIZED_PARTIES = List.of(new String[]{
             "395540117439-2pm5vil960v7n488vm6sdj7sdrv9jv5s.apps.googleusercontent.com",
             "395540117439-hriqo5e2ka4g8dotnh77a8uog4u4olh2.apps.googleusercontent.com",
             "395540117439-hkbj5lk2hnrtcteihk7cv8gtsmmmbp3u.apps.googleusercontent.com",
-            "395540117439-vm7157r90l3c0devegctefnll7qpr78m.apps.googleusercontent.com"});
+            "395540117439-vm7157r90l3c0devegctefnll7qpr78m.apps.googleusercontent.com",
+            "395540117439-u81jcnces81em0blljhed7d60fep8e9k.apps.googleusercontent.com"});
 
     /**
      * Verify id token from Firebase
@@ -34,10 +38,9 @@ public class TokenVerifier {
      */
     public GoogleIdToken.Payload validate(String idTokenString) throws IOException {
         GsonFactory gsonFactory = new GsonFactory();
-//        GoogleIdTokenVerifier googleIdTokenVerifier = new GoogleIdTokenVerifier(new NetHttpTransport(), gsonFactory);
         GoogleIdToken idToken = GoogleIdToken.parse(gsonFactory, idTokenString);
         GoogleIdToken.Payload payload = idToken.getPayload();
-        if (!GOOGLE_CLIENT_ID.equals(payload.getAudience())) {
+        if (!GOOGLE_CLIENT_ID.contains(payload.getAudience().toString())) {
             throw new AudienceMismatchException("Audience mismatch");
         } else if (!GOOGLE_AUTHORIZED_PARTIES.contains(payload.getAuthorizedParty())) {
             throw new ClientIdMismatchException("Client ID mismatch");
