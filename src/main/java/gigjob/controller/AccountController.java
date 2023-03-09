@@ -43,7 +43,6 @@ public class AccountController {
         return userManagementService.getFirebaseUserById(uid);
     }
 
-
     @PostMapping("/v1/register")
     public AccountResponse registerUser(@RequestBody AccountResponse accountResponse) {
         return accountResponse;
@@ -54,14 +53,6 @@ public class AccountController {
     @Operation(summary = "ADMIN")
     public ResponseEntity<ResponseObject> findAll() {
         List<AccountResponse> accountResponses = accountService.getAccountList();
-        ResponseObject responseObject = new ResponseObject(HttpStatus.OK.toString(), "Get all successfully", accountResponses);
-        return ResponseEntity.status(HttpStatus.OK).body(responseObject);
-    }
-
-    @GetMapping("/v1/account/redis")
-    @Operation(summary = "ADMIN")
-    public ResponseEntity<ResponseObject> findAllRedis() {
-        List<AccountResponse> accountResponses = accountService.getAccountListRedis();
         ResponseObject responseObject = new ResponseObject(HttpStatus.OK.toString(), "Get all successfully", accountResponses);
         return ResponseEntity.status(HttpStatus.OK).body(responseObject);
     }

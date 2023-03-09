@@ -10,10 +10,13 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
@@ -47,11 +50,5 @@ public class AccountServiceImpl implements AccountService {
                 .toList();
         accountResponses.forEach(acc -> redisTemplate.opsForHash().put("account", acc.getId(), acc));
         return accountResponses;
-    }
-
-    @Override
-    public List<AccountResponse> getAccountListRedis() {
-        List<Object> account = redisTemplate.opsForHash().values("account");
-        return account.stream().map(acc -> modelMapper.map(acc, AccountResponse.class)).toList();
     }
 }
