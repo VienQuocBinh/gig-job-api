@@ -21,7 +21,7 @@ public class JobServiceImpl implements JobService {
     private static final String REDIS_KEY = "jobs::SimpleKey []";
     private final JobRepository jobRepository;
     private final ModelMapper modelMapper;
-    private final RedisTemplate<String, List<JobResponse>> redisTemplate;
+    private final RedisTemplate<String, List<JobDetailResponse>> redisTemplate;
 
     @Override
     public JobResponse addJob(JobRequest jobRequest) {
@@ -44,13 +44,13 @@ public class JobServiceImpl implements JobService {
      * @author Vien Binh
      */
     @Override
-    public List<JobResponse> getJob() {
-        List<JobResponse> result;
+    public List<JobDetailResponse> getJob() {
+        List<JobDetailResponse> result;
         if (Boolean.TRUE.equals(redisTemplate.hasKey(KEY))) {
             result = redisTemplate.opsForValue().get(KEY);
         } else {
             result = jobRepository.findAll().stream()
-                    .map(job -> modelMapper.map(job, JobResponse.class))
+                    .map(job -> modelMapper.map(job, JobDetailResponse.class))
                     .toList();
             redisTemplate.opsForValue().set(KEY, result);
         }

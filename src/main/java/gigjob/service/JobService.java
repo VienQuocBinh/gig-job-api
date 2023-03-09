@@ -11,7 +11,7 @@ public interface JobService {
 
 //    List<JobResponse> getJobListRedis();
 
-    List<JobResponse> getJob();
+    List<JobDetailResponse> getJob();
 
     JobDetailResponse getJobById(Long id);
 

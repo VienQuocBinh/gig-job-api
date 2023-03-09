@@ -22,8 +22,8 @@ public class JobController {
     private final JobService jobService;
 
     @GetMapping("/v1/job")
-    public ResponseEntity<List<JobResponse>> getJobList() {
-        List<JobResponse> jobResponseList = jobService.getJob();
+    public ResponseEntity<List<JobDetailResponse>> getJobList() {
+        List<JobDetailResponse> jobResponseList = jobService.getJob();
         return ResponseEntity.status(HttpStatus.OK).body(jobResponseList);
     }
 
