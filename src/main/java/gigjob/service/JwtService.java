@@ -26,6 +26,7 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class JwtService {
     private final AccountService accountService;
+    private final UserManagementService userManagementService;
     @Value("${security.secret}")
     private String SECRET;
     @Value("${security.jwt.expiration}")
@@ -82,7 +83,6 @@ public class JwtService {
         // Find user in DB by email
         AccountResponse accountResponse = accountService.getAccountByEmail(email);
         // Get Firebase user information by email from login
-        UserManagementService userManagementService = new UserManagementService();
         UserRecord userRecord = userManagementService.getFirebaseUserByEmail(email);
         if (userRecord == null) {
             throw new FirebaseAuthException(new FirebaseException(ErrorCode.ABORTED,

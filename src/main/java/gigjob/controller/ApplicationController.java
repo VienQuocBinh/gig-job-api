@@ -3,6 +3,7 @@ package gigjob.controller;
 import gigjob.model.request.ApplicationApplyRequest;
 import gigjob.model.response.ApplicationResponse;
 import gigjob.service.ApplicationService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ public class ApplicationController {
     }
 
     @PostMapping("/v1/application")
+    @Operation(description = "status: PENDING: 0, ACCEPTED: 1, REJECTED: 2")
     public ResponseEntity<Object> apply(@RequestBody ApplicationApplyRequest applyRequest) {
         try {
             applicationService.apply(applyRequest);

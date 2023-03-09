@@ -15,6 +15,7 @@ public class AccountResponse implements Serializable {
     private String username;
     private String password;
     private String email;
+    private String phone;
     private Date createdDate;
     private Date updatedDate;
     private boolean isLocked;

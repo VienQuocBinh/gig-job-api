@@ -2,7 +2,6 @@ package gigjob.controller;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.UserRecord;
 import gigjob.entity.ResponseObject;
 import gigjob.firebase.authentication.TokenVerifier;
 import gigjob.firebase.authentication.UserManagementService;
@@ -40,7 +39,7 @@ public class AccountController {
     private final UserManagementService userManagementService;
 
     @GetMapping("/v1/firebase/user/{uid}")
-    public UserRecord getUserById(@PathVariable String uid) throws FirebaseAuthException {
+    public AccountResponse getUserById(@PathVariable String uid) throws FirebaseAuthException {
         return userManagementService.getFirebaseUserById(uid);
     }
 
