@@ -9,8 +9,6 @@ import java.util.List;
 public interface JobService {
     JobResponse addJob(JobRequest jobRequest);
 
-//    List<JobResponse> getJobListRedis();
-
     List<JobDetailResponse> getJob();
 
     JobDetailResponse getJobById(Long id);

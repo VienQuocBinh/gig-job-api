@@ -27,14 +27,10 @@ public class JobServiceImpl implements JobService {
     public JobResponse addJob(JobRequest jobRequest) {
         Job job = jobRepository.save(modelMapper.map(jobRequest, Job.class));
         // add the job to Redis cache if not exist
-        redisTemplate.opsForHash().putIfAbsent(KEY, job.getId(), job);
+        JobDetailResponse jobDetailResponse = modelMapper.map(job, JobDetailResponse.class);
+        redisTemplate.opsForHash().putIfAbsent(KEY, job.getId(), jobDetailResponse);
         return modelMapper.map(job, JobResponse.class);
     }
-
-//    @Override
-//    public List<JobResponse> getJobListRedis() {
-//        return redisTemplate.opsForValue().get(REDIS_KEY);
-//    }
 
     /**
      * The first time get Job from Database at  cached in Redis with the key {@code jobs::SimpleKey [] }
