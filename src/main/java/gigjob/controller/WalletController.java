@@ -6,36 +6,28 @@ import gigjob.entity.Wallet;
 import gigjob.model.response.WalletResponse;
 import gigjob.repository.AccountRepository;
 import gigjob.repository.WalletRepository;
+import gigjob.service.impl.WalletServiceImpl;
 import gigjob.util.WalletMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import gigjob.entity.Worker;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
-import gigjob.service.WorkerService;
+
 @Log4j2
 @RestController
 @RequestMapping(value = "/api")
 @RequiredArgsConstructor
-@PreAuthorize("hasAuthority('WORKER')")
 public class WalletController {
     private final ModelMapper modelMapper;
     private final WalletRepository walletRepository;
     private final AccountRepository accountRepository;
+    private final WalletServiceImpl service;
 
     @GetMapping("/v1/wallet")
     public ResponseEntity<ResponseObject> getAll() {
@@ -63,20 +55,22 @@ public class WalletController {
         }
         return new ResponseEntity<>(responseObject, status);
     }
+
     @PutMapping("/Wallets/{id}")
     public ResponseEntity<?> update(@RequestBody Wallet wallet,
-            @PathVariable UUID id) {
-            try{
-                Wallet existWallet = service.get(id);
-                service.save(wallet);
-                
-                return new ResponseEntity<>(HttpStatus.OK);
-            }catch (NoSuchElementException e){
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
+                                    @PathVariable UUID id) {
+        try {
+            Wallet existWallet = service.get(id);
+            service.save(wallet);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
     @DeleteMapping("/Wallets/{id}")
-    public void delete(@PathVariable Integer id) {
+    public void delete(@PathVariable UUID id) {
         service.delete(id);
     }
 }

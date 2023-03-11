@@ -1,28 +1,16 @@
 package gigjob.service;
 
-import java.util.UUID;
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import gigjob.entity.Wallet;
-import gigjob.repository.WalletRepository;
 
-public class WalletService {
-    @Autowired
-    private WalletRepository repo;
+import java.util.List;
+import java.util.UUID;
 
-    public List<Wallet> ListAll(){
-        return repo.findAll();
-    }
+public interface WalletService {
+    List<Wallet> ListAll();
 
-    public void save (Wallet wallet){
-        repo.save(wallet);
-    }
+    void save(Wallet wallet);
 
-    public Wallet get(UUID id){
-        return repo.findById(id).get();
-    }
-    public void Delete(UUID id){
-        repo.deleteById(id);
-    }
+    Wallet get(UUID id);
+
+    void delete(UUID id);
 }

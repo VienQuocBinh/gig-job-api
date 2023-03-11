@@ -1,31 +1,18 @@
 package gigjob.service;
 
+import gigjob.entity.Worker;
+import gigjob.model.response.WorkerResponse;
+
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+public interface WorkerService {
+    List<Worker> ListAll();
 
-import gigjob.entity.Worker;
-import gigjob.repository.WorkerRepository;
+    void save(Worker worker);
 
-@Service
-public class WorkerService {
-    
-    @Autowired
-    private WorkerRepository repo;
+    Worker get(Integer id);
 
-    public List<Worker> ListAll(){
-        return repo.findAll();
-    }
+    WorkerResponse getByAccountId(String accountId);
 
-    public void save (Worker worker){
-        repo.save(worker);
-    }
-
-    public Worker get(Integer id){
-        return repo.findById(id).get();
-    }
-    public void Delete(Integer id){
-        repo.deleteById(id);
-    }
+    void delete(Integer id);
 }
