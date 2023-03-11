@@ -66,6 +66,24 @@ CREATE TABLE `address`
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `application`
+--
+
+DROP TABLE IF EXISTS `application`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `application` (
+                               `status` int DEFAULT NULL,
+                               `worker_id` varchar(255) NOT NULL,
+                               `job_id` bigint NOT NULL,
+                               PRIMARY KEY (`job_id`,`worker_id`),
+                               KEY `FKdaom78lwp01cc93vrmoyhqi0o` (`worker_id`),
+                               CONSTRAINT `FKdaom78lwp01cc93vrmoyhqi0o` FOREIGN KEY (`worker_id`) REFERENCES `worker` (`id`),
+                               CONSTRAINT `FKls6sryk64ga8o5t4bym8qu3vm` FOREIGN KEY (`job_id`) REFERENCES `job` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `fcm_token`
 --
 

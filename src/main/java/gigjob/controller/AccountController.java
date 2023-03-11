@@ -69,6 +69,7 @@ public class AccountController {
 
     @PostMapping("/v1/account/login/google")
     @SecurityRequirement(name = "google")
+    @CrossOrigin()
     @Operation(summary = "For login by Google", description = "Get idToken from Google and decode")
     public ResponseEntity<JwtResponse> authenticateAndGetToken(@Valid @RequestHeader String idTokenString) throws IOException, FirebaseAuthException {
         GoogleIdToken.Payload payload = tokenVerifier.validate(idTokenString);
@@ -76,6 +77,7 @@ public class AccountController {
     }
 
     @PostMapping("/v1/account/login")
+    @CrossOrigin()
     public ResponseEntity<JwtResponse> authenticateAndGetToken(@RequestBody AuthRequest authRequest) throws FirebaseAuthException {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
         if (authentication.isAuthenticated()) {

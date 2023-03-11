@@ -1,14 +1,20 @@
 package gigjob.controller;
 
+import com.google.rpc.ErrorInfoOrBuilder;
 import gigjob.model.request.ApplicationApplyRequest;
 import gigjob.model.response.ApplicationResponse;
+import gigjob.model.response.ErrorResponse;
 import gigjob.service.ApplicationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.webjars.NotFoundException;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,6 +39,58 @@ public class ApplicationController {
             return ResponseEntity.status(HttpStatus.OK).body("Application applied successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to apply");
+        }
+    }
+    @GetMapping("/v1/application/shop/{id}")
+    public ResponseEntity<Object> getApplicationsByShopID(@PathVariable String id) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                applicationService.getApplicationsByShopId(UUID.fromString(id))
+        );
+    }
+
+    @GetMapping("/v1/application/job/{id}/accepted")
+    public ResponseEntity<Object> getAcceptedApplicationById(@PathVariable("id") Long jobId) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                applicationService.findAcceptedApplications(jobId)
+        );
+    }
+    @GetMapping("/v1/application/job/{id}/rejected")
+    public ResponseEntity<Object> getRejectedApplicationById(@PathVariable("id") Long jobId) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                applicationService.findRejectedApplications(jobId)
+        );
+    }
+
+    @PatchMapping("/v1/application/accept")
+    public ResponseEntity<Object> acceptApplicationById(@RequestBody ApplicationApplyRequest applyRequest) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    applicationService.acceptApplication(applyRequest)
+            );
+        } catch (NotFoundException e) {
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    ErrorResponse.builder()
+                            .timestamp(new Date())
+                            .message(e.getMessage())
+                            .error(HttpStatus.NOT_FOUND.getReasonPhrase())
+                            .build()
+            );
+        }
+    }
+    @PatchMapping("/v1/application/reject")
+    public ResponseEntity<Object> rejectApplicationById(@RequestBody ApplicationApplyRequest applyRequest) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    applicationService.rejectApplication(applyRequest)
+            );
+        } catch (NotFoundException e) {
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    ErrorResponse.builder()
+                            .timestamp(new Date())
+                            .message(e.getMessage())
+                            .error(HttpStatus.NOT_FOUND.getReasonPhrase())
+                            .build()
+            );
         }
     }
 }

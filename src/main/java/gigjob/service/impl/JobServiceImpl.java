@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -78,5 +79,10 @@ public class JobServiceImpl implements JobService {
         jobRepository.deleteById(id);
         redisTemplate.opsForHash().delete(KEY, id);
         return "Delete Job " + id + " successfully";
+    }
+
+    @Override
+    public Optional<Job> findJobById(Long id) {
+        return jobRepository.findById(id);
     }
 }

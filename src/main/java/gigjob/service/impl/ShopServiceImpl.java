@@ -8,8 +8,11 @@ import gigjob.service.ShopService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,5 +34,13 @@ public class ShopServiceImpl implements ShopService {
         Shop shop = modelMapper.map(shopRequest, Shop.class);
         shopRepository.save(shop);
         return modelMapper.map(shop, ShopResponse.class);
+    }
+
+    @Override
+    public ShopResponse findShopByAccountId(String accountId) {
+        var shop = shopRepository.findByAccountId(accountId);
+        if (shop.isEmpty()) throw new NotFoundException("Shop not found");
+        return modelMapper.map(shop.get(), ShopResponse.class);
+
     }
 }
