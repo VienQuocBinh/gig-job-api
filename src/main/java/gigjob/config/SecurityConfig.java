@@ -2,7 +2,7 @@ package gigjob.config;
 
 import gigjob.filter.JwtAuthFilter;
 import gigjob.filter.JwtEntryPoint;
-import gigjob.service.UserInfoUserDetailsService;
+import gigjob.service.impl.UserInfoUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
