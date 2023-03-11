@@ -1,4 +1,4 @@
-package gigjob.service;
+package gigjob.service.impl;
 
 import com.google.firebase.ErrorCode;
 import com.google.firebase.FirebaseException;
@@ -6,6 +6,7 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import gigjob.firebase.authentication.UserManagementService;
 import gigjob.model.response.AccountResponse;
+import gigjob.service.AccountService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
