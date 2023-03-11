@@ -1,30 +1,15 @@
 package gigjob.service;
 
-
-
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import gigjob.entity.History;
 
-import gigjob.repository.HistoryRepository;
+import java.util.List;
 
-public class HistoryService {
-    @Autowired
-    private HistoryRepository repo;
+public interface HistoryService {
+    List<History> ListAll();
 
-    public List<History> ListAll(){
-        return repo.findAll();
-    }
+    void save(History wallet);
 
-    public void save (History wallet){
-        repo.save(wallet);
-    }
+    History get(Long id);
 
-    public History get(Long id){
-        return repo.findById(id).get();
-    }
-    public void Delete(Long id){
-        repo.deleteById(id);
-    }
+    void Delete(Long id);
 }
