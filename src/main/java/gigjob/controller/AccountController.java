@@ -9,7 +9,7 @@ import gigjob.model.request.AuthRequest;
 import gigjob.model.response.AccountResponse;
 import gigjob.model.response.JwtResponse;
 import gigjob.service.AccountService;
-import gigjob.service.JwtService;
+import gigjob.service.impl.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -38,12 +38,12 @@ public class AccountController {
     private final TokenVerifier tokenVerifier;
     private final UserManagementService userManagementService;
 
-    @GetMapping("/v1/firebase/user/{uid}")
-    public AccountResponse getUserById(@PathVariable String uid) throws FirebaseAuthException {
+    @GetMapping("/v1/account/firebase/{uid}")
+    public AccountResponse getFirebaseUserById(@PathVariable String uid) throws FirebaseAuthException {
         return userManagementService.getFirebaseUserById(uid);
     }
 
-    @PostMapping("/v1/register")
+    @PostMapping("/v1/account/register")
     public AccountResponse registerUser(@RequestBody AccountResponse accountResponse) {
         return accountResponse;
     }

@@ -1,6 +1,9 @@
 package gigjob.model.response;
 
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -8,8 +11,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AccountResponse implements Serializable {
     private String id; // Get from Firebase
     private String username;
@@ -22,4 +24,8 @@ public class AccountResponse implements Serializable {
     private boolean isDisable;
     private String imageUrl;
     private String role;
+//    @Nullable
+//    private ShopResponse shop;
+//    @Nullable
+//    private WorkerResponse worker;
 }
