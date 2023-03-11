@@ -4,7 +4,7 @@ public enum Role {
     /**
      * Constant ordinal: 0
      */
-    ADMIN,
+    SHOP,
     /**
      * Constant ordinal: 1
      */
