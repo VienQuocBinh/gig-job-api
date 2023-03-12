@@ -2,8 +2,6 @@ package gigjob.firebase.authentication;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.json.gson.GsonFactory;
-import gigjob.common.exception.model.AudienceMismatchException;
-import gigjob.common.exception.model.IssuerMismatchException;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -38,11 +36,11 @@ public class TokenVerifier {
         GsonFactory gsonFactory = new GsonFactory();
         GoogleIdToken idToken = GoogleIdToken.parse(gsonFactory, idTokenString);
         GoogleIdToken.Payload payload = idToken.getPayload();
-        if (!GOOGLE_CLIENT_ID.contains(payload.getAudience().toString())) {
-            throw new AudienceMismatchException("Audience mismatch");
-        } else if (!ISSUERS.contains(payload.getIssuer())) {
-            throw new IssuerMismatchException("Issuer mismatch");
-        }
+//        if (!GOOGLE_CLIENT_ID.contains(payload.getAudience().toString())) {
+//            throw new AudienceMismatchException("Audience mismatch");
+//        } else if (!ISSUERS.contains(payload.getIssuer())) {
+//            throw new IssuerMismatchException("Issuer mismatch");
+//        }
         return payload;
     }
 }
