@@ -13,4 +13,7 @@ public interface WorkerRepository extends JpaRepository<Worker, UUID> {
 
     @Query("select w from Worker w where w.id = :worker_id")
     Worker getWorkerById(@Param("worker_id") UUID workerId);
+    @Query("select w from Worker w where w.account.id = :account_id")
+//    Worker findByAccount_Id(@Param("account_id") String accountId);
+    Worker findByAccountId(@Param("account_id") String accountId);
 }

@@ -1,7 +1,7 @@
 package gigjob.common.exception.handler;
 
 import gigjob.common.exception.model.AudienceMismatchException;
-import gigjob.common.exception.model.ClientIdMismatchException;
+import gigjob.common.exception.model.IssuerMismatchException;
 import gigjob.model.response.ErrorResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -23,13 +23,13 @@ public class FirebaseExceptionHandler extends ResponseEntityExceptionHandler {
     /**
      * Handle client id of id Token not found
      *
-     * @param exception {@link  ClientIdMismatchException}
+     * @param exception {@link  IssuerMismatchException}
      * @return {@link ErrorResponse}
      * @author Vien Binh
      */
-    @ExceptionHandler(ClientIdMismatchException.class)
+    @ExceptionHandler(IssuerMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleClientIdMismatchException(ClientIdMismatchException exception) {
+    public ErrorResponse handleClientIdMismatchException(IssuerMismatchException exception) {
         log.error(exception.getMessage());
         return new ErrorResponse(new Date(), HttpStatus.BAD_REQUEST.toString(), exception.getMessage());
     }

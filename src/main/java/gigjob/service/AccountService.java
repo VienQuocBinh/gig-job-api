@@ -13,6 +13,4 @@ public interface AccountService {
     AccountResponse getAccountByUsername(String username) throws UserNotFoundException;
 
     List<AccountResponse> getAccountList();
-
-    List<AccountResponse> getAccountListRedis();
 }

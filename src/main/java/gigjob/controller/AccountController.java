@@ -2,7 +2,6 @@ package gigjob.controller;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.UserRecord;
 import gigjob.entity.ResponseObject;
 import gigjob.firebase.authentication.TokenVerifier;
 import gigjob.firebase.authentication.UserManagementService;
@@ -10,7 +9,7 @@ import gigjob.model.request.AuthRequest;
 import gigjob.model.response.AccountResponse;
 import gigjob.model.response.JwtResponse;
 import gigjob.service.AccountService;
-import gigjob.service.JwtService;
+import gigjob.service.impl.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -39,13 +38,12 @@ public class AccountController {
     private final TokenVerifier tokenVerifier;
     private final UserManagementService userManagementService;
 
-    @GetMapping("/v1/firebase/user/{uid}")
-    public UserRecord getUserById(@PathVariable String uid) throws FirebaseAuthException {
+    @GetMapping("/v1/account/firebase/{uid}")
+    public AccountResponse getFirebaseUserById(@PathVariable String uid) throws FirebaseAuthException {
         return userManagementService.getFirebaseUserById(uid);
     }
 
-
-    @PostMapping("/v1/register")
+    @PostMapping("/v1/account/register")
     public AccountResponse registerUser(@RequestBody AccountResponse accountResponse) {
         return accountResponse;
     }
@@ -55,14 +53,6 @@ public class AccountController {
     @Operation(summary = "ADMIN")
     public ResponseEntity<ResponseObject> findAll() {
         List<AccountResponse> accountResponses = accountService.getAccountList();
-        ResponseObject responseObject = new ResponseObject(HttpStatus.OK.toString(), "Get all successfully", accountResponses);
-        return ResponseEntity.status(HttpStatus.OK).body(responseObject);
-    }
-
-    @GetMapping("/v1/account/redis")
-    @Operation(summary = "ADMIN")
-    public ResponseEntity<ResponseObject> findAllRedis() {
-        List<AccountResponse> accountResponses = accountService.getAccountListRedis();
         ResponseObject responseObject = new ResponseObject(HttpStatus.OK.toString(), "Get all successfully", accountResponses);
         return ResponseEntity.status(HttpStatus.OK).body(responseObject);
     }
