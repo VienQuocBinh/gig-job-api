@@ -35,7 +35,9 @@ public class ShopController {
         return ResponseEntity.status(HttpStatus.OK).body(shopService.addShop(shopRequest));
     }
 
+
     @GetMapping("/v1/shop/{id}")
+    @CrossOrigin()
     public ResponseEntity<Object> searchShop(@PathVariable("id")String accountId) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(

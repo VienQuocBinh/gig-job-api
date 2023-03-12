@@ -14,6 +14,8 @@ import org.webjars.NotFoundException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,20 +24,16 @@ public class JobServiceImpl implements JobService {
     private static final String REDIS_KEY = "jobs::SimpleKey []";
     private final JobRepository jobRepository;
     private final ModelMapper modelMapper;
-    private final RedisTemplate<String, List<JobResponse>> redisTemplate;
+    private final RedisTemplate<String, List<JobDetailResponse>> redisTemplate;
 
     @Override
     public JobResponse addJob(JobRequest jobRequest) {
         Job job = jobRepository.save(modelMapper.map(jobRequest, Job.class));
         // add the job to Redis cache if not exist
-        redisTemplate.opsForHash().putIfAbsent(KEY, job.getId(), job);
+        JobDetailResponse jobDetailResponse = modelMapper.map(job, JobDetailResponse.class);
+//        redisTemplate.opsForHash().putIfAbsent(KEY, job.getId(), jobDetailResponse);
         return modelMapper.map(job, JobResponse.class);
     }
-
-//    @Override
-//    public List<JobResponse> getJobListRedis() {
-//        return redisTemplate.opsForValue().get(REDIS_KEY);
-//    }
 
     /**
      * The first time get Job from Database at  cached in Redis with the key {@code jobs::SimpleKey [] }
@@ -45,13 +43,13 @@ public class JobServiceImpl implements JobService {
      * @author Vien Binh
      */
     @Override
-    public List<JobResponse> getJob() {
-        List<JobResponse> result;
+    public List<JobDetailResponse> getJob() {
+        List<JobDetailResponse> result;
         if (Boolean.TRUE.equals(redisTemplate.hasKey(KEY))) {
             result = redisTemplate.opsForValue().get(KEY);
         } else {
             result = jobRepository.findAll().stream()
-                    .map(job -> modelMapper.map(job, JobResponse.class))
+                    .map(job -> modelMapper.map(job, JobDetailResponse.class))
                     .toList();
             redisTemplate.opsForValue().set(KEY, result);
         }
@@ -84,5 +82,11 @@ public class JobServiceImpl implements JobService {
     @Override
     public Optional<Job> findJobById(Long id) {
         return jobRepository.findById(id);
+    }
+
+    @Override
+    public List<JobDetailResponse> findJobsByShopId(UUID id) {
+        var jobs = jobRepository.findAllByShopId(id);
+        return jobs.stream().map(j -> modelMapper.map(j, JobDetailResponse.class)).collect(Collectors.toList());
     }
 }

@@ -2,6 +2,7 @@ package gigjob.model.response;
 
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
@@ -9,7 +10,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Getter
 @Setter
-public class JobDetailResponse {
+public class JobDetailResponse implements Serializable {
     private Long id;
     private ShopResponse shop;
     private JobTypeResponse jobType;

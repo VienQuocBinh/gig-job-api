@@ -7,13 +7,12 @@ import gigjob.model.response.JobResponse;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface JobService {
     JobResponse addJob(JobRequest jobRequest);
 
-//    List<JobResponse> getJobListRedis();
-
-    List<JobResponse> getJob();
+    List<JobDetailResponse> getJob();
 
     JobDetailResponse getJobById(Long id);
 
@@ -22,4 +21,6 @@ public interface JobService {
     String deleteJob(Long id);
 
     Optional<Job> findJobById(Long id);
+
+    List<JobDetailResponse> findJobsByShopId(UUID id);
 }

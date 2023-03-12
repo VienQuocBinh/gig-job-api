@@ -2,7 +2,7 @@ package gigjob.config;
 
 import gigjob.filter.JwtAuthFilter;
 import gigjob.filter.JwtEntryPoint;
-import gigjob.service.UserInfoUserDetailsService;
+import gigjob.service.impl.UserInfoUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,8 +41,8 @@ public class SecurityConfig {
         return http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/", "/v3/api-docs/**", "/swagger-ui/**",
-                        "/v1/register",
-                        "/api/v1/account/login", "/api/v1/account/login-google", "/api/v1/account/**").permitAll()
+                        "/api/v1/register",
+                        "/api/v1/account/login", "/api/v1/account/login/google", "/api/v1/job/**", "/api/v1/account/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
