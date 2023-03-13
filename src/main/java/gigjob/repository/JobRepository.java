@@ -14,4 +14,7 @@ import java.util.UUID;
 public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificationExecutor<Job> {
     @Query("select j from Job j where j.shop.id = :shop_id")
     List<Job> findAllByShopId(@Param("shop_id") UUID id);
+
+    @Query("select j from Job j where j.title like %:title%")
+    List<Job> searchByTitle(@Param("title") String title);
 }

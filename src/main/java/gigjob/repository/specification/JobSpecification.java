@@ -20,6 +20,11 @@ public interface JobSpecification {
                 .equal(root.get("jobType").get("id"), jobType);
     }
 
+    static Specification<Job> searchByTitle(String title) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder
+                .like(root.get("title"), "%" + title + "%");
+    }
+
     static Specification<Job> test() {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();

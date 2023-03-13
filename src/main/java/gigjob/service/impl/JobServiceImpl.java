@@ -107,7 +107,9 @@ public class JobServiceImpl implements JobService {
                 pageable = PageRequest.of(pageIndex, pageSize, Sort.by(searchCriteria.getSortCriteria().getSortKey()).descending());
             }
             // Find job by job type specification
-            Page<Job> jobs = jobRepository.findAll(JobSpecification.isOfficialJob(Integer.parseInt(searchCriteria.getValue())), pageable);
+            Page<Job> jobs = jobRepository.findAll(JobSpecification.isOfficialJob(Integer.parseInt(searchCriteria.getValue()))
+                            .and(JobSpecification.searchByTitle(searchCriteria.getSearchKey()))
+                    , pageable);
             return jobs.stream()
                     .map(job -> modelMapper.map(job, JobDetailResponse.class))
                     .toList();
