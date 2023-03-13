@@ -1,6 +1,7 @@
 package gigjob.service;
 
 import gigjob.entity.Job;
+import gigjob.model.domain.SearchCriteria;
 import gigjob.model.request.JobRequest;
 import gigjob.model.response.JobDetailResponse;
 import gigjob.model.response.JobResponse;
@@ -23,4 +24,6 @@ public interface JobService {
     Optional<Job> findJobById(Long id);
 
     List<JobDetailResponse> findJobsByShopId(UUID id);
+
+    List<JobDetailResponse> searchJob(SearchCriteria searchCriteria, int pageIndex, int pageSize);
 }

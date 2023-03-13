@@ -8,6 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface JobSpecification {
+    /**
+     * Returns the job specification for get the jobs having the specified job type
+     *
+     * @param jobType {@code int}
+     * @return {@code Specification<Job>}
+     * @author Vien Binh
+     */
     static Specification<Job> isOfficialJob(int jobType) {
         return (root, query, criteriaBuilder) -> criteriaBuilder
                 .equal(root.get("jobType").get("id"), jobType);

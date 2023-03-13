@@ -1,13 +1,20 @@
 package gigjob.service.impl;
 
+import gigjob.common.exception.model.InternalServerErrorException;
 import gigjob.entity.Job;
+import gigjob.model.domain.SearchCriteria;
 import gigjob.model.request.JobRequest;
 import gigjob.model.response.JobDetailResponse;
 import gigjob.model.response.JobResponse;
 import gigjob.repository.JobRepository;
+import gigjob.repository.specification.JobSpecification;
 import gigjob.service.JobService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
@@ -88,5 +95,24 @@ public class JobServiceImpl implements JobService {
     public List<JobDetailResponse> findJobsByShopId(UUID id) {
         var jobs = jobRepository.findAllByShopId(id);
         return jobs.stream().map(j -> modelMapper.map(j, JobDetailResponse.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<JobDetailResponse> searchJob(SearchCriteria searchCriteria, int pageIndex, int pageSize) {
+        try {
+            Pageable pageable;
+            if (searchCriteria.getSortCriteria().getDirection().equalsIgnoreCase("asc")) {
+                pageable = PageRequest.of(pageIndex, pageSize, Sort.by(searchCriteria.getSortCriteria().getSortKey()).ascending());
+            } else {
+                pageable = PageRequest.of(pageIndex, pageSize, Sort.by(searchCriteria.getSortCriteria().getSortKey()).descending());
+            }
+            // Find job by job type specification
+            Page<Job> jobs = jobRepository.findAll(JobSpecification.isOfficialJob(Integer.parseInt(searchCriteria.getValue())), pageable);
+            return jobs.stream()
+                    .map(job -> modelMapper.map(job, JobDetailResponse.class))
+                    .toList();
+        } catch (Exception e) {
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 }
