@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface JobSpecification {
     /**
-     * Returns the job specification for get the jobs having the specified job type
+     * Returns the job specification for getting the jobs having the specified job type
      *
      * @param jobType {@code int}
      * @return {@code Specification<Job>}
@@ -20,6 +20,13 @@ public interface JobSpecification {
                 .equal(root.get("jobType").get("id"), jobType);
     }
 
+    /**
+     * Returns the job specification for getting the jobs having a title is similar to the search term
+     *
+     * @param title {@code String}
+     * @return {@code Specification<Job>}
+     * @author Vien Binh
+     */
     static Specification<Job> searchByTitle(String title) {
         return (root, query, criteriaBuilder) -> criteriaBuilder
                 .like(root.get("title"), "%" + title + "%");
