@@ -88,7 +88,7 @@ public class JwtService {
         if (userRecord == null) {
             throw new FirebaseAuthException(new FirebaseException(ErrorCode.ABORTED,
                     "No Firebase user information",
-                    new NullPointerException()));
+                    new NullPointerException("No Firebase user information")));
         }
         // Put extra information in the token
         Map<String, Object> claims = new HashMap<>();
