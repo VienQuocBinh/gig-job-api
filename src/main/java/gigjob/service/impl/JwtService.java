@@ -1,4 +1,4 @@
-package gigjob.service;
+package gigjob.service.impl;
 
 import com.google.firebase.ErrorCode;
 import com.google.firebase.FirebaseException;
@@ -6,6 +6,7 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import gigjob.firebase.authentication.UserManagementService;
 import gigjob.model.response.AccountResponse;
+import gigjob.service.AccountService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -26,6 +27,7 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class JwtService {
     private final AccountService accountService;
+    private final UserManagementService userManagementService;
     @Value("${security.secret}")
     private String SECRET;
     @Value("${security.jwt.expiration}")
@@ -82,12 +84,11 @@ public class JwtService {
         // Find user in DB by email
         AccountResponse accountResponse = accountService.getAccountByEmail(email);
         // Get Firebase user information by email from login
-        UserManagementService userManagementService = new UserManagementService();
         UserRecord userRecord = userManagementService.getFirebaseUserByEmail(email);
         if (userRecord == null) {
             throw new FirebaseAuthException(new FirebaseException(ErrorCode.ABORTED,
                     "No Firebase user information",
-                    new NullPointerException()));
+                    new NullPointerException("No Firebase user information")));
         }
         // Put extra information in the token
         Map<String, Object> claims = new HashMap<>();

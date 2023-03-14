@@ -1,5 +1,6 @@
 package gigjob.common.exception.handler;
 
+import gigjob.common.exception.model.InternalServerErrorException;
 import gigjob.common.exception.model.JwtTokenException;
 import gigjob.common.exception.model.UserNotFoundException;
 import gigjob.model.response.ErrorResponse;
@@ -64,5 +65,9 @@ public class DomainExceptionHandler extends ResponseEntityExceptionHandler {
         return new ErrorResponse(new Date(), HttpStatus.NOT_FOUND.toString(), exception.getMessage());
     }
 
-
+    @ExceptionHandler(value = {InternalServerErrorException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected ErrorResponse handleInternalServerError(InternalServerErrorException exception) {
+        return new ErrorResponse(new Date(), HttpStatus.BAD_REQUEST.toString(), exception.getMessage());
+    }
 }

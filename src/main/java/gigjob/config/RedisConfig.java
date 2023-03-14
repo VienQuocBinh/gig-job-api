@@ -2,16 +2,22 @@ package gigjob.config;
 
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.*;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import java.time.Duration;
 
 @Configuration
 @EnableRedisRepositories
@@ -41,11 +47,6 @@ public class RedisConfig {
         template.setHashKeySerializer(new StringRedisSerializer());
         template.setHashKeySerializer(new JdkSerializationRedisSerializer());
         template.setValueSerializer(new JdkSerializationRedisSerializer());
-
-//        Jackson2JsonRedisSerializer<Object> jsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
-//        template.setDefaultSerializer(jsonRedisSerializer);
-//        template.setHashKeySerializer(jsonRedisSerializer);
-//        template.setHashValueSerializer(jsonRedisSerializer);
         template.setEnableTransactionSupport(true);
         template.afterPropertiesSet();
         return template;
@@ -63,7 +64,20 @@ public class RedisConfig {
     public RedisConfiguration defaultRedisConfig() {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
         config.setHostName(redisHost);
+        // Do not set password
         config.setPassword(RedisPassword.of(""));
         return config;
+    }
+
+    @Bean(name = "RedisCacheManager")
+    public CacheManager getManager() {
+        JdkSerializationRedisSerializer contextAwareRedisSerializer = new JdkSerializationRedisSerializer(getClass().getClassLoader());
+        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+                .disableCachingNullValues()
+                .entryTtl(Duration.ofHours(12))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(contextAwareRedisSerializer));
+        return RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(redisConnectionFactory())
+                .cacheDefaults(redisCacheConfiguration)
+                .build();
     }
 }

@@ -2,23 +2,26 @@ package gigjob.service.impl;
 
 import gigjob.common.exception.model.UserNotFoundException;
 import gigjob.entity.Account;
+import gigjob.model.request.AccountRegisterRequest;
 import gigjob.model.response.AccountResponse;
 import gigjob.repository.AccountRepository;
 import gigjob.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final ModelMapper modelMapper;
-    private final RedisTemplate<Object, Object> redisTemplate;
 
     @Override
     public AccountResponse getAccountByEmail(String email) throws UserNotFoundException {
@@ -41,17 +44,24 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public List<AccountResponse> getAccountList() {
 //        System.out.println("Get from db");
-        List<AccountResponse> accountResponses = accountRepository.findAll()
+        return accountRepository.findAll()
                 .stream()
                 .map(acc -> modelMapper.map(acc, AccountResponse.class))
                 .toList();
-        accountResponses.forEach(acc -> redisTemplate.opsForHash().put("account", acc.getId(), acc));
-        return accountResponses;
     }
 
     @Override
-    public List<AccountResponse> getAccountListRedis() {
-        List<Object> account = redisTemplate.opsForHash().values("account");
-        return account.stream().map(acc -> modelMapper.map(acc, AccountResponse.class)).toList();
+    public AccountResponse createAccount(AccountRegisterRequest accountRegisterRequest) {
+        Optional<Account> account = accountRepository.findById(accountRegisterRequest.getId());
+        if (account.isEmpty()) {
+            Account registerAccount = new Account();
+            registerAccount.setId(accountRegisterRequest.getId());
+            registerAccount.setEmail(accountRegisterRequest.getEmail());
+            registerAccount.setPassword(accountRegisterRequest.getPassword());
+            registerAccount.setUsername(accountRegisterRequest.getUsername());
+            return modelMapper.map(accountRepository.save(registerAccount), AccountResponse.class);
+        } else {
+            return null;
+        }
     }
 }

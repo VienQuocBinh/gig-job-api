@@ -1,6 +1,7 @@
 package gigjob.model.response;
 
 import gigjob.common.meta.ApplicationStatus;
+import gigjob.entity.Worker;
 import lombok.*;
 
 import java.util.UUID;

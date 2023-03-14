@@ -2,15 +2,15 @@ package gigjob.controller;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.UserRecord;
 import gigjob.entity.ResponseObject;
 import gigjob.firebase.authentication.TokenVerifier;
 import gigjob.firebase.authentication.UserManagementService;
+import gigjob.model.request.AccountRegisterRequest;
 import gigjob.model.request.AuthRequest;
 import gigjob.model.response.AccountResponse;
 import gigjob.model.response.JwtResponse;
 import gigjob.service.AccountService;
-import gigjob.service.JwtService;
+import gigjob.service.impl.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -39,15 +39,14 @@ public class AccountController {
     private final TokenVerifier tokenVerifier;
     private final UserManagementService userManagementService;
 
-    @GetMapping("/v1/firebase/user/{uid}")
-    public UserRecord getUserById(@PathVariable String uid) throws FirebaseAuthException {
+    @GetMapping("/v1/account/firebase/{uid}")
+    public AccountResponse getFirebaseUserById(@PathVariable String uid) throws FirebaseAuthException {
         return userManagementService.getFirebaseUserById(uid);
     }
 
-
-    @PostMapping("/v1/register")
-    public AccountResponse registerUser(@RequestBody AccountResponse accountResponse) {
-        return accountResponse;
+    @PostMapping("/v1/account/register")
+    public AccountResponse registerUser(@RequestBody AccountRegisterRequest accountRegisterRequest) {
+        return accountService.createAccount(accountRegisterRequest);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -59,16 +58,9 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(responseObject);
     }
 
-    @GetMapping("/v1/account/redis")
-    @Operation(summary = "ADMIN")
-    public ResponseEntity<ResponseObject> findAllRedis() {
-        List<AccountResponse> accountResponses = accountService.getAccountListRedis();
-        ResponseObject responseObject = new ResponseObject(HttpStatus.OK.toString(), "Get all successfully", accountResponses);
-        return ResponseEntity.status(HttpStatus.OK).body(responseObject);
-    }
-
     @PostMapping("/v1/account/login/google")
     @SecurityRequirement(name = "google")
+    @CrossOrigin()
     @Operation(summary = "For login by Google", description = "Get idToken from Google and decode")
     public ResponseEntity<JwtResponse> authenticateAndGetToken(@Valid @RequestHeader String idTokenString) throws IOException, FirebaseAuthException {
         GoogleIdToken.Payload payload = tokenVerifier.validate(idTokenString);
@@ -76,6 +68,7 @@ public class AccountController {
     }
 
     @PostMapping("/v1/account/login")
+    @CrossOrigin()
     public ResponseEntity<JwtResponse> authenticateAndGetToken(@RequestBody AuthRequest authRequest) throws FirebaseAuthException {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
         if (authentication.isAuthenticated()) {

@@ -1,4 +1,4 @@
-package gigjob.service;
+package gigjob.service.impl;
 
 import gigjob.entity.Account;
 import gigjob.model.domain.UserInfoUserDetails;

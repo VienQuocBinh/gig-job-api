@@ -19,8 +19,8 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "account_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
     private Account account;
     @NotNull
     private String street;

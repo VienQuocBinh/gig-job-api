@@ -1,7 +1,7 @@
 package gigjob.filter;
 
-import gigjob.service.JwtService;
-import gigjob.service.UserInfoUserDetailsService;
+import gigjob.service.impl.JwtService;
+import gigjob.service.impl.UserInfoUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
