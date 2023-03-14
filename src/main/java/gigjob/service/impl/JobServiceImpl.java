@@ -43,11 +43,7 @@ public class JobServiceImpl implements JobService {
     }
 
     /**
-     * The first time get Job from Database at  cached in Redis with the key {@code jobs::SimpleKey [] }
-     * next time you call the method with the same arguments, the cached list of users will be returned directly from Redis cache without hitting the database.
-     *
-     * @return {@code  List<JobResponse>}
-     * @author Vien Binh
+     * {@inheritDoc}
      */
     @Override
     public List<JobDetailResponse> getJob() {

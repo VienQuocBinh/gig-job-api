@@ -4,11 +4,9 @@ import gigjob.model.domain.SearchCriteria;
 import gigjob.model.request.JobRequest;
 import gigjob.model.response.JobDetailResponse;
 import gigjob.model.response.JobResponse;
-import gigjob.repository.JobRepository;
 import gigjob.service.JobService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +19,6 @@ import java.util.UUID;
 @RequestMapping(value = "/api")
 @RequiredArgsConstructor
 public class JobController {
-    private final ModelMapper modelMapper;
-    private final JobRepository jobRepository;
     private final JobService jobService;
 
     @GetMapping("/v1/job")
