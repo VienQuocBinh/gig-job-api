@@ -1,5 +1,7 @@
 package gigjob.controller;
 
+import gigjob.model.request.CheckInRequest;
+import gigjob.model.response.SessionResponse;
 import gigjob.model.response.SessionShopResponse;
 import gigjob.service.SessionService;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,5 +36,11 @@ public class SessionController {
             @Parameter(description = "format: yyyy-MM-dd")
             @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
         return ResponseEntity.status(HttpStatus.OK).body(sessionService.getSessionByShopId(shopId, date));
+    }
+
+    @PostMapping("/v1/session/check-in")
+    public ResponseEntity<SessionResponse> checkIn(@RequestBody CheckInRequest checkInRequest) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(sessionService.checkIn(checkInRequest.getWorkerId(), checkInRequest.getJobId()));
     }
 }

@@ -1,5 +1,6 @@
 package gigjob.service;
 
+import gigjob.model.response.SessionResponse;
 import gigjob.model.response.SessionShopResponse;
 
 import java.util.Date;
@@ -16,4 +17,14 @@ public interface SessionService {
      * @author Vien Binh
      */
     List<SessionShopResponse> getSessionByShopId(UUID shopId, Date date);
+
+    /**
+     * Check in working session. Create working session for worker
+     *
+     * @param workerId {@code UUID}
+     * @param jobId    {@code Long}
+     * @return SessionResponse
+     * @author Vien Binh
+     */
+    SessionResponse checkIn(UUID workerId, Long jobId);
 }

@@ -17,5 +17,4 @@ public class SessionShopResponse {
     private Shift shift;
     private Integer duration; // hours
     private Date date; // working dates
-    private boolean isCheckedIn;
 }
