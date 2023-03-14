@@ -35,11 +35,15 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public JobResponse addJob(JobRequest jobRequest) {
-        Job job = jobRepository.save(modelMapper.map(jobRequest, Job.class));
-        // add the job to Redis cache if not exist
-        JobDetailResponse jobDetailResponse = modelMapper.map(job, JobDetailResponse.class);
-//        redisTemplate.opsForHash().putIfAbsent(KEY, job.getId(), jobDetailResponse);
-        return modelMapper.map(job, JobResponse.class);
+        try {
+            Job job = jobRepository.save(modelMapper.map(jobRequest, Job.class));
+            // add the job to Redis cache if not exist
+            JobDetailResponse jobDetailResponse = modelMapper.map(job, JobDetailResponse.class);
+            redisTemplate.opsForHash().putIfAbsent(KEY, job.getId(), jobDetailResponse);
+            return modelMapper.map(job, JobResponse.class);
+        } catch (Exception exception) {
+            throw new InternalServerErrorException(exception.getMessage());
+        }
     }
 
     /**

@@ -19,6 +19,7 @@ public class JobResponse implements Serializable {
     private String description;
     private String skill;
     private String benefit;
+    private Long salary; // per hour
     private Date createdDate;
     private Date updatedDate;
     private Date expiredDate;

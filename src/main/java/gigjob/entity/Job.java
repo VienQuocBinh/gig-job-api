@@ -38,6 +38,7 @@ public class Job implements Serializable {
     private String description;
     private String skill;
     private String benefit;
+    private Long salary; // per hour
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     @Column(updatable = false)
