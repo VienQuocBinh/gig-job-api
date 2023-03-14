@@ -5,7 +5,7 @@ import com.google.firebase.auth.FirebaseAuthException;
 import gigjob.entity.ResponseObject;
 import gigjob.firebase.authentication.TokenVerifier;
 import gigjob.firebase.authentication.UserManagementService;
-import gigjob.model.request.AccountRegisterRequest;
+import gigjob.model.request.AccountRequest;
 import gigjob.model.request.AuthRequest;
 import gigjob.model.response.AccountResponse;
 import gigjob.model.response.JwtResponse;
@@ -45,8 +45,8 @@ public class AccountController {
     }
 
     @PostMapping("/v1/account/register")
-    public AccountResponse registerUser(@RequestBody AccountRegisterRequest accountRegisterRequest) {
-        return accountService.createAccount(accountRegisterRequest);
+    public AccountResponse registerUser(@RequestBody AccountRequest accountRequest) {
+        return accountService.createAccount(accountRequest);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")

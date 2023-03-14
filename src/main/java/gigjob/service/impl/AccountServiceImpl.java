@@ -1,21 +1,24 @@
 package gigjob.service.impl;
 
 import gigjob.common.exception.model.UserNotFoundException;
+import gigjob.common.meta.Role;
 import gigjob.entity.Account;
-import gigjob.model.request.AccountRegisterRequest;
+import gigjob.entity.Shop;
+import gigjob.model.request.AccountRequest;
 import gigjob.model.response.AccountResponse;
 import gigjob.repository.AccountRepository;
+import gigjob.repository.ShopRepository;
 import gigjob.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
+import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -23,6 +26,8 @@ import java.util.Optional;
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final ModelMapper modelMapper;
+
+    private final ShopRepository shopRepository;
 
     @Override
     public AccountResponse getAccountByEmail(String email) throws UserNotFoundException {
@@ -52,17 +57,16 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountResponse createAccount(AccountRegisterRequest accountRegisterRequest) {
-        Optional<Account> account = accountRepository.findById(accountRegisterRequest.getId());
-        if (account.isEmpty()) {
-            Account registerAccount = new Account();
-            registerAccount.setId(accountRegisterRequest.getId());
-            registerAccount.setEmail(accountRegisterRequest.getEmail());
-            registerAccount.setPassword(accountRegisterRequest.getPassword());
-            registerAccount.setUsername(accountRegisterRequest.getUsername());
-            return modelMapper.map(accountRepository.save(registerAccount), AccountResponse.class);
-        } else {
-            return null;
-        }
+    public AccountResponse createAccount(AccountRequest accountRequest) {
+        var account = modelMapper.map(accountRequest, Account.class);
+        var shop = modelMapper.map(accountRequest, Shop.class);
+        account.setCreatedDate(Date.from(Instant.now()));
+        account.setUpdatedDate(Date.from(Instant.now()));
+        account.setRole(Role.SHOP);
+        shop.setAccount(account);
+//        accountRepository.save(account);
+        shopRepository.save(shop);
+        var shopQ = accountRepository.findById(account.getId());
+        return shopQ.map(value -> modelMapper.map(value, AccountResponse.class)).orElse(null);
     }
 }

@@ -1,7 +1,7 @@
 package gigjob.service;
 
 import gigjob.common.exception.model.UserNotFoundException;
-import gigjob.model.request.AccountRegisterRequest;
+import gigjob.model.request.AccountRequest;
 import gigjob.model.response.AccountResponse;
 
 import java.util.List;
@@ -15,5 +15,5 @@ public interface AccountService {
 
     List<AccountResponse> getAccountList();
 
-    AccountResponse createAccount(AccountRegisterRequest accountRegisterRequest);
+    AccountResponse createAccount(AccountRequest accountRequest);
 }
