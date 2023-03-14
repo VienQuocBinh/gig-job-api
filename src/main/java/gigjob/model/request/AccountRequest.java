@@ -2,18 +2,18 @@ package gigjob.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Data
+@RequiredArgsConstructor
 @AllArgsConstructor
-@NoArgsConstructor
-public class ShopRequest {
-    private String name;
-    private String email;
+public class AccountRequest {
+    private String id;
     private String username;
-    private int role;
     private String password;
+    private String email;
     private String phone;
+    private String image_url;
+    private String name;
     private String description;
-    private String accountId;
 }

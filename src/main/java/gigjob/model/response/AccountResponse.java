@@ -1,6 +1,7 @@
 package gigjob.model.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import gigjob.common.meta.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,5 +24,5 @@ public class AccountResponse implements Serializable {
     private boolean isLocked;
     private boolean isDisable;
     private String imageUrl;
-    private String role;
+    private Role role;
 }
