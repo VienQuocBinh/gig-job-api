@@ -24,4 +24,6 @@ public class AccountResponse implements Serializable {
     private boolean isDisable;
     private String imageUrl;
     private String role;
+    private WorkerResponse workerResponse;
+    private ShopResponse shopResponse;
 }

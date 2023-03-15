@@ -46,17 +46,28 @@ public class WorkerServiceImpl implements WorkerService {
     @Override
     public AccountResponse create(WorkerRegisterRequest workerRegisterRequest) {
         try {
-            Worker worker = modelMapper.map(workerRegisterRequest, Worker.class);
-            worker.setAccount(accountRepository.findById(worker.getAccount().getId()).
-                    orElseThrow(() -> new ResourceNotFoundException("Not found account id: " + worker.getAccount().getId())));
-            Worker newWorker = workerRepository.save(worker);
-
-            WorkerResponse workerResponse = modelMapper.map(newWorker, WorkerResponse.class);
-
+            // Get old account record (dup public WorkerUpdateResponse update(WorkerUpdateRequest workerUpdateRequest))
             Account account = accountRepository.findById(workerRegisterRequest.getAccountId())
                     .orElseThrow(() -> new ResourceNotFoundException("Not found account id: " + workerRegisterRequest.getAccountId()));
-            AccountResponse response = modelMapper.map(account, AccountResponse.class);
+            // Set new account value
+            account.setPassword(workerRegisterRequest.getPassword());
+            account.setPhone(workerRegisterRequest.getPhone());
+            account.setUsername(workerRegisterRequest.getUsername());
+
+            // Get old worker record
+            Worker worker = modelMapper.map(workerRegisterRequest, Worker.class);
+            // Set account record
+            worker.setAccount(account);
+            // save new worker
+            Worker newWorker = workerRepository.save(worker);
+            // update account
+            Account newAcc = accountRepository.save(account);
+            // Creat response entity
+            WorkerResponse workerResponse = modelMapper.map(newWorker, WorkerResponse.class);
+            AccountResponse response = modelMapper.map(newAcc, AccountResponse.class);
             response.setWorkerResponse(workerResponse);
+            response.setImageUrl(account.getImage_url());
+            response.setPhone(account.getPhone());
 
             return response;
         } catch (Exception e) {
@@ -75,7 +86,7 @@ public class WorkerServiceImpl implements WorkerService {
             // Get old worker record
             Worker updateWorker = workerRepository.findById(workerUpdateRequest.getId())
                     .orElseThrow(() -> new ResourceNotFoundException("Not found worker id: " + workerUpdateRequest.getId()));
-            // Get old account record
+            // Get old account record (duplicate public AccountResponse create(WorkerRegisterRequest workerRegisterRequest))
             Account updateAccount = accountRepository.findAccountById(workerUpdateRequest.getAccountId())
                     .orElseThrow(() -> new ResourceNotFoundException("Not found worker id: " + workerUpdateRequest.getId()));
             // Set new value for account record
