@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .antMatchers("/", "/v3/api-docs/**", "/swagger-ui/**",
                         "/api/v1/account/register",
                         "/api/v1/account/login", "/api/v1/account/login/google", "/api/v1/job/**", "/api/v1/account/**",
-                        "/api/v1/shop").permitAll()
+                        "/api/v1/shop", "/api/v1/shop/profile").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

@@ -18,5 +18,6 @@ public class ShopResponse implements Serializable {
     private String name;
     private String description;
     private String accountId;
-    private List<Long> jobIds;
+    private AccountResponse account;
+    private List<AddressResponse> addresses;
 }

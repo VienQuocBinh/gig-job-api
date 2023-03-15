@@ -1,5 +1,6 @@
 package gigjob.controller;
 
+import gigjob.model.request.NewShopProfileRequest;
 import gigjob.model.request.ShopRequest;
 import gigjob.model.response.ErrorResponse;
 import gigjob.model.response.ShopResponse;
@@ -14,7 +15,6 @@ import org.webjars.NotFoundException;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Log4j2
 @RestController
@@ -52,5 +52,11 @@ public class ShopController {
                             .build()
             );
         }
+    }
+
+    @PostMapping("/v1/shop/profile")
+    @CrossOrigin
+    public ResponseEntity<ShopResponse> createNewShopProfile(@RequestBody NewShopProfileRequest request) {
+        return ResponseEntity.ok(shopService.createNewShopProfile(request));
     }
 }
