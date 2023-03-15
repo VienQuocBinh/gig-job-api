@@ -141,7 +141,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `worker` WRITE;
 /*!40000 ALTER TABLE `worker` DISABLE KEYS */;
-INSERT INTO `worker` VALUES ('04ef509f-fddf-47c7-bd94-ee89f6038523','2001-01-15 00:00:00','bằng đại học tốt nghiệp đại học FPT,Toeic 800,bằng excel,word','thanh','vo','tien','moIkAcoRmxQfBdYj0DUltFhxyyn1'),('bac239cf-671a-48a4-8267-298af46ea90e','2003-01-15 00:00:00','bằng đại học tốt nghiệp đại học FPT,Toeic 800,bằng excel,word','phu','nguyen','n','AFv78KupgVVAHl7BLMyNmaomkxG2'),('e9667681-295c-4c3d-9fa5-4005fb33bd73','2002-01-15 00:00:00','bằng đại học tốt nghiệp đại học FPT,Toeic 800,bằng excel,word','thach','ngoc','huynh','eST4k1Y5o1g5CDHek9wGSjbyfFA3');
+INSERT INTO `worker` VALUES ('04ef509f-fddf-47c7-bd94-ee89f6038523','2001-01-15 00:00:00','bằng đại học tốt nghiệp đại học FPT,Toeic 800,bằng excel,word','thanh','vo','tien','moIkAcoRmxQfBdYj0DUltFhxyyn1'),('bac239cf-671a-48a4-8267-298af46ea90e','2003-01-15 00:00:00','bằng đại học tốt nghiệp đại học FPT,Toeic 800,bằng excel,word','phu','nguyen','n','AFv78KupgVVAHl7BLMyNmaomkxG2'),('c5777d08-19fe-4bd6-b466-9349dcfdc060','2022-12-12 00:00:00','Đại học FPT','Huy','Pham','Ho','t7maa0qYnhUjhK0n6eUYNvwsgEr1'),('dafc555e-0f00-4d67-a071-82dc282cba2e','2002-01-20 00:00:00','Đại học FPT','Tai','Chau','Tan','Uy3z8txHALNF43J9V1hXxlX33Os2'),('e9667681-295c-4c3d-9fa5-4005fb33bd73','2002-01-15 00:00:00','bằng đại học tốt nghiệp đại học FPT,Toeic 800,bằng excel,word','thach','ngoc','huynh','eST4k1Y5o1g5CDHek9wGSjbyfFA3');
 /*!40000 ALTER TABLE `worker` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -164,4 +164,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-15  3:13:04
+-- Dump completed on 2023-03-15 21:44:25
