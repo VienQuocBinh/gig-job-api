@@ -17,4 +17,5 @@ public class JobRequest {
     private String description;
     private String skill;
     private String benefit;
+    private Long salary; // per hour
 }

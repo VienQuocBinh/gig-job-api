@@ -2,7 +2,6 @@ package gigjob.common.embeddedkey;
 
 import gigjob.entity.Job;
 import gigjob.entity.Session;
-import gigjob.entity.Wage;
 import gigjob.entity.Worker;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,8 +30,4 @@ public class WorkingSessionId implements Serializable {
     @ManyToOne
     @JoinColumn(name = "session_id")
     private Session session;
-
-    @ManyToOne
-    @JoinColumn(name = "wage_id")
-    private Wage wage;
 }

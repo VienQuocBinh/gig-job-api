@@ -35,19 +35,19 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public JobResponse addJob(JobRequest jobRequest) {
-        Job job = jobRepository.save(modelMapper.map(jobRequest, Job.class));
-        // add the job to Redis cache if not exist
-        JobDetailResponse jobDetailResponse = modelMapper.map(job, JobDetailResponse.class);
-//        redisTemplate.opsForHash().putIfAbsent(KEY, job.getId(), jobDetailResponse);
-        return modelMapper.map(job, JobResponse.class);
+        try {
+            Job job = jobRepository.save(modelMapper.map(jobRequest, Job.class));
+            // add the job to Redis cache if not exist
+            JobDetailResponse jobDetailResponse = modelMapper.map(job, JobDetailResponse.class);
+            redisTemplate.opsForHash().putIfAbsent(KEY, job.getId(), jobDetailResponse);
+            return modelMapper.map(job, JobResponse.class);
+        } catch (Exception exception) {
+            throw new InternalServerErrorException(exception.getMessage());
+        }
     }
 
     /**
-     * The first time get Job from Database at  cached in Redis with the key {@code jobs::SimpleKey [] }
-     * next time you call the method with the same arguments, the cached list of users will be returned directly from Redis cache without hitting the database.
-     *
-     * @return {@code  List<JobResponse>}
-     * @author Vien Binh
+     * {@inheritDoc}
      */
     @Override
     public List<JobDetailResponse> getJob() {

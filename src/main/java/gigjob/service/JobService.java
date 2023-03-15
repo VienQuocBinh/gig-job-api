@@ -13,6 +13,13 @@ import java.util.UUID;
 public interface JobService {
     JobResponse addJob(JobRequest jobRequest);
 
+    /**
+     * The first time get Job from Database at  cached in Redis with the key {@code jobs::SimpleKey [] }
+     * next time you call the method with the same arguments, the cached list of users will be returned directly from Redis cache without hitting the database.
+     *
+     * @return {@code  List<JobResponse>}
+     * @author Vien Binh
+     */
     List<JobDetailResponse> getJob();
 
     JobDetailResponse getJobById(Long id);
