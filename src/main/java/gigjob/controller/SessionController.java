@@ -4,6 +4,7 @@ import gigjob.model.request.CheckInRequest;
 import gigjob.model.response.SessionResponse;
 import gigjob.model.response.SessionShopResponse;
 import gigjob.service.SessionService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -39,8 +40,9 @@ public class SessionController {
     }
 
     @PostMapping("/v1/session/check-in")
+    @Operation(description = "shift: DAY, AFTERNOON, MIDNIGHT, NIGHT")
     public ResponseEntity<SessionResponse> checkIn(@RequestBody CheckInRequest checkInRequest) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(sessionService.checkIn(checkInRequest.getWorkerId(), checkInRequest.getJobId()));
+                .body(sessionService.checkIn(checkInRequest.getWorkerId(), checkInRequest.getJobId(), checkInRequest.getDuration(), checkInRequest.getShift()));
     }
 }
