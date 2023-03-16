@@ -3,6 +3,7 @@ package gigjob.service;
 import gigjob.common.exception.model.UserNotFoundException;
 import gigjob.model.request.AccountRegisterRequest;
 import gigjob.model.response.AccountResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -16,4 +17,6 @@ public interface AccountService {
     List<AccountResponse> getAccountList();
 
     AccountResponse createAccount(AccountRegisterRequest accountRegisterRequest);
+
+    String updateImage(String id, MultipartFile file);
 }
