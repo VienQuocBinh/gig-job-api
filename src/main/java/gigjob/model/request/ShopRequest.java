@@ -16,4 +16,6 @@ public class ShopRequest {
     private String phone;
     private String description;
     private String accountId;
+    private String imageUrl;
+    private AddressRequest address;
 }

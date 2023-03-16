@@ -69,7 +69,37 @@ public class ShopServiceImpl implements ShopService {
         shopRepository.save(shop);
         var addressRequest = modelMapper.map(request.getAddress(), AddressRequest.class);
         var address = modelMapper.map(addressRequest, Address.class);
+        address.setAccount(account);
         addressService.save(address);
         return findShopByAccountId(request.getAccountId());
+    }
+
+    @Override
+    public ShopResponse updateShopProfile(ShopRequest shopRequest) {
+        var account = accountRepository.findById(shopRequest.getAccountId()).orElseThrow(() ->new NotFoundException("Account not found"));
+        account.setPhone(shopRequest.getPhone());
+        account.setUsername(shopRequest.getUsername());
+        account.setUsername(shopRequest.getUsername());
+        if (shopRequest.getImageUrl() != null) account.setImageUrl(shopRequest.getImageUrl());
+        accountRepository.save(account);
+        var shop = shopRepository.findByAccountId(account.getId()).orElseThrow(() -> new NotFoundException("Shop not found"));
+        shop.setName(shopRequest.getName());
+        shop.setDescription(shopRequest.getDescription());
+        shopRepository.save(shop);
+        var address = addressService.findAddressesByAccountId(shopRequest.getAccountId());
+        if (address == null || address.isEmpty()) {
+            var newAddress = modelMapper.map(shopRequest.getAddress(), Address.class);
+            newAddress.setAccount(account);
+            addressService.save(newAddress);
+        } else {
+            var editAddress = address.get(0);
+            editAddress.setStreet(shopRequest.getAddress().getStreet());
+            editAddress.setDistrict(shopRequest.getAddress().getDistrict());
+            editAddress.setCity(shopRequest.getAddress().getCity());
+            editAddress.setProvince(shopRequest.getAddress().getProvince());
+            editAddress.setCountry(shopRequest.getAddress().getCountry());
+            addressService.save(editAddress);
+        }
+        return findShopByAccountId(account.getId());
     }
 }

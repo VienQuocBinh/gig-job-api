@@ -57,4 +57,10 @@ public class ShopController {
     public ResponseEntity<ShopResponse> createNewShopProfile(@RequestBody NewShopProfileRequest request) {
         return ResponseEntity.ok(shopService.createNewShopProfile(request));
     }
+
+    @PostMapping("/v1/shop/profile/edit")
+    @CrossOrigin
+    public ResponseEntity<ShopResponse> updateShopProfile(@RequestBody ShopRequest shopRequest){
+        return ResponseEntity.ok(shopService.updateShopProfile(shopRequest));
+    }
 }

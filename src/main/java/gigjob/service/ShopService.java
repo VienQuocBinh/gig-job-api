@@ -14,4 +14,6 @@ public interface ShopService {
     ShopResponse findShopByAccountId(String accountId);
 
     ShopResponse createNewShopProfile(NewShopProfileRequest request);
+
+    ShopResponse updateShopProfile(ShopRequest shopRequest);
 }

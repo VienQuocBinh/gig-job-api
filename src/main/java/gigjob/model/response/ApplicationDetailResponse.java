@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApplicationDetailResponse {
-    private WorkerResponse worker;
+    private WorkerDetailResponse worker;
     private JobDetailResponse job;
     private ApplicationStatus status;
 }

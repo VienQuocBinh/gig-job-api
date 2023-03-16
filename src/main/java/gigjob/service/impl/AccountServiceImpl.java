@@ -3,12 +3,18 @@ package gigjob.service.impl;
 import gigjob.common.exception.model.InternalServerErrorException;
 import gigjob.common.exception.model.ResourceNotFoundException;
 import gigjob.common.exception.model.UserNotFoundException;
+import gigjob.common.meta.Role;
 import gigjob.entity.Account;
+import gigjob.entity.Address;
+import gigjob.entity.Shop;
 import gigjob.firebase.storage.FileStorageService;
 import gigjob.model.request.AccountRegisterRequest;
+import gigjob.model.request.AccountRequest;
 import gigjob.model.response.AccountResponse;
 import gigjob.repository.AccountRepository;
+import gigjob.repository.ShopRepository;
 import gigjob.service.AccountService;
+import gigjob.service.AddressService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,6 +23,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +35,8 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final FileStorageService fileStorageService;
     private final ModelMapper modelMapper;
+    private final ShopRepository shopRepository;
+    private final AddressService addressService;
 
     @Override
     public AccountResponse getAccountByEmail(String email) throws UserNotFoundException {
@@ -94,5 +104,28 @@ public class AccountServiceImpl implements AccountService {
         } catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage());
         }
+    }
+
+    @Override
+    public AccountResponse registerNewShop(AccountRequest accountRequest) {
+        var account = modelMapper.map(accountRequest, Account.class);
+        var shop = modelMapper.map(accountRequest, Shop.class);
+        account.setCreatedDate(Date.from(Instant.now()));
+        account.setUpdatedDate(Date.from(Instant.now()));
+        account.setRole(Role.SHOP);
+        var address = modelMapper.map(accountRequest.getAddress(), Address.class);
+        address.setAccount(account);
+        account.setAddresses(List.of(address));
+        shop.setAccount(account);
+        account.setShop(shop);
+        shopRepository.save(shop);
+        var shopQ = accountRepository.findById(account.getId());
+        return shopQ.map(value -> modelMapper.map(value, AccountResponse.class)).orElse(null);
+    }
+
+    @Override
+    public String getImageUrl(String id) {
+        var account = accountRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Account not found in the database"));
+        return account.getImageUrl();
     }
 }
