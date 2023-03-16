@@ -1,10 +1,7 @@
 package gigjob.entity;
 
 import gigjob.common.meta.Role;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.checkerframework.common.aliasing.qual.Unique;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -24,6 +21,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table
+@Builder
 @EntityListeners(AuditingEntityListener.class)
 public class Account implements Serializable {
     @Id
@@ -44,7 +42,7 @@ public class Account implements Serializable {
     private boolean isLocked;
     private boolean isDisable;
     @Nullable
-    private String image_url;
+    private String imageUrl;
     @Enumerated(EnumType.ORDINAL)
     private Role role;
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)

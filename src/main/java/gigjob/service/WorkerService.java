@@ -4,15 +4,14 @@ import gigjob.entity.Worker;
 import gigjob.model.request.WorkerRegisterRequest;
 import gigjob.model.request.WorkerUpdateRequest;
 import gigjob.model.response.AccountResponse;
-import gigjob.model.response.WorkerResponse;
-import gigjob.model.response.WorkerUpdateResponse;
+import gigjob.model.response.WorkerDetailResponse;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface WorkerService {
 
-    WorkerResponse getWorkerById(UUID workerID);
+    WorkerDetailResponse getWorkerById(UUID workerID);
 
     Worker getWorker(UUID id);
 
@@ -26,12 +25,12 @@ public interface WorkerService {
      * Update Worker info
      *
      * @param workerUpdateRequest {@code workerUpdateRequest}
-     * @return {@code WorkerUpdateResponse}
+     * @return {@code WorkerDetailResponse}
      * @author Vien Binh
      */
-    WorkerUpdateResponse update(WorkerUpdateRequest workerUpdateRequest);
+    WorkerDetailResponse update(WorkerUpdateRequest workerUpdateRequest);
 
-    WorkerResponse getByAccountId(String accountId);
+    WorkerDetailResponse getByAccountId(String accountId);
 
     void delete(UUID id);
 }

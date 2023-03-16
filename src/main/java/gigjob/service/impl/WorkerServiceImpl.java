@@ -7,8 +7,8 @@ import gigjob.entity.Worker;
 import gigjob.model.request.WorkerRegisterRequest;
 import gigjob.model.request.WorkerUpdateRequest;
 import gigjob.model.response.AccountResponse;
+import gigjob.model.response.WorkerDetailResponse;
 import gigjob.model.response.WorkerResponse;
-import gigjob.model.response.WorkerUpdateResponse;
 import gigjob.repository.AccountRepository;
 import gigjob.repository.WorkerRepository;
 import gigjob.service.WorkerService;
@@ -27,9 +27,9 @@ public class WorkerServiceImpl implements WorkerService {
     private final AccountRepository accountRepository;
 
     @Override
-    public WorkerResponse getWorkerById(UUID workerID) {
+    public WorkerDetailResponse getWorkerById(UUID workerID) {
         var worker = getWorker(workerID);
-        return modelMapper.map(worker, WorkerResponse.class);
+        return modelMapper.map(worker, WorkerDetailResponse.class);
     }
 
     @Override
@@ -46,27 +46,24 @@ public class WorkerServiceImpl implements WorkerService {
     @Override
     public AccountResponse create(WorkerRegisterRequest workerRegisterRequest) {
         try {
-            // Get old account record (dup public WorkerUpdateResponse update(WorkerUpdateRequest workerUpdateRequest))
+            // Get old account record (dup public WorkerDetailResponse update(WorkerUpdateRequest workerUpdateRequest))
             Account account = accountRepository.findById(workerRegisterRequest.getAccountId())
                     .orElseThrow(() -> new ResourceNotFoundException("Not found account id: " + workerRegisterRequest.getAccountId()));
             // Set new account value
             account.setPassword(workerRegisterRequest.getPassword());
             account.setPhone(workerRegisterRequest.getPhone());
             account.setUsername(workerRegisterRequest.getUsername());
-
             // Get old worker record
             Worker worker = modelMapper.map(workerRegisterRequest, Worker.class);
-            // Set account record
+            // Set new account info
             worker.setAccount(account);
-            // save new worker
+            // save new worker and account belongs to it
             Worker newWorker = workerRepository.save(worker);
-            // update account
-            Account newAcc = accountRepository.save(account);
             // Creat response entity
             WorkerResponse workerResponse = modelMapper.map(newWorker, WorkerResponse.class);
-            AccountResponse response = modelMapper.map(newAcc, AccountResponse.class);
-            response.setWorkerResponse(workerResponse);
-            response.setImageUrl(account.getImage_url());
+            AccountResponse response = modelMapper.map(account, AccountResponse.class);
+            response.setWorkerDetail(workerResponse);
+            response.setImageUrl(account.getImageUrl());
             response.setPhone(account.getPhone());
 
             return response;
@@ -81,43 +78,63 @@ public class WorkerServiceImpl implements WorkerService {
     }
 
     @Override
-    public WorkerUpdateResponse update(WorkerUpdateRequest workerUpdateRequest) {
+    public WorkerDetailResponse update(WorkerUpdateRequest workerUpdateRequest) {
         try {
-            // Get old worker record
+            // Get old worker
             Worker updateWorker = workerRepository.findById(workerUpdateRequest.getId())
                     .orElseThrow(() -> new ResourceNotFoundException("Not found worker id: " + workerUpdateRequest.getId()));
-            // Get old account record (duplicate public AccountResponse create(WorkerRegisterRequest workerRegisterRequest))
-            Account updateAccount = accountRepository.findAccountById(workerUpdateRequest.getAccountId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Not found worker id: " + workerUpdateRequest.getId()));
-            // Set new value for account record
+            // Get old account info of that worker
+            Account updateAccount = updateWorker.getAccount();
+            // Set new values to account
             updateAccount.setPassword(workerUpdateRequest.getPassword());
             updateAccount.setPhone(workerUpdateRequest.getPhone());
             updateAccount.setUsername(workerUpdateRequest.getUsername());
-            // Set new value for worker record
+
+            // Set new values to worker
             updateWorker.setFirstName(workerUpdateRequest.getFirstName());
             updateWorker.setMiddleName(workerUpdateRequest.getMiddleName());
             updateWorker.setLastName(workerUpdateRequest.getLastName());
             updateWorker.setBirthday(workerUpdateRequest.getBirthday());
             updateWorker.setEducation(workerUpdateRequest.getEducation());
-            updateWorker.setAccount(updateAccount);
-            // Update to db
+
+            // Save worker and account info within it
             updateWorker = workerRepository.save(updateWorker);
-            updateAccount = accountRepository.save(updateAccount);
+
             // Create response entity
-            WorkerUpdateResponse response = modelMapper.map(updateWorker, WorkerUpdateResponse.class);
+            WorkerDetailResponse response = modelMapper.map(updateWorker, WorkerDetailResponse.class);
             response.setPassword(updateAccount.getPassword());
             response.setPhone(updateAccount.getPhone());
             response.setUsername(updateAccount.getUsername());
+            response.setEmail(updateAccount.getEmail());
+            response.setImageUrl(updateAccount.getImageUrl());
 
             return response;
+
         } catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage());
         }
     }
 
     @Override
-    public WorkerResponse getByAccountId(String accountId) {
-        return modelMapper.map(workerRepository.findByAccountId(accountId), WorkerResponse.class);
+    public WorkerDetailResponse getByAccountId(String accountId) {
+        try {
+            Worker worker = workerRepository.findByAccountId(accountId);
+            Account account = accountRepository.findById(accountId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Not found account id: " + accountId));
+//            worker.setAccount(account);
+            WorkerDetailResponse workerDetailResponse =
+                    modelMapper.map(worker, WorkerDetailResponse.class);
+            // set account info
+            workerDetailResponse.setEmail(account.getEmail());
+            workerDetailResponse.setPhone(account.getPhone());
+            workerDetailResponse.setUsername(account.getUsername());
+            workerDetailResponse.setPassword(account.getPassword());
+            workerDetailResponse.setImageUrl(account.getImageUrl());
+            return workerDetailResponse;
+
+        } catch (Exception e) {
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @Override

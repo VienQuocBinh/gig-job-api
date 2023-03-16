@@ -16,4 +16,10 @@ public interface WorkerRepository extends JpaRepository<Worker, UUID> {
 
     @Query("select w from Worker w where w.account.id = :account_id")
     Worker findByAccountId(@Param("account_id") String accountId);
+//    @Query("select new gigjob.model.response.WorkerDetailResponse(w.id, w.firstName, w.lastName, w.middleName, w.birthday, w.education, " +
+//            " a.username, a.password, a.email, a.phone, a.createdDate, a.updatedDate, a.isLocked, a.isDisable, a.isLocked, a.image_url )" +
+//            " from Worker w " +
+//            " join Account a on a.id = w.account.id " +
+//            " where w.account.id = :account_id ")
+//    WorkerDetailResponse findByAccountId(@Param("account_id") String accountId);
 }

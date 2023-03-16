@@ -4,8 +4,7 @@ import gigjob.entity.Worker;
 import gigjob.model.request.WorkerRegisterRequest;
 import gigjob.model.request.WorkerUpdateRequest;
 import gigjob.model.response.AccountResponse;
-import gigjob.model.response.WorkerResponse;
-import gigjob.model.response.WorkerUpdateResponse;
+import gigjob.model.response.WorkerDetailResponse;
 import gigjob.service.WorkerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,7 +23,7 @@ public class WorkerController {
     private final WorkerService workerService;
 
     @GetMapping("/v1/worker/{id}")
-    public ResponseEntity<WorkerResponse> getWorkerById(@PathVariable("id") UUID id) {
+    public ResponseEntity<WorkerDetailResponse> getWorkerById(@PathVariable("id") UUID id) {
         return ResponseEntity.status(HttpStatus.OK).body(
                 workerService.getWorkerById(id)
         );
@@ -36,9 +35,9 @@ public class WorkerController {
     }
 
     @GetMapping("/v1/worker/account/{id}")
-    public ResponseEntity<WorkerResponse> getByAccountId(@PathVariable String id) {
+    public ResponseEntity<WorkerDetailResponse> getByAccountId(@PathVariable String id) {
         try {
-            WorkerResponse worker = workerService.getByAccountId(id);
+            WorkerDetailResponse worker = workerService.getByAccountId(id);
             return new ResponseEntity<>(worker, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -51,7 +50,7 @@ public class WorkerController {
     }
 
     @PutMapping("/v1/worker")
-    public ResponseEntity<WorkerUpdateResponse> update(@RequestBody WorkerUpdateRequest workerUpdateRequest) {
+    public ResponseEntity<WorkerDetailResponse> update(@RequestBody WorkerUpdateRequest workerUpdateRequest) {
         return ResponseEntity.status(HttpStatus.OK).body(workerService.update(workerUpdateRequest));
     }
 
