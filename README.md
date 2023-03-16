@@ -2,7 +2,8 @@
 
 The web app for student who want to find a job to earn extra money
 
-### BE Server Swagger: http://54.179.205.85:8080/swagger-ui/index.html
+### BE Server Test Swagger: http://54.179.205.85:8080/swagger-ui/index.html
+### BE Server Demo Swagger: http://13.228.218.62:8080/swagger-ui/index.html
 
 ## Requirements
 
