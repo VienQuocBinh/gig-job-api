@@ -15,7 +15,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Builder
 public class WorkingSession implements Serializable {
-    // Association class for Worker, Job, Session and Wage
+    // Association class for Worker, Job, Session
     @EmbeddedId
     private WorkingSessionId id;
 

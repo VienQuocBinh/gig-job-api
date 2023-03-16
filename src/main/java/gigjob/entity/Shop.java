@@ -30,7 +30,7 @@ public class Shop implements Serializable {
     private String name;
     private String description;
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "account_id", referencedColumnName = "id")
+    @JoinColumn(name = "account_id", referencedColumnName = "id", unique = true)
     private Account account;
 
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL)

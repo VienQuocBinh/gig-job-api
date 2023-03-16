@@ -5,10 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.sql.Timestamp;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -16,6 +18,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table
+@EntityListeners(AuditingEntityListener.class)
 public class Session {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,4 +27,8 @@ public class Session {
     private Shift shift;
     @NotNull
     private Integer duration; // hours
+    @CreatedDate
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(updatable = false)
+    private Date date; // working dates
 }

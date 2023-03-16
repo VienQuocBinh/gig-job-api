@@ -1,6 +1,8 @@
 package gigjob.common.exception.handler;
 
+import gigjob.common.exception.model.InternalServerErrorException;
 import gigjob.common.exception.model.JwtTokenException;
+import gigjob.common.exception.model.ResourceNotFoundException;
 import gigjob.common.exception.model.UserNotFoundException;
 import gigjob.model.response.ErrorResponse;
 import lombok.extern.log4j.Log4j2;
@@ -64,5 +66,15 @@ public class DomainExceptionHandler extends ResponseEntityExceptionHandler {
         return new ErrorResponse(new Date(), HttpStatus.NOT_FOUND.toString(), exception.getMessage());
     }
 
+    @ExceptionHandler(InternalServerErrorException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected ErrorResponse handleInternalServerError(InternalServerErrorException exception) {
+        return new ErrorResponse(new Date(), HttpStatus.INTERNAL_SERVER_ERROR.toString(), exception.getMessage());
+    }
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    protected ErrorResponse handleResourceNoFound(ResourceNotFoundException exception) {
+        return new ErrorResponse(new Date(), HttpStatus.NOT_FOUND.toString(), exception.getMessage());
+    }
 }

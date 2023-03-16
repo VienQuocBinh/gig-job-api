@@ -9,8 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SortCriteria {
-    @Schema(name = "sortKey", example = "id")
+    @Schema(description = "The criteria for sorting",
+            example = "id",
+            defaultValue = "id")
     private String sortKey;
-    @Schema(name = "direction", example = "asc", description = "asc | desc")
+    @Schema(example = "asc",
+            description = "Sort direction: asc | desc",
+            defaultValue = "asc")
     private String direction;
 }

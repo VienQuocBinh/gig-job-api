@@ -7,7 +7,6 @@ import gigjob.model.response.ShopResponse;
 import gigjob.service.ShopService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +20,6 @@ import java.util.List;
 @RequestMapping(value = "/api")
 @RequiredArgsConstructor
 public class ShopController {
-    private final ModelMapper modelMapper;
     private final ShopService shopService;
 
     @GetMapping("/v1/shop")
@@ -38,7 +36,7 @@ public class ShopController {
 
     @GetMapping("/v1/shop/{id}")
     @CrossOrigin()
-    public ResponseEntity<Object> searchShop(@PathVariable("id")String accountId) {
+    public ResponseEntity<Object> searchShop(@PathVariable("id") String accountId) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(
                     shopService.findShopByAccountId(accountId)

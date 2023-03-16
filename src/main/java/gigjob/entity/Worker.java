@@ -26,7 +26,7 @@ public class Worker {
     private UUID id;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "account_id", referencedColumnName = "id")
+    @JoinColumn(name = "account_id", referencedColumnName = "id", unique = true)
     private Account account;
 
     private String firstName;
