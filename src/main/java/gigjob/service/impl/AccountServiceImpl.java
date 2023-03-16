@@ -1,7 +1,10 @@
 package gigjob.service.impl;
 
+import gigjob.common.exception.model.InternalServerErrorException;
+import gigjob.common.exception.model.ResourceNotFoundException;
 import gigjob.common.exception.model.UserNotFoundException;
 import gigjob.entity.Account;
+import gigjob.firebase.storage.FileStorageService;
 import gigjob.model.request.AccountRegisterRequest;
 import gigjob.model.response.AccountResponse;
 import gigjob.repository.AccountRepository;
@@ -12,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +25,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
+    private final FileStorageService fileStorageService;
     private final ModelMapper modelMapper;
 
     @Override
@@ -52,16 +57,42 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountResponse createAccount(AccountRegisterRequest accountRegisterRequest) {
-        Optional<Account> account = accountRepository.findById(accountRegisterRequest.getId());
-        if (account.isEmpty()) {
-            Account registerAccount = new Account();
-            registerAccount.setId(accountRegisterRequest.getId());
-            registerAccount.setEmail(accountRegisterRequest.getEmail());
-            registerAccount.setPassword(accountRegisterRequest.getPassword());
-            registerAccount.setUsername(accountRegisterRequest.getUsername());
-            return modelMapper.map(accountRepository.save(registerAccount), AccountResponse.class);
+        Optional<Account> optionalAccount = accountRepository.findById(accountRegisterRequest.getId());
+        if (optionalAccount.isEmpty()) {
+            Account account = new Account();
+            account.setId(accountRegisterRequest.getId());
+            account.setEmail(accountRegisterRequest.getEmail());
+            account.setPassword(accountRegisterRequest.getPassword());
+            account.setUsername(accountRegisterRequest.getUsername());
+            return modelMapper.map(accountRepository.save(account), AccountResponse.class);
         } else {
-            return null;
+            throw new InternalServerErrorException("Account id: " + accountRegisterRequest.getId() + " already existed");
+        }
+    }
+
+    @Override
+    public String updateImage(String id, MultipartFile file) {
+        try {
+            String newImageUrl;
+
+            Account account = accountRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Not found account id: " + id));
+            String oldImageUrl = account.getImageUrl();
+            
+            // Check if Image Url not empty  -> delete the old one on firebase
+            // get file name from old url
+            if (oldImageUrl != null && !oldImageUrl.isEmpty()) fileStorageService.deleteImage("filename");
+
+            // upload to firebase
+            String fileName = fileStorageService.saveFile(file);
+            newImageUrl = fileStorageService.getImageUrl(fileName);
+
+            // Update Image Url
+            account.setImageUrl(newImageUrl);
+            accountRepository.save(account);
+            return newImageUrl;
+        } catch (Exception e) {
+            throw new InternalServerErrorException(e.getMessage());
         }
     }
 }

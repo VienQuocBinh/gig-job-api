@@ -20,8 +20,8 @@ public class History {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "worker_id")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "worker_id", referencedColumnName = "id", unique = true)
     private Worker worker;
     @NotNull
     @Enumerated(EnumType.STRING)

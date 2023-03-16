@@ -44,14 +44,14 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public SessionResponse checkIn(UUID workerId, Long jobId) {
+    public SessionResponse checkIn(UUID workerId, Long jobId, int duration, Shift shift) {
         try {
             Session session = new Session();
             WorkingSession workingSession = new WorkingSession();
             WorkingSessionId workingSessionId = new WorkingSessionId();
             // session
-            session.setDuration(3);
-            session.setShift(Shift.DAY);
+            session.setDuration(duration);
+            session.setShift(shift);
             Session checkInSession = sessionRepository.save(session);
             // job
             Job job = jobRepository.findById(jobId)
