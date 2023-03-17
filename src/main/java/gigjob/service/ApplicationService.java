@@ -19,5 +19,6 @@ public interface ApplicationService {
     ApplicationDetailResponse rejectApplication(ApplicationApplyRequest applyRequest) throws NotFoundException;
 
     List<ApplicationDetailResponse> findAcceptedApplications(Long id);
+    List<ApplicationDetailResponse> findAcceptedApplications(UUID shopId);
     List<ApplicationDetailResponse> findRejectedApplications(Long id);
 }

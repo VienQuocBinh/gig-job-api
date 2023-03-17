@@ -107,6 +107,18 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
+    public List<ApplicationDetailResponse> findAcceptedApplications(UUID shopId) {
+        return applicationRepository.findApplicationByShopId(shopId)
+                .stream().map(
+                        a -> ApplicationMapper.toResponse(
+                                a,
+                                jobService.getJobById(a.getId().getJob().getId()),
+                                workerService.getWorkerById(a.getId().getWorker().getId())
+                        )
+                ).toList();
+    }
+
+    @Override
     public List<ApplicationDetailResponse> findRejectedApplications(Long id) {
         return applicationRepository.findRejectedByJobId(id)
                 .stream().map(
