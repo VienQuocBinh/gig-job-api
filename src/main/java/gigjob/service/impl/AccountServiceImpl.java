@@ -12,9 +12,7 @@ import gigjob.model.request.AccountRegisterRequest;
 import gigjob.model.request.AccountRequest;
 import gigjob.model.response.AccountResponse;
 import gigjob.repository.AccountRepository;
-import gigjob.repository.ShopRepository;
 import gigjob.service.AccountService;
-import gigjob.service.AddressService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -35,8 +33,6 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final FileStorageService fileStorageService;
     private final ModelMapper modelMapper;
-    private final ShopRepository shopRepository;
-    private final AddressService addressService;
 
     @Override
     public AccountResponse getAccountByEmail(String email) throws UserNotFoundException {
@@ -118,7 +114,7 @@ public class AccountServiceImpl implements AccountService {
         account.setAddresses(List.of(address));
         shop.setAccount(account);
         account.setShop(shop);
-        shopRepository.save(shop);
+        accountRepository.save(account);
         var shopQ = accountRepository.findById(account.getId());
         return shopQ.map(value -> modelMapper.map(value, AccountResponse.class)).orElse(null);
     }
