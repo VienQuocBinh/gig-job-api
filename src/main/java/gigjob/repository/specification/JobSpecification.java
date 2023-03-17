@@ -1,46 +1,52 @@
 package gigjob.repository.specification;
 
+import gigjob.common.meta.SearchOperation;
 import gigjob.entity.Job;
+import gigjob.entity.JobType;
+import gigjob.entity.Shop;
+import gigjob.model.domain.SearchCriteria;
 import org.springframework.data.jpa.domain.Specification;
 
-import javax.persistence.criteria.Predicate;
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.criteria.*;
+import java.util.Objects;
+import java.util.UUID;
 
-public interface JobSpecification {
-    /**
-     * Returns the job specification for getting the jobs having the specified job type
-     *
-     * @param jobType {@code int}
-     * @return {@code Specification<Job>}
-     * @author Vien Binh
-     */
-    static Specification<Job> isOfficialJob(int jobType) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder
-                .equal(root.get("jobType").get("id"), jobType);
+public class JobSpecification implements Specification<Job> {
+    private final SearchCriteria searchCriteria;
+
+    public JobSpecification(final SearchCriteria searchCriteria) {
+        super();
+        this.searchCriteria = searchCriteria;
     }
 
-    /**
-     * Returns the job specification for getting the jobs having a title is similar to the search term
-     *
-     * @param title {@code String}
-     * @return {@code Specification<Job>}
-     * @author Vien Binh
-     */
-    static Specification<Job> searchByTitle(String title) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder
-                .like(root.get("title"), "%" + title + "%");
+    @Override
+    public Predicate toPredicate(Root<Job> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+        String strToSearch = searchCriteria.getValue().toString().toLowerCase();
+        switch (Objects.requireNonNull(SearchOperation.getSimpleOperation(searchCriteria.getOperation()))) {
+            case EQUAL -> {
+                if (searchCriteria.getFilterKey().equals("jobType")) {
+                    return criteriaBuilder.equal(jobTypeJoin(root).get("id"), Integer.parseInt(strToSearch));
+                } else if (searchCriteria.getFilterKey().equals("shop")) {
+                    return criteriaBuilder.equal(shopJoin(root).get("id"), UUID.fromString(strToSearch));
+                }
+            }
+            // Other cases
+            // ...............................
+
+            // ...............................
+            case ALL -> {
+                // all record
+                return criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), "%" + strToSearch + "%");
+            }
+        }
+        return criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), "%" + strToSearch + "%");
     }
 
-    static Specification<Job> test() {
-        return (root, query, criteriaBuilder) -> {
-            List<Predicate> predicates = new ArrayList<>();
-            predicates.add(criteriaBuilder.equal(
-                    root
-                            .get("jobType")
-                            .get("id"), 1
-            ));
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-        };
+    private Join<Job, JobType> jobTypeJoin(Root<Job> root) {
+        return root.join("jobType");
+    }
+
+    private Join<Job, Shop> shopJoin(Root<Job> root) {
+        return root.join("shop");
     }
 }

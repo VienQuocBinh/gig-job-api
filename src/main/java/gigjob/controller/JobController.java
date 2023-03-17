@@ -1,12 +1,22 @@
 package gigjob.controller;
 
+import gigjob.common.util.JobSpecificationBuilder;
+import gigjob.entity.Job;
+import gigjob.model.domain.JobSearchRequest;
 import gigjob.model.domain.SearchCriteria;
 import gigjob.model.request.JobRequest;
 import gigjob.model.response.JobDetailResponse;
 import gigjob.model.response.JobResponse;
 import gigjob.service.JobService;
+import gigjob.service.impl.JobServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +30,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class JobController {
     private final JobService jobService;
+    private final JobServiceImpl jobServiceImpl;
+    private final ModelMapper modelMapper;
 
     @GetMapping("/v1/job")
     public ResponseEntity<List<JobDetailResponse>> getJobList() {
@@ -28,14 +40,53 @@ public class JobController {
     }
 
     @PostMapping("/v1/job/search")
-    public ResponseEntity<List<JobDetailResponse>> getJobListSpec(
+    @Operation(description = """
+            operation: "cn" -> CONTAINS;
+                         "nc" -> DOES_NOT_CONTAIN;
+                         "eq" -> EQUAL;
+                         "ne" -> NOT_EQUAL;
+                         "bw" -> BEGINS_WITH;
+                         "bn" -> DOES_NOT_BEGIN_WITH;
+                         "ew" -> ENDS_WITH;
+                         "en" -> DOES_NOT_END_WITH;
+                         "nu" -> NULL;
+                         "nn" -> NOT_NULL;
+                         "gt" -> GREATER_THAN;
+                         "ge" -> GREATER_THAN_EQUAL;
+                         "lt" -> LESS_THAN;
+                         "le" -> LESS_THAN_EQUAL;
+                        default -> ALL;
+             dataOption: "AND" is "ALL", "OR" is "ANY\"""")
+    public ResponseEntity<List<JobDetailResponse>> getJobListFilter(
             @RequestParam(defaultValue = "0") int pageIndex,
             @RequestParam(defaultValue = "5") int pageSize,
-            @RequestBody SearchCriteria searchCriteria
+            @RequestBody JobSearchRequest jobSearchRequest
     ) {
-        List<JobDetailResponse> jobResponseList = jobService.searchJob(searchCriteria, pageIndex, pageSize);
-        return ResponseEntity.status(HttpStatus.OK).body(jobResponseList);
+        JobSpecificationBuilder builder = new JobSpecificationBuilder();
+        List<SearchCriteria> criteriaList = jobSearchRequest.getSearchCriteriaList();
+        if (criteriaList != null) {
+            criteriaList.forEach(x -> {
+                x.setDataOption(jobSearchRequest.getDataOption());
+                builder.with(x);
+            });
+        }
+        Pageable page = PageRequest.of(pageIndex, pageSize, Sort.by("id").ascending());
+        Page<Job> jobs = jobServiceImpl.findBySearchCriteria(builder.build(), page);
+        List<JobDetailResponse> jobDetailResponses = jobs.stream()
+                .map(job -> modelMapper.map(job, JobDetailResponse.class))
+                .toList();
+        return ResponseEntity.status(HttpStatus.OK).body(jobDetailResponses);
     }
+
+//    @PostMapping("/v1/job/search")
+//    public ResponseEntity<List<JobDetailResponse>> getJobListSpec(
+//            @RequestParam(defaultValue = "0") int pageIndex,
+//            @RequestParam(defaultValue = "5") int pageSize,
+//            @RequestBody SearchCriteria searchCriteria
+//    ) {
+//        List<JobDetailResponse> jobResponseList = jobService.searchJob(searchCriteria, pageIndex, pageSize);
+//        return ResponseEntity.status(HttpStatus.OK).body(jobResponseList);
+//    }
 
     @GetMapping("/v1/job/{id}")
     public ResponseEntity<JobDetailResponse> getJobById(@PathVariable Long id) {

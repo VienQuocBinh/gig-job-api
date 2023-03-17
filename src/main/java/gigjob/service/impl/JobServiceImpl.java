@@ -7,14 +7,12 @@ import gigjob.model.request.JobRequest;
 import gigjob.model.response.JobDetailResponse;
 import gigjob.model.response.JobResponse;
 import gigjob.repository.JobRepository;
-import gigjob.repository.specification.JobSpecification;
 import gigjob.service.JobService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
@@ -99,20 +97,29 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public List<JobDetailResponse> searchJob(SearchCriteria searchCriteria, int pageIndex, int pageSize) {
+//        try {
+//            Pageable pageable;
+//            if (searchCriteria.getSortCriteria().getDirection().equalsIgnoreCase("asc")) {
+//                pageable = PageRequest.of(pageIndex, pageSize, Sort.by(searchCriteria.getSortCriteria().getSortKey()).ascending());
+//            } else {
+//                pageable = PageRequest.of(pageIndex, pageSize, Sort.by(searchCriteria.getSortCriteria().getSortKey()).descending());
+//            }
+//            // Find job by job type specification
+//            Page<Job> jobs = jobRepository.findAll(IJobSpecification.isOfficialJob(Integer.parseInt(searchCriteria.getValue().toString()))
+//                            .and(IJobSpecification.searchByTitle(searchCriteria.getSearchKey()))
+//                    , pageable);
+//            return jobs.stream()
+//                    .map(job -> modelMapper.map(job, JobDetailResponse.class))
+//                    .toList();
+//        } catch (Exception e) {
+//            throw new InternalServerErrorException(e.getMessage());
+//        }
+        return null;
+    }
+
+    public Page<Job> findBySearchCriteria(Specification<Job> specification, Pageable pageable) {
         try {
-            Pageable pageable;
-            if (searchCriteria.getSortCriteria().getDirection().equalsIgnoreCase("asc")) {
-                pageable = PageRequest.of(pageIndex, pageSize, Sort.by(searchCriteria.getSortCriteria().getSortKey()).ascending());
-            } else {
-                pageable = PageRequest.of(pageIndex, pageSize, Sort.by(searchCriteria.getSortCriteria().getSortKey()).descending());
-            }
-            // Find job by job type specification
-            Page<Job> jobs = jobRepository.findAll(JobSpecification.isOfficialJob(Integer.parseInt(searchCriteria.getValue()))
-                            .and(JobSpecification.searchByTitle(searchCriteria.getSearchKey()))
-                    , pageable);
-            return jobs.stream()
-                    .map(job -> modelMapper.map(job, JobDetailResponse.class))
-                    .toList();
+            return jobRepository.findAll(specification, pageable);
         } catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage());
         }
