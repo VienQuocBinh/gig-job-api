@@ -63,6 +63,14 @@ public class ApplicationController {
         );
     }
 
+    @GetMapping("/v1/application/job/accepted/{shopId}")
+    @CrossOrigin
+    public ResponseEntity<Object> getAcceptedApplicationsByShopId(@PathVariable String shopId){
+        return ResponseEntity.status(HttpStatus.OK).body(
+                applicationService.findAcceptedApplications(UUID.fromString(shopId))
+        );
+    }
+
     @PatchMapping("/v1/application/accept")
     public ResponseEntity<Object> acceptApplicationById(@RequestBody ApplicationApplyRequest applyRequest) {
         try {
