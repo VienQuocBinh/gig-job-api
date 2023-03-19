@@ -4,6 +4,7 @@ import com.google.firebase.ErrorCode;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
+import gigjob.common.exception.model.InternalServerErrorException;
 import gigjob.firebase.authentication.UserManagementService;
 import gigjob.model.response.AccountResponse;
 import gigjob.service.AccountService;
@@ -75,26 +76,35 @@ public class JwtService {
      * @author Vien Binh
      */
     public Boolean validateToken(String token, UserDetails userDetails) {
-        final String subject = extractSubject(token);
-        // username of UserDetails is email of UserInfoUserDetails
-        return (subject.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        try {
+            final String subject = extractSubject(token);
+            // username of UserDetails is email of UserInfoUserDetails
+            return (subject.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        } catch (Exception e) {
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
-    public String generateToken(String email) throws FirebaseAuthException {
-        // Find user in DB by email
-        AccountResponse accountResponse = accountService.getAccountByEmail(email);
-        // Get Firebase user information by email from login
-        UserRecord userRecord = userManagementService.getFirebaseUserByEmail(email);
-        if (userRecord == null) {
-            throw new FirebaseAuthException(new FirebaseException(ErrorCode.ABORTED,
-                    "No Firebase user information",
-                    new NullPointerException("No Firebase user information")));
+    public String generateToken(String email) {
+        try {
+            // Find user in DB by email
+            AccountResponse accountResponse = accountService.getAccountByEmail(email);
+            // Get Firebase user information by email from login
+            UserRecord userRecord = userManagementService.getFirebaseUserByEmail(email);
+            if (userRecord == null) {
+                throw new FirebaseAuthException(new FirebaseException(ErrorCode.ABORTED,
+                        "No Firebase user information",
+                        new NullPointerException("No Firebase user information")));
+            }
+
+            // Put extra information in the token
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("account", accountResponse);
+            // Set the subject is the user email
+            return createToken(claims, email);
+        } catch (Exception e) {
+            throw new InternalServerErrorException(e.getMessage());
         }
-        // Put extra information in the token
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("account", accountResponse);
-        // Set the subject is the user email
-        return createToken(claims, email);
     }
 
     private String createToken(Map<String, Object> claims, String subject) {

@@ -2,6 +2,7 @@ package gigjob.service.impl;
 
 import gigjob.common.exception.model.InternalServerErrorException;
 import gigjob.common.exception.model.ResourceNotFoundException;
+import gigjob.common.meta.Role;
 import gigjob.entity.Account;
 import gigjob.entity.Worker;
 import gigjob.model.request.WorkerRegisterRequest;
@@ -53,6 +54,7 @@ public class WorkerServiceImpl implements WorkerService {
             account.setPassword(workerRegisterRequest.getPassword());
             account.setPhone(workerRegisterRequest.getPhone());
             account.setUsername(workerRegisterRequest.getUsername());
+            account.setRole(Role.WORKER);
             // Get old worker record
             Worker worker = modelMapper.map(workerRegisterRequest, Worker.class);
             // Set new account info

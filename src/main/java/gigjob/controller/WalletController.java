@@ -6,7 +6,7 @@ import gigjob.entity.Wallet;
 import gigjob.model.response.WalletResponse;
 import gigjob.repository.AccountRepository;
 import gigjob.repository.WalletRepository;
-import gigjob.service.impl.WalletServiceImpl;
+import gigjob.service.WalletService;
 import gigjob.util.WalletMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -27,16 +27,22 @@ public class WalletController {
     private final ModelMapper modelMapper;
     private final WalletRepository walletRepository;
     private final AccountRepository accountRepository;
-    private final WalletServiceImpl service;
+    private final WalletService walletService;
 
     @GetMapping("/v1/wallet")
-    public ResponseEntity<ResponseObject> getAll() {
+    public ResponseEntity<ResponseObject> getWalletList() {
         List<WalletResponse> walletResponses = walletRepository.findAll()
                 .stream()
                 .map(WalletMapper::toDto)
                 .toList();
         ResponseObject responseObject = new ResponseObject(HttpStatus.OK.toString(), "Get all successfully", walletResponses);
         return ResponseEntity.status(HttpStatus.OK).body(responseObject);
+    }
+
+    @GetMapping("/v1/wallet/account/{id}")
+    public ResponseEntity<WalletResponse> getWalletListByAccountId(@PathVariable String id) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(walletService.getByAccountId(id));
     }
 
     @PostMapping("/v1/wallet")
@@ -56,12 +62,12 @@ public class WalletController {
         return new ResponseEntity<>(responseObject, status);
     }
 
-    @PutMapping("/Wallets/{id}")
+    @PutMapping("/v1/wallet/{id}")
     public ResponseEntity<?> update(@RequestBody Wallet wallet,
                                     @PathVariable UUID id) {
         try {
-            Wallet existWallet = service.get(id);
-            service.save(wallet);
+            Wallet existWallet = walletService.get(id);
+            walletService.save(wallet);
 
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
@@ -69,8 +75,8 @@ public class WalletController {
         }
     }
 
-    @DeleteMapping("/Wallets/{id}")
+    @DeleteMapping("/v1/wallet/{id}")
     public void delete(@PathVariable UUID id) {
-        service.delete(id);
+        walletService.delete(id);
     }
 }

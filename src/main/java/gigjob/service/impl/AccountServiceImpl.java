@@ -62,7 +62,7 @@ public class AccountServiceImpl implements AccountService {
             Account account = new Account();
             account.setId(accountRegisterRequest.getId());
             account.setEmail(accountRegisterRequest.getEmail());
-            account.setPassword(accountRegisterRequest.getPassword());
+//            account.setPassword(accountRegisterRequest.getPassword());
             account.setUsername(accountRegisterRequest.getUsername());
             return modelMapper.map(accountRepository.save(account), AccountResponse.class);
         } else {
@@ -78,7 +78,7 @@ public class AccountServiceImpl implements AccountService {
             Account account = accountRepository.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException("Not found account id: " + id));
             String oldImageUrl = account.getImageUrl();
-            
+
             // Check if Image Url not empty  -> delete the old one on firebase
             // get file name from old url
             if (oldImageUrl != null && !oldImageUrl.isEmpty()) fileStorageService.deleteImage("filename");
