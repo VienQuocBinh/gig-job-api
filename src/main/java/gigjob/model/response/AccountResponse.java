@@ -15,7 +15,7 @@ import java.util.Date;
 public class AccountResponse implements Serializable {
     private String id; // Get from Firebase
     private String username;
-    private String password;
+    //    private String password;
     private String email;
     private String phone;
     private Date createdDate;

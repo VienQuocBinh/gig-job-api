@@ -1,7 +1,9 @@
 package gigjob.service.impl;
 
+import gigjob.common.exception.model.InternalServerErrorException;
 import gigjob.common.exception.model.ResourceNotFoundException;
 import gigjob.entity.Wallet;
+import gigjob.model.request.WalletRequest;
 import gigjob.model.response.WalletResponse;
 import gigjob.repository.WalletRepository;
 import gigjob.service.WalletService;
@@ -25,8 +27,20 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public void save(Wallet wallet) {
-        walletRepository.save(wallet);
+    public WalletResponse create(WalletRequest walletRequest) {
+        try {
+            if (getByAccountId(walletRequest.getAccountId()) != null) {
+                throw new InternalServerErrorException("Wallet of account id " + walletRequest.getAccountId() + " is already exist");
+            }
+        } catch (ResourceNotFoundException e) {
+            // If account does not have a wallet -> create a new one with balance = 0
+            walletRequest.setBalance(0D);
+            Wallet wallet = walletRepository.save(modelMapper.map(walletRequest, Wallet.class));
+            return modelMapper.map(wallet, WalletResponse.class);
+        } catch (Exception e) {
+            throw new InternalServerErrorException(e.getMessage());
+        }
+        return null;
     }
 
     @Override
@@ -37,7 +51,7 @@ public class WalletServiceImpl implements WalletService {
     @Override
     public WalletResponse getByAccountId(String accountId) {
         Wallet wallet = walletRepository.findByAccountId(accountId)
-                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found for " + accountId));
+                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found for account id: " + accountId));
         return modelMapper.map(wallet, WalletResponse.class);
     }
 
