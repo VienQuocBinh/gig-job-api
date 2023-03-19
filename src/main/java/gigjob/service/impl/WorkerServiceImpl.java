@@ -3,6 +3,7 @@ package gigjob.service.impl;
 import gigjob.common.exception.model.InternalServerErrorException;
 import gigjob.common.exception.model.ResourceNotFoundException;
 import gigjob.common.meta.Role;
+import gigjob.common.util.WorkerUtil;
 import gigjob.entity.Account;
 import gigjob.entity.Worker;
 import gigjob.model.request.WorkerRegisterRequest;
@@ -26,11 +27,19 @@ public class WorkerServiceImpl implements WorkerService {
     private final WorkerRepository workerRepository;
     private final ModelMapper modelMapper;
     private final AccountRepository accountRepository;
+    private final WorkerUtil workerUtil;
 
     @Override
     public WorkerDetailResponse getWorkerById(UUID workerID) {
-        var worker = getWorker(workerID);
-        return modelMapper.map(worker, WorkerDetailResponse.class);
+        try {
+            Worker worker = workerRepository.findById(workerID)
+                    .orElseThrow(() -> new ResourceNotFoundException("Worker not found for workerID: " + workerID));
+            Account account = accountRepository.findById(worker.getAccount().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Not found account id: " + worker.getAccount().getId()));
+            return workerUtil.setAccountInfo(worker, account);
+        } catch (Exception e) {
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @Override
@@ -103,14 +112,7 @@ public class WorkerServiceImpl implements WorkerService {
             updateWorker = workerRepository.save(updateWorker);
 
             // Create response entity
-            WorkerDetailResponse response = modelMapper.map(updateWorker, WorkerDetailResponse.class);
-            response.setPassword(updateAccount.getPassword());
-            response.setPhone(updateAccount.getPhone());
-            response.setUsername(updateAccount.getUsername());
-            response.setEmail(updateAccount.getEmail());
-            response.setImageUrl(updateAccount.getImageUrl());
-
-            return response;
+            return workerUtil.setAccountInfo(updateWorker, updateAccount);
 
         } catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage());
@@ -123,17 +125,7 @@ public class WorkerServiceImpl implements WorkerService {
             Worker worker = workerRepository.findByAccountId(accountId);
             Account account = accountRepository.findById(accountId)
                     .orElseThrow(() -> new ResourceNotFoundException("Not found account id: " + accountId));
-//            worker.setAccount(account);
-            WorkerDetailResponse workerDetailResponse =
-                    modelMapper.map(worker, WorkerDetailResponse.class);
-            // set account info
-            workerDetailResponse.setEmail(account.getEmail());
-            workerDetailResponse.setPhone(account.getPhone());
-            workerDetailResponse.setUsername(account.getUsername());
-            workerDetailResponse.setPassword(account.getPassword());
-            workerDetailResponse.setImageUrl(account.getImageUrl());
-            return workerDetailResponse;
-
+            return workerUtil.setAccountInfo(worker, account);
         } catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage());
         }

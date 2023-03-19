@@ -96,7 +96,6 @@ public class JwtService {
                         "No Firebase user information",
                         new NullPointerException("No Firebase user information")));
             }
-
             // Put extra information in the token
             Map<String, Object> claims = new HashMap<>();
             claims.put("account", accountResponse);
