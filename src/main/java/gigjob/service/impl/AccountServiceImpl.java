@@ -1,5 +1,8 @@
 package gigjob.service.impl;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
 import gigjob.common.exception.model.InternalServerErrorException;
 import gigjob.common.exception.model.ResourceNotFoundException;
 import gigjob.common.exception.model.UserNotFoundException;
@@ -64,16 +67,21 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountResponse createAccount(AccountRegisterRequest accountRegisterRequest) {
-        Optional<Account> optionalAccount = accountRepository.findById(accountRegisterRequest.getId());
-        if (optionalAccount.isEmpty()) {
-            Account account = new Account();
-            account.setId(accountRegisterRequest.getId());
-            account.setEmail(accountRegisterRequest.getEmail());
+        try {
+            UserRecord userRecord = FirebaseAuth.getInstance().getUserByEmail(accountRegisterRequest.getEmail());
+            Optional<Account> optionalAccount = accountRepository.findById(userRecord.getUid());
+            if (optionalAccount.isEmpty()) {
+                Account account = new Account();
+                account.setId(userRecord.getUid());
+                account.setEmail(accountRegisterRequest.getEmail());
 //            account.setPassword(accountRegisterRequest.getPassword());
-            account.setUsername(accountRegisterRequest.getUsername());
-            return modelMapper.map(accountRepository.save(account), AccountResponse.class);
-        } else {
-            throw new InternalServerErrorException("Account id: " + accountRegisterRequest.getId() + " already existed");
+                account.setUsername(accountRegisterRequest.getUsername());
+                return modelMapper.map(accountRepository.save(account), AccountResponse.class);
+            } else {
+                throw new InternalServerErrorException("Account id: " + userRecord.getUid() + " already existed");
+            }
+        } catch (FirebaseAuthException e) {
+            throw new InternalServerErrorException(e.getMessage());
         }
     }
 
