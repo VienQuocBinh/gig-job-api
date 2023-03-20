@@ -53,6 +53,7 @@ public class SecurityConfig {
                         "/api/v1/job/**",
                         "/api/v1/shop","/api/v1/shop/profile",
                         "/api/v1/session/**",
+                        "/api/v1/account/register/shop",
                         "/api/v1/worker/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
