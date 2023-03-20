@@ -7,6 +7,7 @@ import gigjob.common.meta.Role;
 import gigjob.entity.Account;
 import gigjob.entity.Address;
 import gigjob.entity.Shop;
+import gigjob.entity.Wallet;
 import gigjob.firebase.storage.FileStorageService;
 import gigjob.model.request.AccountRegisterRequest;
 import gigjob.model.request.AccountRequest;
@@ -114,6 +115,8 @@ public class AccountServiceImpl implements AccountService {
         account.setAddresses(List.of(address));
         shop.setAccount(account);
         account.setShop(shop);
+        var wallet = Wallet.builder().balance(0.0).build();
+        account.setWallet(wallet);
         accountRepository.save(account);
         var shopQ = accountRepository.findById(account.getId());
         return shopQ.map(value -> modelMapper.map(value, AccountResponse.class)).orElse(null);
