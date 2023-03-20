@@ -1,5 +1,6 @@
 package gigjob.config;
 
+import gigjob.filter.CorsFilter;
 import gigjob.filter.JwtAuthFilter;
 import gigjob.filter.JwtEntryPoint;
 import gigjob.service.impl.UserInfoUserDetailsService;
@@ -17,6 +18,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -29,6 +31,11 @@ public class SecurityConfig {
     @Bean
     public JwtAuthFilter jwtTokenFilter() {
         return new JwtAuthFilter();
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        return new CorsFilter();
     }
 
     @Bean
@@ -47,7 +54,7 @@ public class SecurityConfig {
                         "/api/v1/shop",
 
 
-                        "/api/v1/session/**").permitAll()
+                        "/api/v1/worker/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -55,6 +62,7 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .exceptionHandling().authenticationEntryPoint(jwtEntryPoint)
                 .and()
+                .addFilterBefore(corsFilter(), ChannelProcessingFilter.class)
                 .addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

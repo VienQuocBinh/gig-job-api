@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.List;
 
 @Log4j2
@@ -64,14 +63,22 @@ public class AccountController {
     @SecurityRequirement(name = "google")
     @CrossOrigin()
     @Operation(summary = "For login by Google", description = "Get idToken from Google and decode")
-    public ResponseEntity<JwtResponse> authenticateAndGetToken(@Valid @RequestHeader String idTokenString) throws IOException, FirebaseAuthException {
+    public ResponseEntity<JwtResponse> authenticateAndGetToken(@Valid @RequestHeader String idTokenString) {
         GoogleIdToken.Payload payload = tokenVerifier.validate(idTokenString);
-        return ResponseEntity.ok(new JwtResponse(jwtService.generateToken(payload.getEmail())));
+        try {
+            // create account if fpt mail
+            if (payload.getEmail().matches("[a-zA-Z0-9]+@fpt.edu.vn$")) {
+                accountService.createAccount(new AccountRegisterRequest(payload.getEmail(), payload.getEmail()));
+            }
+            return ResponseEntity.ok(new JwtResponse(jwtService.generateToken(payload.getEmail())));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new JwtResponse(jwtService.generateToken(payload.getEmail())));
+        }
     }
 
     @PostMapping("/v1/account/login")
     @CrossOrigin()
-    public ResponseEntity<JwtResponse> authenticateAndGetToken(@RequestBody AuthRequest authRequest) throws FirebaseAuthException {
+    public ResponseEntity<JwtResponse> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
         if (authentication.isAuthenticated()) {
             return ResponseEntity.ok(new JwtResponse(jwtService.generateToken(authRequest.getEmail())));

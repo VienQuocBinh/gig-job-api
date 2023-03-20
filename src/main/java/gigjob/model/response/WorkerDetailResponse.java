@@ -1,5 +1,6 @@
 package gigjob.model.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ public class WorkerDetailResponse implements Serializable {
     private String firstName;
     private String lastName;
     private String middleName;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date birthday;
     private String education;
     // account info
