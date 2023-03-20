@@ -10,11 +10,13 @@ import gigjob.entity.Worker;
 import gigjob.entity.WorkingSession;
 import gigjob.model.response.SessionResponse;
 import gigjob.model.response.SessionShopResponse;
+import gigjob.model.response.WorkerDetailResponse;
 import gigjob.repository.JobRepository;
 import gigjob.repository.SessionRepository;
 import gigjob.repository.WorkerRepository;
 import gigjob.repository.WorkingSessionRepository;
 import gigjob.service.SessionService;
+import gigjob.service.WorkerService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -31,13 +33,19 @@ public class SessionServiceImpl implements SessionService {
     private final WorkingSessionRepository workingSessionRepository;
     private final JobRepository jobRepository;
     private final WorkerRepository workerRepository;
+    private final WorkerService workerService;
 
     @Override
     public List<SessionShopResponse> getSessionByShopId(UUID shopId, Date date) {
         try {
-            return sessionRepository.findByDateAndShopId(shopId, date).stream()
+            List<SessionShopResponse> sessionShopResponseList = sessionRepository.findByDateAndShopId(shopId, date).stream()
                     .map(session -> modelMapper.map(session, SessionShopResponse.class))
                     .toList();
+            sessionShopResponseList.forEach(sessionShopResponse -> {
+                WorkerDetailResponse workerDetailResponse = workerService.getWorkerById(sessionShopResponse.getWorkerId());
+                sessionShopResponse.setWorkerDetail(workerDetailResponse);
+            });
+            return sessionShopResponseList;
         } catch (Exception exception) {
             throw new InternalServerErrorException(exception.getMessage());
         }

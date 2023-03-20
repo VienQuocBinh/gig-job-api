@@ -1,12 +1,12 @@
 package gigjob.controller;
 
-import gigjob.entity.Account;
 import gigjob.entity.ResponseObject;
 import gigjob.entity.Wallet;
+import gigjob.model.request.WalletRequest;
 import gigjob.model.response.WalletResponse;
 import gigjob.repository.AccountRepository;
 import gigjob.repository.WalletRepository;
-import gigjob.service.impl.WalletServiceImpl;
+import gigjob.service.WalletService;
 import gigjob.util.WalletMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -27,10 +27,10 @@ public class WalletController {
     private final ModelMapper modelMapper;
     private final WalletRepository walletRepository;
     private final AccountRepository accountRepository;
-    private final WalletServiceImpl service;
+    private final WalletService walletService;
 
     @GetMapping("/v1/wallet")
-    public ResponseEntity<ResponseObject> getAll() {
+    public ResponseEntity<ResponseObject> getWalletList() {
         List<WalletResponse> walletResponses = walletRepository.findAll()
                 .stream()
                 .map(WalletMapper::toDto)
@@ -39,29 +39,23 @@ public class WalletController {
         return ResponseEntity.status(HttpStatus.OK).body(responseObject);
     }
 
-    @PostMapping("/v1/wallet")
-    public ResponseEntity<ResponseObject> create(@RequestBody WalletResponse walletResponse) {
-        Wallet wallet = modelMapper.map(walletResponse, Wallet.class);
-        Account account = accountRepository.findById(walletResponse.getAccountId()).orElse(null);
-        ResponseObject responseObject;
-        HttpStatus status = HttpStatus.OK;
-        if (account != null) {
-            wallet.setAccount(account);
-            walletRepository.save(wallet);
-            responseObject = new ResponseObject(HttpStatus.OK.toString(), "Get all successfully", walletResponse);
-        } else {
-            status = HttpStatus.NOT_FOUND;
-            responseObject = new ResponseObject(HttpStatus.NOT_FOUND.toString(), "Not found account", null);
-        }
-        return new ResponseEntity<>(responseObject, status);
+    @GetMapping("/v1/wallet/account/{id}")
+    public ResponseEntity<WalletResponse> getWalletListByAccountId(@PathVariable String id) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(walletService.getByAccountId(id));
     }
 
-    @PutMapping("/Wallets/{id}")
+    @PostMapping("/v1/wallet")
+    public ResponseEntity<WalletResponse> create(@RequestBody WalletRequest walletRequest) {
+        return ResponseEntity.status(HttpStatus.OK).body(walletService.create(walletRequest));
+    }
+
+    @PutMapping("/v1/wallet/{id}")
     public ResponseEntity<?> update(@RequestBody Wallet wallet,
                                     @PathVariable UUID id) {
         try {
-            Wallet existWallet = service.get(id);
-            service.save(wallet);
+            Wallet existWallet = walletService.get(id);
+            walletService.create(null);
 
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
@@ -69,8 +63,8 @@ public class WalletController {
         }
     }
 
-    @DeleteMapping("/Wallets/{id}")
+    @DeleteMapping("/v1/wallet/{id}")
     public void delete(@PathVariable UUID id) {
-        service.delete(id);
+        walletService.delete(id);
     }
 }

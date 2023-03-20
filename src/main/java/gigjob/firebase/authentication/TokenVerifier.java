@@ -2,9 +2,11 @@ package gigjob.firebase.authentication;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.json.gson.GsonFactory;
+import gigjob.common.exception.model.AudienceMismatchException;
+import gigjob.common.exception.model.InternalServerErrorException;
+import gigjob.common.exception.model.IssuerMismatchException;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -29,18 +31,23 @@ public class TokenVerifier {
      *
      * @param idTokenString {@code String}
      * @return {@code GoogleIdToken.Payload}
-     * @throws IOException - if an I/O error occurs
      * @author Vien Binh
      */
-    public GoogleIdToken.Payload validate(String idTokenString) throws IOException {
-        GsonFactory gsonFactory = new GsonFactory();
-        GoogleIdToken idToken = GoogleIdToken.parse(gsonFactory, idTokenString);
-        GoogleIdToken.Payload payload = idToken.getPayload();
-//        if (!GOOGLE_CLIENT_ID.contains(payload.getAudience().toString())) {
-//            throw new AudienceMismatchException("Audience mismatch");
-//        } else if (!ISSUERS.contains(payload.getIssuer())) {
-//            throw new IssuerMismatchException("Issuer mismatch");
-//        }
-        return payload;
+    public GoogleIdToken.Payload validate(String idTokenString) {
+        try {
+            GsonFactory gsonFactory = new GsonFactory();
+            GoogleIdToken idToken = GoogleIdToken.parse(gsonFactory, idTokenString);
+            GoogleIdToken.Payload payload = idToken.getPayload();
+            if (!GOOGLE_CLIENT_ID.contains(payload.getAudience().toString())) {
+                throw new AudienceMismatchException("Audience mismatch");
+            } else if (!ISSUERS.contains(payload.getIssuer())) {
+                throw new IssuerMismatchException("Issuer mismatch");
+            }
+            // Check if fpt.edu.vn email address -> create worker account, wallet
+
+            return payload;
+        } catch (Exception e) {
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 }

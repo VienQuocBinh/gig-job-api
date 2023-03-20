@@ -11,5 +11,5 @@ public class AccountRegisterRequest {
     private String id; // From firebase
     private String email; // From firebase
     private String username;
-    private String password;
+//    private String password;
 }
