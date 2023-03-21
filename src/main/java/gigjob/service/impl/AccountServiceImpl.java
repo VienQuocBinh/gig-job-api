@@ -124,7 +124,7 @@ public class AccountServiceImpl implements AccountService {
         account.setAddresses(List.of(address));
         shop.setAccount(account);
         account.setShop(shop);
-        var wallet = Wallet.builder().balance(0.0).build();
+        var wallet = Wallet.builder().account(account).balance(0.0).build();
         account.setWallet(wallet);
         accountRepository.save(account);
         var shopQ = accountRepository.findById(account.getId());
