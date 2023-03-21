@@ -32,7 +32,7 @@ public class ShopServiceImpl implements ShopService {
 
     private final AccountRepository accountRepository;
     private final AddressService addressService;
-    private WalletRepository walletRepository;
+    private final WalletRepository walletRepository;
 
     @Override
     public List<ShopResponse> getShopList() {

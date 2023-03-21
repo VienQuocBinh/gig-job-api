@@ -52,7 +52,6 @@ public class ShopController {
     }
 
     @PostMapping("/v1/shop/profile")
-    @CrossOrigin
     public ResponseEntity<ShopResponse> createNewShopProfile(@RequestBody NewShopProfileRequest request) {
         return ResponseEntity.ok(shopService.createNewShopProfile(request));
     }
