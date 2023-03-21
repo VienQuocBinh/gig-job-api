@@ -12,9 +12,8 @@ import java.util.List;
 @AllArgsConstructor
 public class JobSearchRequest {
     private List<SearchCriteria> searchCriteriaList;
-    @Schema(description = "\"AND\" operation if dataOption is \"ALL\", \"OR\" operation if dataOption is \"ANY\"")
+    private SortCriteria sortCriteria;
     // "AND" operation if dataOption is "ALL", "OR" operation if dataOption is "ANY"
+    @Schema(description = "\"AND\" operation if dataOption is \"ALL\", \"OR\" operation if dataOption is \"ANY\"")
     private String dataOption;
-//    @Schema(description = "The search key words that find the jobs have the similar title to the search key")
-//    private String searchKey;
 }

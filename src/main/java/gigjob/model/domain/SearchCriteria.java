@@ -1,5 +1,6 @@
 package gigjob.model.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,8 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SearchCriteria {
-    //    @Schema(description = "The search key words that find the jobs have the similar title to the search key")
-//    private String searchKey;
     @Schema(description = "The name of the field that used to filter",
             example = "jobType")
     private String filterKey;
@@ -24,8 +23,9 @@ public class SearchCriteria {
             defaultValue = "eq")
     private String operation;
     // "AND" operation if dataOption is "ALL", "OR" operation if dataOption is "ANY"
+    @JsonIgnore
     private String dataOption;
-    private SortCriteria sortCriteria;
+
 
     public SearchCriteria(String filterKey, String operation, Object value) {
         super();

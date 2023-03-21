@@ -7,6 +7,7 @@ import gigjob.entity.Shop;
 import gigjob.model.domain.SearchCriteria;
 import org.springframework.data.jpa.domain.Specification;
 
+import javax.annotation.Nonnull;
 import javax.persistence.criteria.*;
 import java.util.Objects;
 import java.util.UUID;
@@ -19,8 +20,12 @@ public class JobSpecification implements Specification<Job> {
         this.searchCriteria = searchCriteria;
     }
 
+    public static Specification<Job> getJobsByTitleSpec(String title) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("title"), "%" + title + "%");
+    }
+
     @Override
-    public Predicate toPredicate(Root<Job> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+    public Predicate toPredicate(@Nonnull Root<Job> root, @Nonnull CriteriaQuery<?> query, @Nonnull CriteriaBuilder criteriaBuilder) {
         String strToSearch = searchCriteria.getValue().toString().toLowerCase();
         switch (Objects.requireNonNull(SearchOperation.getSimpleOperation(searchCriteria.getOperation()))) {
             case EQUAL -> {
@@ -30,12 +35,17 @@ public class JobSpecification implements Specification<Job> {
                     return criteriaBuilder.equal(shopJoin(root).get("id"), UUID.fromString(strToSearch));
                 }
             }
+            case CONTAINS -> {
+                if (searchCriteria.getFilterKey().equals("title")) {
+                    return criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), "%" + strToSearch + "%");
+                }
+            }
             // Other cases
             // ...............................
 
             // ...............................
             case ALL -> {
-                // all record
+                // all record by title
                 return criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), "%" + strToSearch + "%");
             }
         }

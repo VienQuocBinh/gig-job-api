@@ -24,7 +24,7 @@ public enum SearchOperation {
         return switch (dataOption) {
             case "all" -> ALL;
             case "any" -> ANY;
-            default -> null;
+            default -> ALL;
         };
     }
 

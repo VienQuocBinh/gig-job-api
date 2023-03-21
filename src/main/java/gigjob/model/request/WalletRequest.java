@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WalletRequest {
+    private String accountId;
     @JsonIgnore
     private Double balance;
-    private String accountId;
 }

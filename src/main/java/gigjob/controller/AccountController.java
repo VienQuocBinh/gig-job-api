@@ -8,9 +8,11 @@ import gigjob.firebase.authentication.UserManagementService;
 import gigjob.model.request.AccountRegisterRequest;
 import gigjob.model.request.AccountRequest;
 import gigjob.model.request.AuthRequest;
+import gigjob.model.request.WalletRequest;
 import gigjob.model.response.AccountResponse;
 import gigjob.model.response.JwtResponse;
 import gigjob.service.AccountService;
+import gigjob.service.WalletService;
 import gigjob.service.impl.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -40,6 +42,7 @@ public class AccountController {
     private final AuthenticationManager authenticationManager;
     private final TokenVerifier tokenVerifier;
     private final UserManagementService userManagementService;
+    private final WalletService walletService;
 
     @GetMapping("/v1/account/firebase/{uid}")
     public AccountResponse getFirebaseUserById(@PathVariable String uid) throws FirebaseAuthException {
@@ -69,16 +72,21 @@ public class AccountController {
     @SecurityRequirement(name = "google")
     @Operation(summary = "For login by Google", description = "Get idToken from Google and decode")
     public ResponseEntity<JwtResponse> authenticateAndGetToken(@Valid @RequestHeader String idTokenString) {
+        ResponseEntity<JwtResponse> response;
         GoogleIdToken.Payload payload = tokenVerifier.validate(idTokenString);
         try {
-            // create account if fpt mail
+            // create account if fpt mail and account wallet
             if (payload.getEmail().matches("[a-zA-Z0-9]+@fpt.edu.vn$")) {
-                accountService.createAccount(new AccountRegisterRequest(payload.getEmail(), payload.getEmail()));
+                AccountResponse accountResponse = accountService.createAccount(
+                        new AccountRegisterRequest(payload.getEmail(), payload.getEmail()));
+                walletService.create(new WalletRequest(accountResponse.getId(), 0D));
             }
-            return ResponseEntity.ok(new JwtResponse(jwtService.generateToken(payload.getEmail())));
-        } catch (Exception e) {
-            return ResponseEntity.ok(new JwtResponse(jwtService.generateToken(payload.getEmail())));
+//            return ResponseEntity.ok(new JwtResponse(jwtService.generateToken(payload.getEmail())));
+        } finally {
+            // Already has an account -> just generate token
+            response = ResponseEntity.ok(new JwtResponse(jwtService.generateToken(payload.getEmail())));
         }
+        return response;
     }
 
     @PostMapping("/v1/account/login")
