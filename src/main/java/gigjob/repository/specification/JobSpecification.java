@@ -9,6 +9,8 @@ import org.springframework.data.jpa.domain.Specification;
 
 import javax.annotation.Nonnull;
 import javax.persistence.criteria.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -24,14 +26,37 @@ public class JobSpecification implements Specification<Job> {
         return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("title"), "%" + title + "%");
     }
 
+    public Specification<Job> getJobsByJobTypeSpec(int jobType) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(jobTypeJoin(root).get("id"), jobType);
+    }
+
     @Override
     public Predicate toPredicate(@Nonnull Root<Job> root, @Nonnull CriteriaQuery<?> query, @Nonnull CriteriaBuilder criteriaBuilder) {
         String strToSearch = searchCriteria.getValue().toString().toLowerCase();
+        List<Predicate> predicates = new ArrayList<>();
+        // Priority SQL condition: 1: Title, 2: jobType
+//        predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), "%" + strToSearch + "%"));
+
         switch (Objects.requireNonNull(SearchOperation.getSimpleOperation(searchCriteria.getOperation()))) {
             case EQUAL -> {
                 if (searchCriteria.getFilterKey().equals("jobType")) {
-                    return criteriaBuilder.equal(jobTypeJoin(root).get("id"), Integer.parseInt(strToSearch));
+                    // check has multiple job types
+                    if (strToSearch.contains(",")) {
+                        String[] jobTypes = strToSearch.split(",");
+                        List<Predicate> jobTypePredicates = new ArrayList<>();
+                        for (String jobType : jobTypes) {
+                            jobTypePredicates.add(criteriaBuilder.equal(jobTypeJoin(root).get("id"), Integer.parseInt(jobType)));
+                        }
+                        return criteriaBuilder.or(jobTypePredicates.toArray(new Predicate[0]));
+                        // Add OR condition of the job type to the criteria
+//                        predicates.add(criteriaBuilder.or(jobTypePredicates.toArray(new Predicate[0])));
+                    } else {
+                        return criteriaBuilder.equal(jobTypeJoin(root).get("id"), Integer.parseInt(strToSearch));
+//                        predicates.add(criteriaBuilder.equal(jobTypeJoin(root).get("id"), Integer.parseInt(strToSearch)));
+                    }
                 } else if (searchCriteria.getFilterKey().equals("shop")) {
+                    // single shop id
+//                    predicates.add(criteriaBuilder.equal(shopJoin(root).get("id"), UUID.fromString(strToSearch)));
                     return criteriaBuilder.equal(shopJoin(root).get("id"), UUID.fromString(strToSearch));
                 }
             }
@@ -50,6 +75,7 @@ public class JobSpecification implements Specification<Job> {
             }
         }
         return criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), "%" + strToSearch + "%");
+//        return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
     }
 
     private Join<Job, JobType> jobTypeJoin(Root<Job> root) {

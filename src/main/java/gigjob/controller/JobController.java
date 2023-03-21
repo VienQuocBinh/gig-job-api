@@ -78,8 +78,9 @@ public class JobController {
             page = PageRequest.of(pageIndex, pageSize, Sort.by("id").descending());
         }
 
+        // Priority SQL condition: 1: Title, 2: jobType/shop
         Page<Job> jobs = jobService.findBySearchCriteria(
-                builder.build().and(JobSpecification.getJobsByTitleSpec(searchValue)),
+                JobSpecification.getJobsByTitleSpec(searchValue).and(builder.build()),
                 page);
         List<JobDetailResponse> jobDetailResponses = jobs.stream()
                 .map(job -> modelMapper.map(job, JobDetailResponse.class))
