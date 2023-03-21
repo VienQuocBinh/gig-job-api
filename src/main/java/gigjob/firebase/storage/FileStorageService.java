@@ -41,4 +41,8 @@ public class FileStorageService {
         Bucket bucket = StorageClient.getInstance().bucket(bucketName);
         return bucket.get(FOLDER + fileName).delete();
     }
+
+    public String getFilename(String imageUrl) {
+        return imageUrl.substring(imageUrl.lastIndexOf("%2F") + 3, imageUrl.indexOf("?alt"));
+    }
 }

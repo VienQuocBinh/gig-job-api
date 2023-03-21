@@ -96,7 +96,8 @@ public class AccountServiceImpl implements AccountService {
 
             // Check if Image Url not empty  -> delete the old one on firebase
             // get file name from old url
-            if (oldImageUrl != null && !oldImageUrl.isEmpty()) fileStorageService.deleteImage("filename");
+            if (oldImageUrl != null)
+                fileStorageService.deleteImage(fileStorageService.getFilename(oldImageUrl));
 
             // upload to firebase
             String fileName = fileStorageService.saveFile(file);
