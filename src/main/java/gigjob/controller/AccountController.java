@@ -85,11 +85,10 @@ public class AccountController {
                         new AccountRegisterRequest(payload.getEmail(), payload.getEmail()));
                 walletService.create(new WalletRequest(accountResponse.getId(), 0D));
             }
-//            return ResponseEntity.ok(new JwtResponse(jwtService.generateToken(payload.getEmail())));
-        } finally {
+        } catch (Exception e) {
             // Already has an account -> just generate token
-            response = ResponseEntity.ok(new JwtResponse(jwtService.generateToken(payload.getEmail())));
         }
+        response = ResponseEntity.ok(new JwtResponse(jwtService.generateToken(payload.getEmail())));
         return response;
     }
 

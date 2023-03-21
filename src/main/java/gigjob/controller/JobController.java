@@ -55,7 +55,7 @@ public class JobController {
                          "lt" -> LESS_THAN;
                          "le" -> LESS_THAN_EQUAL;
                         default -> ALL;
-             dataOption: "AND" is "ALL", "OR" is "ANY\"""")
+             dataOption: "and" is "AND", "any" is "OR\"""")
     public ResponseEntity<List<JobDetailResponse>> getJobListFilter(
             @RequestParam(defaultValue = "0") int pageIndex,
             @RequestParam(defaultValue = "5") int pageSize,
