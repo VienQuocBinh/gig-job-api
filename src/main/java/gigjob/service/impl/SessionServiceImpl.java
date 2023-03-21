@@ -38,14 +38,15 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public List<SessionShopResponse> getSessionByShopId(UUID shopId, Date date) {
         try {
-            List<SessionShopResponse> sessionShopResponseList = sessionRepository.findByDateAndShopId(shopId, date).stream()
-                    .map(session -> modelMapper.map(session, SessionShopResponse.class))
+            return sessionRepository.findByDateAndShopId(shopId, date).stream()
+                    .map(session -> {
+                        var response = modelMapper.map(session, SessionShopResponse.class);
+                        WorkerDetailResponse workerDetailResponse = workerService.getWorkerById(response.getWorkerId());
+                        response.setWorker(workerDetailResponse);
+                        response.setSalary(response.getSalary() * session.getDuration());
+                        return response;
+                    })
                     .toList();
-            sessionShopResponseList.forEach(sessionShopResponse -> {
-                WorkerDetailResponse workerDetailResponse = workerService.getWorkerById(sessionShopResponse.getWorkerId());
-                sessionShopResponse.setWorkerDetail(workerDetailResponse);
-            });
-            return sessionShopResponseList;
         } catch (Exception exception) {
             throw new InternalServerErrorException(exception.getMessage());
         }
