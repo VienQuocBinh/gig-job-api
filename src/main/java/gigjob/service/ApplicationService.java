@@ -1,7 +1,7 @@
 package gigjob.service;
 
-import gigjob.entity.Application;
 import gigjob.model.request.ApplicationApplyRequest;
+import gigjob.model.response.ApplicationDetailResponse;
 import gigjob.model.response.ApplicationResponse;
 import org.webjars.NotFoundException;
 
@@ -13,11 +13,12 @@ public interface ApplicationService {
 
     List<ApplicationResponse> getApplicationsByWorkerId(UUID workerId);
 
-    List<ApplicationResponse> getApplicationsByShopId(UUID shopID);
+    List<ApplicationDetailResponse> getApplicationsByShopId(UUID shopID);
 
-    ApplicationResponse acceptApplication(ApplicationApplyRequest applyRequest) throws NotFoundException;
-    ApplicationResponse rejectApplication(ApplicationApplyRequest applyRequest) throws NotFoundException;
+    ApplicationDetailResponse acceptApplication(ApplicationApplyRequest applyRequest) throws NotFoundException;
+    ApplicationDetailResponse rejectApplication(ApplicationApplyRequest applyRequest) throws NotFoundException;
 
-    List<ApplicationResponse> findAcceptedApplications(Long id);
-    List<ApplicationResponse> findRejectedApplications(Long id);
+    List<ApplicationDetailResponse> findAcceptedApplications(Long id);
+    List<ApplicationDetailResponse> findAcceptedApplications(UUID shopId);
+    List<ApplicationDetailResponse> findRejectedApplications(Long id);
 }

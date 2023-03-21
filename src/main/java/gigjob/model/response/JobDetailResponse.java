@@ -17,6 +17,7 @@ public class JobDetailResponse implements Serializable {
     private String title;
     private String description;
     private String skill;
+    private Long salary;
     private String benefit;
     private Date createdDate;
     private Date updatedDate;

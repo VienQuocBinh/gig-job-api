@@ -4,6 +4,7 @@ import gigjob.common.embeddedkey.ApplicationId;
 import gigjob.common.meta.ApplicationStatus;
 import gigjob.entity.Application;
 import gigjob.model.request.ApplicationApplyRequest;
+import gigjob.model.response.ApplicationDetailResponse;
 import gigjob.model.response.ApplicationResponse;
 import gigjob.repository.ApplicationRepository;
 import gigjob.service.ApplicationService;
@@ -19,6 +20,7 @@ import org.webjars.NotFoundException;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -49,33 +51,30 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public List<ApplicationResponse> getApplicationsByShopId(UUID shopID) {
-        return applicationRepository.findApplicationByShopId(shopID)
-                .stream().map(
-                        a -> ApplicationMapper.toResponse(
-                                a,
-                                jobService.getJobById(a.getId().getJob().getId())
-                        )
-                )
-                .toList();
+    public List<ApplicationDetailResponse> getApplicationsByShopId(UUID shopID) {
+        var apps = applicationRepository.findApplicationByShopId(shopID);
+        var appRes = apps.stream().map(a -> ApplicationMapper.toResponse(a, jobService.getJobById(a.getId().getJob().getId()),workerService.getWorkerById(a.getId().getWorker().getId())));
+        return appRes.collect(Collectors.toList());
     }
 
     @Override
-    public ApplicationResponse acceptApplication(ApplicationApplyRequest applyRequest) throws NotFoundException {
+    public ApplicationDetailResponse acceptApplication(ApplicationApplyRequest applyRequest) throws NotFoundException {
         var application = findJobByID(applyRequest);
         application.setStatus(ApplicationStatus.ACCEPTED);
         application = applicationRepository.save(application);
         return ApplicationMapper.toResponse(application,
-                jobService.getJobById(application.getId().getJob().getId()));
+                jobService.getJobById(application.getId().getJob().getId()),
+                workerService.getWorkerById(application.getId().getWorker().getId()));
     }
 
     @Override
-    public ApplicationResponse rejectApplication(ApplicationApplyRequest applyRequest) throws NotFoundException {
+    public ApplicationDetailResponse rejectApplication(ApplicationApplyRequest applyRequest) throws NotFoundException {
         Application application = findJobByID(applyRequest);
         application.setStatus(ApplicationStatus.REJECTED);
         application = applicationRepository.save(application);
         return ApplicationMapper.toResponse(application,
-                jobService.getJobById(application.getId().getJob().getId()));
+                jobService.getJobById(application.getId().getJob().getId()),
+                workerService.getWorkerById(application.getId().getWorker().getId()));
     }
 
     private Application findJobByID(ApplicationApplyRequest applyRequest) {
@@ -96,23 +95,37 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public List<ApplicationResponse> findAcceptedApplications(Long id) {
+    public List<ApplicationDetailResponse> findAcceptedApplications(Long id) {
         return applicationRepository.findAcceptedByJobId(id)
                 .stream().map(
                         a -> ApplicationMapper.toResponse(
                                 a,
-                                jobService.getJobById(a.getId().getJob().getId())
+                                jobService.getJobById(a.getId().getJob().getId()),
+                                workerService.getWorkerById(a.getId().getWorker().getId())
                         )
                 ).toList();
     }
 
     @Override
-    public List<ApplicationResponse> findRejectedApplications(Long id) {
+    public List<ApplicationDetailResponse> findAcceptedApplications(UUID shopId) {
+        return applicationRepository.findApplicationByShopId(shopId)
+                .stream().map(
+                        a -> ApplicationMapper.toResponse(
+                                a,
+                                jobService.getJobById(a.getId().getJob().getId()),
+                                workerService.getWorkerById(a.getId().getWorker().getId())
+                        )
+                ).toList();
+    }
+
+    @Override
+    public List<ApplicationDetailResponse> findRejectedApplications(Long id) {
         return applicationRepository.findRejectedByJobId(id)
                 .stream().map(
                         a -> ApplicationMapper.toResponse(
                                 a,
-                                jobService.getJobById(a.getId().getJob().getId())
+                                jobService.getJobById(a.getId().getJob().getId()),
+                                workerService.getWorkerById(a.getId().getWorker().getId())
                         )
                 ).toList();
     }

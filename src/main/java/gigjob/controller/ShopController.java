@@ -1,5 +1,6 @@
 package gigjob.controller;
 
+import gigjob.model.request.NewShopProfileRequest;
 import gigjob.model.request.ShopRequest;
 import gigjob.model.response.ErrorResponse;
 import gigjob.model.response.ShopResponse;
@@ -49,5 +50,17 @@ public class ShopController {
                             .build()
             );
         }
+    }
+
+    @PostMapping("/v1/shop/profile")
+    @CrossOrigin
+    public ResponseEntity<ShopResponse> createNewShopProfile(@RequestBody NewShopProfileRequest request) {
+        return ResponseEntity.ok(shopService.createNewShopProfile(request));
+    }
+
+    @PostMapping("/v1/shop/edit")
+    @CrossOrigin
+    public ResponseEntity<ShopResponse> updateShopProfile(@RequestBody ShopRequest shopRequest){
+        return ResponseEntity.ok(shopService.updateShopProfile(shopRequest));
     }
 }

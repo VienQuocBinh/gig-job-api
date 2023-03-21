@@ -6,6 +6,7 @@ import gigjob.entity.ResponseObject;
 import gigjob.firebase.authentication.TokenVerifier;
 import gigjob.firebase.authentication.UserManagementService;
 import gigjob.model.request.AccountRegisterRequest;
+import gigjob.model.request.AccountRequest;
 import gigjob.model.request.AuthRequest;
 import gigjob.model.response.AccountResponse;
 import gigjob.model.response.JwtResponse;
@@ -46,8 +47,13 @@ public class AccountController {
     }
 
     @PostMapping("/v1/account/register")
-    public AccountResponse registerUser(@RequestBody AccountRegisterRequest accountRegisterRequest) {
-        return accountService.createAccount(accountRegisterRequest);
+    public AccountResponse registerUser(@RequestBody AccountRegisterRequest accountRequest) {
+        return accountService.createAccount(accountRequest);
+    }
+
+    @PostMapping("/v1/account/register/shop")
+    public ResponseEntity<AccountResponse> registerNewShop(@RequestBody AccountRequest accountRequest) {
+        return ResponseEntity.ok(accountService.registerNewShop(accountRequest));
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -61,7 +67,6 @@ public class AccountController {
 
     @PostMapping("/v1/account/login/google")
     @SecurityRequirement(name = "google")
-    @CrossOrigin()
     @Operation(summary = "For login by Google", description = "Get idToken from Google and decode")
     public ResponseEntity<JwtResponse> authenticateAndGetToken(@Valid @RequestHeader String idTokenString) {
         GoogleIdToken.Payload payload = tokenVerifier.validate(idTokenString);
@@ -93,5 +98,11 @@ public class AccountController {
                                               @RequestParam(name = "file") MultipartFile file) {
         String newUrl = accountService.updateImage(id, file);
         return ResponseEntity.ok().body(newUrl);
+    }
+
+    @GetMapping("/v1/account/avatar/{id}")
+    @CrossOrigin
+    public ResponseEntity<String> getAccountAvatar(@PathVariable String id) {
+        return ResponseEntity.ok(accountService.getImageUrl(id));
     }
 }
