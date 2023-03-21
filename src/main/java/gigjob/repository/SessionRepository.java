@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @Repository
 public interface SessionRepository extends JpaRepository<Session, Long> {
-    @Query("select new gigjob.model.response.SessionShopResponse(s.id, ws.id.worker.id, s.shift, s.duration, s.date)" +
+    @Query("select new gigjob.model.response.SessionShopResponse(s.id, ws.id.worker.id, s.shift, s.duration, s.date, j.salary)" +
             " from Session s " +
             " join WorkingSession ws on ws.id.session.id = s.id " +
             " join Job j on j.id = ws.id.job.id " +

@@ -42,16 +42,19 @@ public class AccountController {
     private final UserManagementService userManagementService;
 
     @GetMapping("/v1/account/firebase/{uid}")
+    @CrossOrigin
     public AccountResponse getFirebaseUserById(@PathVariable String uid) throws FirebaseAuthException {
         return userManagementService.getFirebaseUserById(uid);
     }
 
     @PostMapping("/v1/account/register")
+    @CrossOrigin
     public AccountResponse registerUser(@RequestBody AccountRegisterRequest accountRequest) {
         return accountService.createAccount(accountRequest);
     }
 
     @PostMapping("/v1/account/register/shop")
+    @CrossOrigin
     public ResponseEntity<AccountResponse> registerNewShop(@RequestBody AccountRequest accountRequest) {
         return ResponseEntity.ok(accountService.registerNewShop(accountRequest));
     }
@@ -67,6 +70,7 @@ public class AccountController {
 
     @PostMapping("/v1/account/login/google")
     @SecurityRequirement(name = "google")
+    @CrossOrigin
     @Operation(summary = "For login by Google", description = "Get idToken from Google and decode")
     public ResponseEntity<JwtResponse> authenticateAndGetToken(@Valid @RequestHeader String idTokenString) {
         GoogleIdToken.Payload payload = tokenVerifier.validate(idTokenString);
@@ -94,6 +98,7 @@ public class AccountController {
 
     @PatchMapping(value = "/v1/account/{id}/image",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @CrossOrigin
     public ResponseEntity<String> updateImage(@PathVariable String id,
                                               @RequestParam(name = "file") MultipartFile file) {
         String newUrl = accountService.updateImage(id, file);
