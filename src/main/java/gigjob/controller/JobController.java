@@ -7,8 +7,8 @@ import gigjob.model.domain.SearchCriteria;
 import gigjob.model.request.JobRequest;
 import gigjob.model.response.JobDetailResponse;
 import gigjob.model.response.JobResponse;
+import gigjob.repository.specification.JobSpecification;
 import gigjob.service.JobService;
-import gigjob.service.impl.JobServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -30,7 +30,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class JobController {
     private final JobService jobService;
-    private final JobServiceImpl jobServiceImpl;
     private final ModelMapper modelMapper;
 
     @GetMapping("/v1/job")
@@ -56,10 +55,11 @@ public class JobController {
                          "lt" -> LESS_THAN;
                          "le" -> LESS_THAN_EQUAL;
                         default -> ALL;
-             dataOption: "AND" is "ALL", "OR" is "ANY\"""")
+             dataOption: "and" is "AND", "any" is "OR\"""")
     public ResponseEntity<List<JobDetailResponse>> getJobListFilter(
             @RequestParam(defaultValue = "0") int pageIndex,
             @RequestParam(defaultValue = "5") int pageSize,
+            @RequestParam(defaultValue = "") String searchValue,
             @RequestBody JobSearchRequest jobSearchRequest
     ) {
         JobSpecificationBuilder builder = new JobSpecificationBuilder();
@@ -70,23 +70,23 @@ public class JobController {
                 builder.with(x);
             });
         }
-        Pageable page = PageRequest.of(pageIndex, pageSize, Sort.by("id").ascending());
-        Page<Job> jobs = jobServiceImpl.findBySearchCriteria(builder.build(), page);
+        // get from direction
+        Pageable page;
+        if (jobSearchRequest.getSortCriteria().getDirection().equalsIgnoreCase("asc")) {
+            page = PageRequest.of(pageIndex, pageSize, Sort.by("id").ascending());
+        } else {
+            page = PageRequest.of(pageIndex, pageSize, Sort.by("id").descending());
+        }
+
+        // Priority SQL condition: 1: Title, 2: jobType/shop
+        Page<Job> jobs = jobService.findBySearchCriteria(
+                JobSpecification.getJobsByTitleSpec(searchValue).and(builder.build()),
+                page);
         List<JobDetailResponse> jobDetailResponses = jobs.stream()
                 .map(job -> modelMapper.map(job, JobDetailResponse.class))
                 .toList();
         return ResponseEntity.status(HttpStatus.OK).body(jobDetailResponses);
     }
-
-//    @PostMapping("/v1/job/search")
-//    public ResponseEntity<List<JobDetailResponse>> getJobListSpec(
-//            @RequestParam(defaultValue = "0") int pageIndex,
-//            @RequestParam(defaultValue = "5") int pageSize,
-//            @RequestBody SearchCriteria searchCriteria
-//    ) {
-//        List<JobDetailResponse> jobResponseList = jobService.searchJob(searchCriteria, pageIndex, pageSize);
-//        return ResponseEntity.status(HttpStatus.OK).body(jobResponseList);
-//    }
 
     @GetMapping("/v1/job/{id}")
     public ResponseEntity<JobDetailResponse> getJobById(@PathVariable Long id) {

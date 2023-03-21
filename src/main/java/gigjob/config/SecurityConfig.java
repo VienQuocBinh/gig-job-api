@@ -1,5 +1,6 @@
 package gigjob.config;
 
+import gigjob.filter.CorsFilter;
 import gigjob.filter.JwtAuthFilter;
 import gigjob.filter.JwtEntryPoint;
 import gigjob.service.impl.UserInfoUserDetailsService;
@@ -17,6 +18,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -32,6 +34,11 @@ public class SecurityConfig {
     }
 
     @Bean
+    public CorsFilter corsFilter() {
+        return new CorsFilter();
+    }
+
+    @Bean
     public UserInfoUserDetailsService userDetailsService() {
         return new UserInfoUserDetailsService();
     }
@@ -44,8 +51,11 @@ public class SecurityConfig {
                         "/api/v1/account/register",
                         "/api/v1/account/login", "/api/v1/account/login/google",
                         "/api/v1/job/**",
-                        "/api/v1/shop","/api/v1/shop/profile",
-                        "/api/v1/session/**").permitAll()
+                        "/api/v1/shop", "/api/v1/shop/profile",
+                        "/api/v1/session/**",
+                        "/api/v1/account/register/shop",
+                        "/api/v1/worker/**")
+                .permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -53,10 +63,10 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .exceptionHandling().authenticationEntryPoint(jwtEntryPoint)
                 .and()
+                .addFilterBefore(corsFilter(), ChannelProcessingFilter.class)
                 .addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {

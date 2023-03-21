@@ -1,10 +1,12 @@
 package gigjob.service;
 
 import gigjob.entity.Job;
-import gigjob.model.domain.SearchCriteria;
 import gigjob.model.request.JobRequest;
 import gigjob.model.response.JobDetailResponse;
 import gigjob.model.response.JobResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,5 +34,5 @@ public interface JobService {
 
     List<JobDetailResponse> findJobsByShopId(UUID id);
 
-    List<JobDetailResponse> searchJob(SearchCriteria searchCriteria, int pageIndex, int pageSize);
+    Page<Job> findBySearchCriteria(Specification<Job> specification, Pageable pageable);
 }

@@ -2,7 +2,6 @@ package gigjob.service.impl;
 
 import gigjob.common.exception.model.InternalServerErrorException;
 import gigjob.entity.Job;
-import gigjob.model.domain.SearchCriteria;
 import gigjob.model.request.JobRequest;
 import gigjob.model.response.JobDetailResponse;
 import gigjob.model.response.JobResponse;
@@ -96,29 +95,9 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public List<JobDetailResponse> searchJob(SearchCriteria searchCriteria, int pageIndex, int pageSize) {
-//        try {
-//            Pageable pageable;
-//            if (searchCriteria.getSortCriteria().getDirection().equalsIgnoreCase("asc")) {
-//                pageable = PageRequest.of(pageIndex, pageSize, Sort.by(searchCriteria.getSortCriteria().getSortKey()).ascending());
-//            } else {
-//                pageable = PageRequest.of(pageIndex, pageSize, Sort.by(searchCriteria.getSortCriteria().getSortKey()).descending());
-//            }
-//            // Find job by job type specification
-//            Page<Job> jobs = jobRepository.findAll(IJobSpecification.isOfficialJob(Integer.parseInt(searchCriteria.getValue().toString()))
-//                            .and(IJobSpecification.searchByTitle(searchCriteria.getSearchKey()))
-//                    , pageable);
-//            return jobs.stream()
-//                    .map(job -> modelMapper.map(job, JobDetailResponse.class))
-//                    .toList();
-//        } catch (Exception e) {
-//            throw new InternalServerErrorException(e.getMessage());
-//        }
-        return null;
-    }
-
     public Page<Job> findBySearchCriteria(Specification<Job> specification, Pageable pageable) {
         try {
+
             return jobRepository.findAll(specification, pageable);
         } catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage());

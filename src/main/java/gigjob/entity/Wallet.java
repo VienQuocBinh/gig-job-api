@@ -1,9 +1,6 @@
 package gigjob.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
@@ -19,6 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table
+@Builder
 public class Wallet implements Serializable {
     @Id
     @GeneratedValue(generator = "UUID")
