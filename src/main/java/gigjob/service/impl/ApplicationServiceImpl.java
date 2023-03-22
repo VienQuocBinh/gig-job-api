@@ -23,7 +23,6 @@ import org.webjars.NotFoundException;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -41,7 +40,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         try {
             Job job = jobService.findJobById(applyRequest.getJobId())
                     .orElseThrow(() -> new ResourceNotFoundException("Job not found for jobId: " + applyRequest.getJobId()));
-            if (Objects.equals(job.getExpiredDate(), new Date())) {
+            if (job.getExpiredDate().before(new Date())) {
                 Application application = modelMapper.map(applyRequest, Application.class);
                 applicationRepository.save(application);
             }
