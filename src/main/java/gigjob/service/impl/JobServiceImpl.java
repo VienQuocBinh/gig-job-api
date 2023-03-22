@@ -1,6 +1,7 @@
 package gigjob.service.impl;
 
 import gigjob.common.exception.model.InternalServerErrorException;
+import gigjob.common.exception.model.ResourceNotFoundException;
 import gigjob.common.util.JobSpecificationBuilder;
 import gigjob.entity.Job;
 import gigjob.model.domain.JobSearchRequest;
@@ -22,6 +23,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,12 +40,9 @@ public class JobServiceImpl implements JobService {
     public JobResponse addJob(JobRequest jobRequest) {
         try {
             Job j = modelMapper.map(jobRequest, Job.class);
-            Date dt = new Date();
-            Calendar c = Calendar.getInstance();
-            c.setTime(dt);
-            c.add(Calendar.DATE, 14);
-            dt = c.getTime();
-            j.setExpiredDate(dt);
+            j.setCreatedDate(Date.from(Instant.now()));
+            j.setUpdatedDate(j.getCreatedDate());
+            j.setExpiredDate(jobRequest.getExpiredDate());
             Job job = jobRepository.save(j);
             // add the job to Redis cache if not exist
             JobDetailResponse jobDetailResponse = modelMapper.map(job, JobDetailResponse.class);
@@ -83,13 +82,18 @@ public class JobServiceImpl implements JobService {
         Job requestJob = modelMapper.map(jobRequest, Job.class);
         // Set created date for updated job, if not it will be null
         requestJob.setCreatedDate(oldJob.getCreatedDate());
+        requestJob.setUpdatedDate(Date.from(Instant.now()));
         redisTemplate.opsForHash().put(KEY, jobRequest.getId(), requestJob);
         return modelMapper.map(jobRepository.save(requestJob), JobResponse.class);
     }
 
     @Override
     public String deleteJob(Long id) {
-        jobRepository.deleteById(id);
+        // shouldn't delete the job in db. set it expired instead.
+        var job = jobRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Job with ID" + id + " not found"));
+        job.setUpdatedDate(Date.from(Instant.now()));
+        job.setExpiredDate(Date.from(Instant.EPOCH));
+        jobRepository.save(job);
         redisTemplate.opsForHash().delete(KEY, id);
         return "Delete Job " + id + " successfully";
     }
