@@ -10,8 +10,13 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableCaching
 public class GigJobApplication {
     public static void main(String[] args) {
-        System.setProperty("spring.devtools.restart.enabled", "false");
-        SpringApplication.run(GigJobApplication.class, args);
+        try {
+            System.setProperty("spring.devtools.restart.enabled", "false");
+            SpringApplication.run(GigJobApplication.class, args);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }
 

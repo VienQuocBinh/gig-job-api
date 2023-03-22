@@ -4,12 +4,14 @@ import gigjob.common.meta.Role;
 import gigjob.entity.Account;
 import gigjob.entity.Address;
 import gigjob.entity.Shop;
+import gigjob.entity.Wallet;
 import gigjob.model.request.AddressRequest;
 import gigjob.model.request.NewShopProfileRequest;
 import gigjob.model.request.ShopRequest;
 import gigjob.model.response.ShopResponse;
 import gigjob.repository.AccountRepository;
 import gigjob.repository.ShopRepository;
+import gigjob.repository.WalletRepository;
 import gigjob.service.AddressService;
 import gigjob.service.ShopService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,7 @@ public class ShopServiceImpl implements ShopService {
 
     private final AccountRepository accountRepository;
     private final AddressService addressService;
+    private final WalletRepository walletRepository;
 
     @Override
     public List<ShopResponse> getShopList() {
@@ -70,6 +73,7 @@ public class ShopServiceImpl implements ShopService {
         var addressRequest = modelMapper.map(request.getAddress(), AddressRequest.class);
         var address = modelMapper.map(addressRequest, Address.class);
         address.setAccount(account);
+        walletRepository.save(Wallet.builder().account(account).balance(0.0).build());
         addressService.save(address);
         return findShopByAccountId(request.getAccountId());
     }
