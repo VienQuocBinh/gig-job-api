@@ -6,7 +6,6 @@ import gigjob.model.request.JobRequest;
 import gigjob.model.response.JobDetailResponse;
 import gigjob.model.response.JobResponse;
 import gigjob.service.JobService;
-import gigjob.service.impl.JobServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -25,7 +24,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class JobController {
     private final JobService jobService;
-    private final JobServiceImpl jobServiceImpl;
     private final ModelMapper modelMapper;
 
     @GetMapping("/v1/job")

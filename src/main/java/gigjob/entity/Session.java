@@ -1,5 +1,6 @@
 package gigjob.entity;
 
+import com.google.firebase.database.annotations.NotNull;
 import gigjob.common.meta.Shift;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +10,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
@@ -26,7 +26,7 @@ public class Session {
     @Enumerated(EnumType.STRING)
     private Shift shift;
     @NotNull
-    private Integer duration; // hours
+    private Double duration; // hours
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     @Column(updatable = false)
