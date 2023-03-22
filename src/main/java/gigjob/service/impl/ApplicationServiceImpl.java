@@ -1,8 +1,11 @@
 package gigjob.service.impl;
 
 import gigjob.common.embeddedkey.ApplicationId;
+import gigjob.common.exception.model.InternalServerErrorException;
+import gigjob.common.exception.model.ResourceNotFoundException;
 import gigjob.common.meta.ApplicationStatus;
 import gigjob.entity.Application;
+import gigjob.entity.Job;
 import gigjob.model.request.ApplicationApplyRequest;
 import gigjob.model.response.ApplicationDetailResponse;
 import gigjob.model.response.ApplicationResponse;
@@ -18,7 +21,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -33,8 +38,16 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public void apply(ApplicationApplyRequest applyRequest) {
-        Application application = modelMapper.map(applyRequest, Application.class);
-        applicationRepository.save(application);
+        try {
+            Job job = jobService.findJobById(applyRequest.getJobId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Job not found for jobId: " + applyRequest.getJobId()));
+            if (Objects.equals(job.getExpiredDate(), new Date())) {
+                Application application = modelMapper.map(applyRequest, Application.class);
+                applicationRepository.save(application);
+            }
+        } catch (Exception e) {
+            throw new InternalServerErrorException("Job " + applyRequest.getJobId() + "has been expired. Failed to apply");
+        }
     }
 
     @Override
@@ -53,7 +66,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public List<ApplicationDetailResponse> getApplicationsByShopId(UUID shopID) {
         var apps = applicationRepository.findApplicationByShopId(shopID);
-        var appRes = apps.stream().map(a -> ApplicationMapper.toResponse(a, jobService.getJobById(a.getId().getJob().getId()),workerService.getWorkerById(a.getId().getWorker().getId())));
+        var appRes = apps.stream().map(a -> ApplicationMapper.toResponse(a, jobService.getJobById(a.getId().getJob().getId()), workerService.getWorkerById(a.getId().getWorker().getId())));
         return appRes.collect(Collectors.toList());
     }
 
