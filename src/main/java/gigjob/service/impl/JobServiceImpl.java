@@ -1,16 +1,22 @@
 package gigjob.service.impl;
 
 import gigjob.common.exception.model.InternalServerErrorException;
+import gigjob.common.util.JobSpecificationBuilder;
 import gigjob.entity.Job;
+import gigjob.model.domain.JobSearchRequest;
+import gigjob.model.domain.SearchCriteria;
 import gigjob.model.request.JobRequest;
 import gigjob.model.response.JobDetailResponse;
 import gigjob.model.response.JobResponse;
 import gigjob.repository.JobRepository;
+import gigjob.repository.specification.JobSpecification;
 import gigjob.service.JobService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -100,10 +106,30 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public Page<Job> findBySearchCriteria(Specification<Job> specification, Pageable pageable) {
+    public Page<Job> getBySearchCriteria(JobSearchRequest jobSearchRequest,
+                                         int pageIndex,
+                                         int pageSize,
+                                         String searchValue) {
         try {
-
-            return jobRepository.findAll(specification, pageable);
+            JobSpecificationBuilder builder = new JobSpecificationBuilder();
+            List<SearchCriteria> criteriaList = jobSearchRequest.getSearchCriteriaList();
+            if (criteriaList != null) {
+                criteriaList.forEach(x -> {
+                    x.setDataOption(jobSearchRequest.getDataOption());
+                    builder.with(x);
+                });
+            }
+            // get from direction
+            Pageable page;
+            if (jobSearchRequest.getSortCriteria().getDirection().equalsIgnoreCase("asc")) {
+                page = PageRequest.of(pageIndex, pageSize, Sort.by(jobSearchRequest.getSortCriteria().getSortKey()).ascending());
+            } else {
+                page = PageRequest.of(pageIndex, pageSize, Sort.by(jobSearchRequest.getSortCriteria().getSortKey()).descending());
+            }
+            // Priority SQL condition: 1: Title, 2: jobType/shop
+            Specification<Job> specification = JobSpecification.getJobsByTitleSpec(searchValue)
+                    .and(builder.build());
+            return jobRepository.findAll(specification, page);
         } catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage());
         }
