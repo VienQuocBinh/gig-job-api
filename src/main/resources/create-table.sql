@@ -194,6 +194,8 @@ DROP TABLE IF EXISTS `shop`;
 CREATE TABLE `shop` (
                         `id` varchar(255) NOT NULL,
                         `description` varchar(255) DEFAULT NULL,
+                        `latitude` double DEFAULT NULL,
+                        `longitude` double DEFAULT NULL,
                         `name` varchar(255) DEFAULT NULL,
                         `account_id` varchar(255) DEFAULT NULL,
                         PRIMARY KEY (`id`),
@@ -293,4 +295,4 @@ CREATE TABLE `working_session` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-17 17:36:34
+-- Dump completed on 2023-03-22 21:23:58
