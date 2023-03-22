@@ -16,9 +16,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,7 +31,14 @@ public class JobServiceImpl implements JobService {
     @Override
     public JobResponse addJob(JobRequest jobRequest) {
         try {
-            Job job = jobRepository.save(modelMapper.map(jobRequest, Job.class));
+            Job j = modelMapper.map(jobRequest, Job.class);
+            Date dt = new Date();
+            Calendar c = Calendar.getInstance();
+            c.setTime(dt);
+            c.add(Calendar.DATE, 14);
+            dt = c.getTime();
+            j.setExpiredDate(dt);
+            Job job = jobRepository.save(j);
             // add the job to Redis cache if not exist
             JobDetailResponse jobDetailResponse = modelMapper.map(job, JobDetailResponse.class);
             redisTemplate.opsForHash().putIfAbsent(KEY, job.getId(), jobDetailResponse);

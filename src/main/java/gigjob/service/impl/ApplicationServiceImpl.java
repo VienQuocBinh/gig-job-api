@@ -37,16 +37,18 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public void apply(ApplicationApplyRequest applyRequest) {
-        try {
-            Job job = jobService.findJobById(applyRequest.getJobId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Job not found for jobId: " + applyRequest.getJobId()));
-            if (job.getExpiredDate().before(new Date())) {
-                Application application = modelMapper.map(applyRequest, Application.class);
-                applicationRepository.save(application);
-            }
-        } catch (Exception e) {
+//        try {
+        Job job = jobService.findJobById(applyRequest.getJobId())
+                .orElseThrow(() -> new ResourceNotFoundException("Job not found for jobId: " + applyRequest.getJobId()));
+        if (job.getExpiredDate().before(new Date())) {
+            Application application = modelMapper.map(applyRequest, Application.class);
+            applicationRepository.save(application);
+        } else {
             throw new InternalServerErrorException("Job " + applyRequest.getJobId() + "has been expired. Failed to apply");
         }
+//        } catch (Exception e) {
+//            throw new InternalServerErrorException("Job " + applyRequest.getJobId() + "has been expired. Failed to apply");
+//        }
     }
 
     @Override
