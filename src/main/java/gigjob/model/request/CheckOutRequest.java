@@ -1,6 +1,5 @@
 package gigjob.model.request;
 
-import gigjob.common.meta.Shift;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,11 +7,10 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class CheckInRequest {
-    private UUID workerId;
+@AllArgsConstructor
+public class CheckOutRequest {
+    private Long sessionId;
     private Long jobId;
-    //    private Double duration;
-    private Shift shift;
+    private UUID workerId;
 }

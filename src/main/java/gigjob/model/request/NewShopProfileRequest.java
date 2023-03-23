@@ -18,5 +18,7 @@ public class NewShopProfileRequest {
     private String username;
     private String password;
     private String phone;
+    private Double longitude;
+    private Double latitude;
     private AddressRequest address;
 }

@@ -27,6 +27,8 @@ public class Shop implements Serializable {
     @NotNull
     private String name;
     private String description;
+    private Double longitude;
+    private Double latitude;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "account_id", referencedColumnName = "id", unique = true)
     private Account account;
