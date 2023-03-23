@@ -26,14 +26,28 @@ public class JobSpecification implements Specification<Job> {
         return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("title"), "%" + title + "%");
     }
 
-    public Specification<Job> getJobsByJobTypeSpec(int jobType) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(jobTypeJoin(root).get("id"), jobType);
+    public static Specification<Job> getJobsByNearByShop(List<UUID> shopIds) {
+        return (root, query, criteriaBuilder) -> {
+            // Create a predicate for each shop ID in the list
+            List<Predicate> predicates = new ArrayList<>();
+            for (UUID uuid : shopIds) {
+                predicates.add(criteriaBuilder.equal(
+                        shopJoin(root).get("id"), uuid
+                ));
+            }
+            // combine predicate using OR
+            return criteriaBuilder.or(predicates.toArray(new Predicate[0]));
+        };
+    }
+
+    private static Join<Job, Shop> shopJoin(Root<Job> root) {
+        return root.join("shop");
     }
 
     @Override
     public Predicate toPredicate(@Nonnull Root<Job> root, @Nonnull CriteriaQuery<?> query, @Nonnull CriteriaBuilder criteriaBuilder) {
         String strToSearch = searchCriteria.getValue().toString().toLowerCase();
-        List<Predicate> predicates = new ArrayList<>();
+//        List<Predicate> predicates = new ArrayList<>();
         // Priority SQL condition: 1: Title, 2: jobType
 //        predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), "%" + strToSearch + "%"));
 
@@ -80,9 +94,5 @@ public class JobSpecification implements Specification<Job> {
 
     private Join<Job, JobType> jobTypeJoin(Root<Job> root) {
         return root.join("jobType");
-    }
-
-    private Join<Job, Shop> shopJoin(Root<Job> root) {
-        return root.join("shop");
     }
 }

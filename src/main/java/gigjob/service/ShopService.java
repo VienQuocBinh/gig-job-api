@@ -16,4 +16,6 @@ public interface ShopService {
     ShopResponse createNewShopProfile(NewShopProfileRequest request);
 
     ShopResponse updateShopProfile(ShopRequest shopRequest);
+
+    List<ShopResponse> getNearbyShop(double latitude, double longitude);
 }

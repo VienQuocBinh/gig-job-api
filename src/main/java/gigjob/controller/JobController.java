@@ -60,6 +60,8 @@ public class JobController {
         List<JobDetailResponse> jobDetailResponses = jobs.stream()
                 .map(job -> modelMapper.map(job, JobDetailResponse.class))
                 .toList();
+
+
         return ResponseEntity.status(HttpStatus.OK).body(jobDetailResponses);
     }
 

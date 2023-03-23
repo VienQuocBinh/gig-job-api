@@ -8,9 +8,11 @@ import gigjob.model.domain.SearchCriteria;
 import gigjob.model.request.JobRequest;
 import gigjob.model.response.JobDetailResponse;
 import gigjob.model.response.JobResponse;
+import gigjob.model.response.ShopResponse;
 import gigjob.repository.JobRepository;
 import gigjob.repository.specification.JobSpecification;
 import gigjob.service.JobService;
+import gigjob.service.ShopService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -31,6 +33,7 @@ public class JobServiceImpl implements JobService {
     private static final String KEY = "jobs";
     private static final String REDIS_KEY = "jobs::SimpleKey []";
     private final JobRepository jobRepository;
+    private final ShopService shopService;
     private final ModelMapper modelMapper;
     private final RedisTemplate<String, List<JobDetailResponse>> redisTemplate;
 
@@ -119,16 +122,25 @@ public class JobServiceImpl implements JobService {
                     builder.with(x);
                 });
             }
-            // get from direction
+            // paging: get paging info, sort criteria from direction, and sort key
             Pageable page;
             if (jobSearchRequest.getSortCriteria().getDirection().equalsIgnoreCase("asc")) {
                 page = PageRequest.of(pageIndex, pageSize, Sort.by(jobSearchRequest.getSortCriteria().getSortKey()).ascending());
             } else {
                 page = PageRequest.of(pageIndex, pageSize, Sort.by(jobSearchRequest.getSortCriteria().getSortKey()).descending());
             }
-            // Priority SQL condition: 1: Title, 2: jobType/shop
-            Specification<Job> specification = JobSpecification.getJobsByTitleSpec(searchValue)
+            // Priority SQL condition: 1: Title/Nearby shop, 2: jobType/shopId
+            // nearby shop list
+            List<ShopResponse> nearbyShopList = shopService.getNearbyShop(jobSearchRequest.getLatitude(), jobSearchRequest.getLongitude());
+
+            Specification<Job> nearbyShopSpec = JobSpecification.getJobsByNearByShop(
+                    nearbyShopList.stream().map(ShopResponse::getId).toList());
+            Specification<Job> getJobsByTitleSpec = JobSpecification.getJobsByTitleSpec(searchValue);
+
+            Specification<Job> specification = nearbyShopSpec
+                    .and(getJobsByTitleSpec)
                     .and(builder.build());
+
             return jobRepository.findAll(specification, page);
         } catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage());
