@@ -75,6 +75,7 @@ public class AccountServiceImpl implements AccountService {
                 account.setId(userRecord.getUid());
                 account.setEmail(accountRegisterRequest.getEmail());
 //            account.setPassword(accountRegisterRequest.getPassword());
+                account.setImageUrl(userRecord.getPhotoUrl());
                 account.setUsername(accountRegisterRequest.getUsername());
                 return modelMapper.map(accountRepository.save(account), AccountResponse.class);
             } else {
