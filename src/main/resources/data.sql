@@ -21,7 +21,7 @@
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES ('AFv78KupgVVAHl7BLMyNmaomkxG2','2022-02-10 00:00:00','quyendqse150975@fpt.edu.vn','test',_binary '\0',_binary '\0','123456','0956987456',1,'2023-03-16 01:11:25','letriquyen'),('moIkAcoRmxQfBdYj0DUltFhxyyn1','2022-02-10 00:00:00','thuyenvase161502@fpt.edu.vn','',_binary '\0',_binary '\0','5',NULL,1,'2022-12-16 00:00:00','thuyen'),('t7maa0qYnhUjhK0n6eUYNvwsgEr1','2022-02-10 00:00:00','phamhuy09042002@gmail.com','',_binary '\0',_binary '\0','3',NULL,1,'2022-12-16 00:00:00','huy'),('Uy3z8txHALNF43J9V1hXxlX33Os2','2022-02-10 00:00:00','taictse161569@fpt.edu.vn','https://firebasestorage.googleapis.com/v0/b/gigjob-mobile.appspot.com/o/image%2F294fa5ca-0820-417f-9760-8cc5dcc848c2.jpg?alt=media',_binary '\0',_binary '\0','2',NULL,1,'2023-03-21 22:22:40','tai'),('v3PrfcM6oShnlk4cIUCzIUUmSLo1','2022-03-13 00:00:00','quanan@gmail.com',NULL,_binary '\0',_binary '\0','\0','0919777771',0,'2022-03-13 00:00:00','quanan@gmail.com');
+INSERT INTO `account` VALUES ('0liRAgNrsvhlGAJEmcQIwEVmom72','2022-03-13 00:00:00','shop7@gmail.com',NULL,_binary '\0',_binary '\0','56','0356985698',NULL,'2022-03-13 00:00:00','2022-03-13 00:00:00'),('3Djc7gbCKkUoftyckXKkOkpFp5G2','2022-03-13 00:00:00','shop4@gmail.com',NULL,_binary '\0',_binary '\0','56','0356985698',NULL,'2022-03-13 00:00:00','2022-03-13 00:00:00'),('AFv78KupgVVAHl7BLMyNmaomkxG2','2022-02-10 00:00:00','quyendqse150975@fpt.edu.vn','test',_binary '\0',_binary '\0','123456','0956987456',1,'2023-03-16 01:11:25','letriquyen'),('moIkAcoRmxQfBdYj0DUltFhxyyn1','2022-02-10 00:00:00','thuyenvase161502@fpt.edu.vn','',_binary '\0',_binary '\0','5',NULL,1,'2022-12-16 00:00:00','thuyen'),('t7maa0qYnhUjhK0n6eUYNvwsgEr1','2022-02-10 00:00:00','phamhuy09042002@gmail.com','',_binary '\0',_binary '\0','3',NULL,1,'2022-12-16 00:00:00','huy'),('Uy3z8txHALNF43J9V1hXxlX33Os2','2022-02-10 00:00:00','taictse161569@fpt.edu.vn','https://firebasestorage.googleapis.com/v0/b/gigjob-mobile.appspot.com/o/image%2F294fa5ca-0820-417f-9760-8cc5dcc848c2.jpg?alt=media',_binary '\0',_binary '\0','2',NULL,1,'2023-03-21 22:22:40','tai'),('v3PrfcM6oShnlk4cIUCzIUUmSLo1','2022-03-13 00:00:00','quanan@gmail.com',NULL,_binary '\0',_binary '\0','\0','0919777771',0,'2022-03-13 00:00:00','quanan@gmail.com');
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -101,7 +101,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `session` WRITE;
 /*!40000 ALTER TABLE `session` DISABLE KEYS */;
-INSERT INTO `session` VALUES (1,'2023-05-04 00:00:00',3,'DAY');
+INSERT INTO `session` VALUES (1,'2023-03-23 00:10:10',3,'DAY');
 /*!40000 ALTER TABLE `session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -111,7 +111,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `shop` WRITE;
 /*!40000 ALTER TABLE `shop` DISABLE KEYS */;
-INSERT INTO `shop` VALUES ('1b142c57-5abd-40ea-99a6-6c1bd5b8d86b','Eleven là một thương hiệu đã quá nổi tiếng trên thế giới. Năm 2017 7.Eleven xuất hiện tại Việt Nam và được người tiêu dùng vô cùng đón nhận, hiện nay thì đây cũng là một cái tên được rất nhiều người biết',35.465412,3.322659,'Shop Bán Hàng','0liRAgNrsvhlGAJEmcQIwEVmom72'),('77f29f0d-8f06-4f3e-9a2b-07d973ed352e','Tại các thành phố lớn như Hà Nội, TP.Hồ Chí Minh bạn dễ dàng có thể tìm được cái tên này, nhất là đối với các bạn trẻ. Đây là một thương hiệu bán lẻ nổi tiếng trên toàn thế giới bởi chất lượng sản phẩm',35.465412,3.322659,'Shop Bán Hàng','3Djc7gbCKkUoftyckXKkOkpFp5G2');
+INSERT INTO `shop` VALUES ('1b142c57-5abd-40ea-99a6-6c1bd5b8d86b','Eleven là một thương hiệu đã quá nổi tiếng trên thế giới. Năm 2017 7.Eleven xuất hiện tại Việt Nam và được người tiêu dùng vô cùng đón nhận, hiện nay thì đây cũng là một cái tên được rất nhiều người biết',10.841585679872692,106.80981395516824,'Seven Eleven','0liRAgNrsvhlGAJEmcQIwEVmom72'),('77f29f0d-8f06-4f3e-9a2b-07d973ed352e','Tại các thành phố lớn như Hà Nội, TP.Hồ Chí Minh bạn dễ dàng có thể tìm được cái tên này, nhất là đối với các bạn trẻ. Đây là một thương hiệu bán lẻ nổi tiếng trên toàn thế giới bởi chất lượng sản phẩm',10.865077348758073,106.7466154346982,'GS25','3Djc7gbCKkUoftyckXKkOkpFp5G2');
 /*!40000 ALTER TABLE `shop` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -164,4 +164,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-22 21:47:48
+-- Dump completed on 2023-03-23 23:01:37

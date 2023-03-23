@@ -56,7 +56,7 @@ CREATE TABLE `address` (
                            PRIMARY KEY (`id`),
                            KEY `FKascogpq8x3gfx04oy2fr6l3i5` (`account_id`),
                            CONSTRAINT `FKascogpq8x3gfx04oy2fr6l3i5` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -91,7 +91,7 @@ CREATE TABLE `fcm_token` (
                              PRIMARY KEY (`id`),
                              KEY `FK3pms1n9dy8kxorbgcfcn4tyab` (`account_id`),
                              CONSTRAINT `FK3pms1n9dy8kxorbgcfcn4tyab` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -109,7 +109,7 @@ CREATE TABLE `history` (
                            PRIMARY KEY (`id`),
                            UNIQUE KEY `UK_des40i69qp91ny7b3tgq83r1c` (`worker_id`),
                            CONSTRAINT `FKs21mnvll0n3y8jgp03rk3xllf` FOREIGN KEY (`worker_id`) REFERENCES `worker` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -136,7 +136,7 @@ CREATE TABLE `job` (
                        KEY `FK2tjgkeyr2fharuijgqdyecpu5` (`shop_id`),
                        CONSTRAINT `FK2tjgkeyr2fharuijgqdyecpu5` FOREIGN KEY (`shop_id`) REFERENCES `shop` (`id`),
                        CONSTRAINT `FKby5kmudqp9ee4baa93rlmoieg` FOREIGN KEY (`job_type_id`) REFERENCES `job_type` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -150,7 +150,7 @@ CREATE TABLE `job_type` (
                             `id` bigint NOT NULL AUTO_INCREMENT,
                             `name` varchar(255) DEFAULT NULL,
                             PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -178,10 +178,10 @@ DROP TABLE IF EXISTS `session`;
 CREATE TABLE `session` (
                            `id` bigint NOT NULL AUTO_INCREMENT,
                            `date` datetime DEFAULT NULL,
-                           `duration` int DEFAULT NULL,
+                           `duration` double DEFAULT NULL,
                            `shift` varchar(255) DEFAULT NULL,
                            PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -295,4 +295,4 @@ CREATE TABLE `working_session` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-22 21:23:58
+-- Dump completed on 2023-03-23 23:00:58
