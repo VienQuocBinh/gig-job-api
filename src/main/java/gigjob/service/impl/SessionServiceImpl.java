@@ -10,6 +10,7 @@ import gigjob.entity.Worker;
 import gigjob.entity.WorkingSession;
 import gigjob.model.request.CheckInRequest;
 import gigjob.model.request.CheckOutRequest;
+import gigjob.model.response.JobDetailResponse;
 import gigjob.model.response.SessionResponse;
 import gigjob.model.response.SessionShopResponse;
 import gigjob.model.response.WorkerDetailResponse;
@@ -45,6 +46,9 @@ public class SessionServiceImpl implements SessionService {
                     .map(session -> {
                         var response = modelMapper.map(session, SessionShopResponse.class);
                         WorkerDetailResponse workerDetailResponse = workerService.getWorkerById(response.getWorkerId());
+                        var job = jobRepository.findJobBySessionId(session.getId());
+                        var jobDetailRes = modelMapper.map(job, JobDetailResponse.class);
+                        response.setJob(jobDetailRes);
                         response.setWorker(workerDetailResponse);
                         response.setSalary(response.getSalary()); // job salary each session
                         // total = salary * duration
@@ -101,7 +105,8 @@ public class SessionServiceImpl implements SessionService {
             Date now = new Date();
             Date startDate = session.getDate();
             double duration = Double.parseDouble(dateTimeUtil.durationBetween(startDate, now));
-
+            session.setDuration(duration);
+            sessionRepository.save(session);
             // calculate session salary
             Double sessionSalary = (double) job.getSalary() * duration;
             SessionResponse sessionResponse = new SessionResponse();

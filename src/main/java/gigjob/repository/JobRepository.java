@@ -17,4 +17,7 @@ public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificatio
 
     @Query("select j from Job j where j.title like %:title%")
     List<Job> searchByTitle(@Param("title") String title);
+
+    @Query("select j from Job j join WorkingSession ws on j.id = ws.id.job.id join Session s on ws.id.session.id = s.id where s.id = :session_id")
+    Job findJobBySessionId(@Param("session_id") Long sessionId);
 }

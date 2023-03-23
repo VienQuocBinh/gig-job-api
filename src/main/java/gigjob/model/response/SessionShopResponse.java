@@ -22,6 +22,7 @@ public class SessionShopResponse {
     private Double duration; // hours
     private Date date; // working dates
     private Long salary;
+    private JobDetailResponse job;
     @Nullable
     private Double total;
 
