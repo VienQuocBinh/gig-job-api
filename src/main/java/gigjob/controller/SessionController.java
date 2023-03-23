@@ -54,6 +54,6 @@ public class SessionController {
 
     @PostMapping("/v1/session/check-out")
     public ResponseEntity<SessionResponse> checkOut(@RequestBody CheckOutRequest checkOutRequest) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(sessionService.checkOut(checkOutRequest));
+        return ResponseEntity.status(HttpStatus.OK).body(sessionService.checkOut(checkOutRequest));
     }
 }
