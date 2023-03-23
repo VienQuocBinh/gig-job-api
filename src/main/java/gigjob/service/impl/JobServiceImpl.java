@@ -26,7 +26,10 @@ import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -133,18 +136,32 @@ public class JobServiceImpl implements JobService {
             } else {
                 page = PageRequest.of(pageIndex, pageSize, Sort.by(jobSearchRequest.getSortCriteria().getSortKey()).descending());
             }
-            // Priority SQL condition: 1: Title/Nearby shop, 2: jobType/shopId
-            // nearby shop list
-            List<ShopResponse> nearbyShopList = shopService.getNearbyShop(jobSearchRequest.getLatitude(), jobSearchRequest.getLongitude());
 
-            Specification<Job> nearbyShopSpec = JobSpecification.getJobsByNearByShop(
-                    nearbyShopList.stream().map(ShopResponse::getId).toList());
+
+            Specification<Job> specification;
+
             Specification<Job> getJobsByTitleSpec = JobSpecification.getJobsByTitleSpec(searchValue);
 
-            Specification<Job> specification = nearbyShopSpec
-                    .and(getJobsByTitleSpec)
-                    .and(builder.build());
+            // Priority SQL condition: 1: Title/Nearby shop, 2: jobType/shopId
+            // nearby shop list if latitude from -90 to 90 and longitude from -180 to 180
+            double lat = jobSearchRequest.getLatitude();
+            double lon = jobSearchRequest.getLongitude();
 
+            if (lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180) {
+                List<ShopResponse> nearbyShopList = shopService.getNearbyShop(lat, lon);
+                Specification<Job> nearbyShopSpec = JobSpecification.getJobsByNearByShop(
+                        nearbyShopList.stream().map(ShopResponse::getId).toList());
+                // 3 conditions
+                specification = nearbyShopSpec
+                        .and(getJobsByTitleSpec)
+                        .and(builder.build());
+
+            } else {
+                // only 2 conditions
+                specification = getJobsByTitleSpec
+                        .and(builder.build());
+            }
+            
             return jobRepository.findAll(specification, page);
         } catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage());
