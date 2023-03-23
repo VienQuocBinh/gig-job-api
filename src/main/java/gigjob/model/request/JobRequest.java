@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Data
@@ -18,4 +19,5 @@ public class JobRequest {
     private String skill;
     private String benefit;
     private Long salary; // per hour
+    private Date expiredDate;
 }
