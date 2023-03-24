@@ -9,8 +9,11 @@ import gigjob.entity.Job;
 import gigjob.model.request.ApplicationApplyRequest;
 import gigjob.model.response.ApplicationDetailResponse;
 import gigjob.model.response.ApplicationResponse;
+import gigjob.model.response.HistoryResponse;
+import gigjob.model.response.WorkerDetailResponse;
 import gigjob.repository.ApplicationRepository;
 import gigjob.service.ApplicationService;
+import gigjob.service.HistoryService;
 import gigjob.service.JobService;
 import gigjob.service.WorkerService;
 import gigjob.util.ApplicationMapper;
@@ -34,6 +37,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final WorkerService workerService;
     private final JobService jobService;
+    private final HistoryService historyService;
 
     @Override
     public void apply(ApplicationApplyRequest applyRequest) {
@@ -64,9 +68,23 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public List<ApplicationDetailResponse> getApplicationsByShopId(UUID shopID) {
-        var apps = applicationRepository.findApplicationByShopId(shopID);
-        var appRes = apps.stream().map(a -> ApplicationMapper.toResponse(a, jobService.getJobById(a.getId().getJob().getId()), workerService.getWorkerById(a.getId().getWorker().getId())));
-        return appRes.collect(Collectors.toList());
+        try {
+            var apps = applicationRepository.findApplicationByShopId(shopID);
+
+            var appRes = apps.stream()
+                    .map(a -> {
+                        WorkerDetailResponse workerDetailResponse = workerService.getWorkerById(a.getId().getWorker().getId());
+                        List<HistoryResponse> historyResponses = historyService.getByWorkerId(a.getId().getWorker().getId());
+                        workerDetailResponse.setHistory(historyResponses);
+                        return ApplicationMapper.toResponse(a,
+                                jobService.getJobById(a.getId().getJob().getId()),
+                                workerDetailResponse
+                        );
+                    });
+            return appRes.collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @Override
