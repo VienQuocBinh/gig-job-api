@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class JobServiceImpl implements JobService {
     private static final String KEY = "jobs";
-    private static final String REDIS_KEY = "jobs::SimpleKey []";
+//    private static final String REDIS_KEY = "jobs::SimpleKey []";
     private final JobRepository jobRepository;
     private final ShopService shopService;
     private final ModelMapper modelMapper;
@@ -161,7 +161,7 @@ public class JobServiceImpl implements JobService {
                 specification = getJobsByTitleSpec
                         .and(builder.build());
             }
-            
+
             return jobRepository.findAll(specification, page);
         } catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage());

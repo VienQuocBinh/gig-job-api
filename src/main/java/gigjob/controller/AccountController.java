@@ -103,7 +103,7 @@ public class AccountController {
         }
     }
 
-    @PatchMapping(value = "/v1/account/{id}/image",
+    @PostMapping(value = "/v1/account/{id}/image",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @CrossOrigin
     public ResponseEntity<String> updateImage(@PathVariable String id,
