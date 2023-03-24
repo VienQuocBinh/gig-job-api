@@ -90,6 +90,8 @@ public class ShopServiceImpl implements ShopService {
         var shop = shopRepository.findByAccountId(account.getId()).orElseThrow(() -> new NotFoundException("Shop not found"));
         shop.setName(shopRequest.getName());
         shop.setDescription(shopRequest.getDescription());
+        shop.setLatitude(shopRequest.getLatitude());
+        shop.setLongitude(shopRequest.getLongitude());
         shopRepository.save(shop);
         var address = addressService.findAddressesByAccountId(shopRequest.getAccountId());
         if (address == null || address.isEmpty()) {
