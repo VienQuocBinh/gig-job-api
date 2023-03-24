@@ -86,7 +86,6 @@ public class ShopServiceImpl implements ShopService {
         account.setPhone(shopRequest.getPhone());
         account.setUsername(shopRequest.getUsername());
         account.setUsername(shopRequest.getUsername());
-        if (shopRequest.getImageUrl() != null) account.setImageUrl(shopRequest.getImageUrl());
         accountRepository.save(account);
         var shop = shopRepository.findByAccountId(account.getId()).orElseThrow(() -> new NotFoundException("Shop not found"));
         shop.setName(shopRequest.getName());
