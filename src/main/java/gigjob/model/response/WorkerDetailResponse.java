@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -26,4 +27,6 @@ public class WorkerDetailResponse implements Serializable {
     private String username;
     private String password;
     private String imageUrl;
+    //working history
+    private List<HistoryResponse> history;
 }
