@@ -17,5 +17,7 @@ public class ShopRequest {
     private String description;
     private String accountId;
     private String imageUrl;
+    private Double latitude;
+    private Double longitude;
     private AddressRequest address;
 }

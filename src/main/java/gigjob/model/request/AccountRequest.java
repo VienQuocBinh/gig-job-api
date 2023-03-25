@@ -17,6 +17,7 @@ public class AccountRequest {
     private String image_url;
     private String name;
     private String description;
-
+    private Double longitude;
+    private Double latitude;
     private Address address;
 }

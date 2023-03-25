@@ -9,6 +9,7 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -28,6 +29,8 @@ public class Worker {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "account_id", referencedColumnName = "id", unique = true)
     private Account account;
+    @OneToMany(mappedBy = "worker")
+    private List<History> histories;
 
     private String firstName;
     private String lastName;

@@ -34,12 +34,8 @@ public class ApplicationController {
     @PostMapping("/v1/application")
     @Operation(description = "Apply the job if already applied then throws error. status: PENDING: 0, ACCEPTED: 1, REJECTED: 2")
     public ResponseEntity<Object> apply(@RequestBody ApplicationApplyRequest applyRequest) {
-        try {
-            applicationService.apply(applyRequest);
-            return ResponseEntity.status(HttpStatus.OK).body("Application applied successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to apply");
-        }
+        applicationService.apply(applyRequest);
+        return ResponseEntity.status(HttpStatus.OK).body("Application applied successfully");
     }
 
     @GetMapping("/v1/application/shop/{id}")
@@ -65,7 +61,7 @@ public class ApplicationController {
 
     @GetMapping("/v1/application/job/accepted/{shopId}")
     @CrossOrigin
-    public ResponseEntity<Object> getAcceptedApplicationsByShopId(@PathVariable String shopId){
+    public ResponseEntity<Object> getAcceptedApplicationsByShopId(@PathVariable String shopId) {
         return ResponseEntity.status(HttpStatus.OK).body(
                 applicationService.findAcceptedApplications(UUID.fromString(shopId))
         );

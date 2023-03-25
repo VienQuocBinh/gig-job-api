@@ -1,6 +1,7 @@
 package gigjob.service.impl;
 
 import gigjob.common.meta.Role;
+import gigjob.common.util.DistanceUtil;
 import gigjob.entity.Account;
 import gigjob.entity.Address;
 import gigjob.entity.Shop;
@@ -21,6 +22,7 @@ import org.webjars.NotFoundException;
 
 import java.sql.Date;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,8 +30,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ShopServiceImpl implements ShopService {
     private final ModelMapper modelMapper;
+    private final DistanceUtil distanceUtil;
     private final ShopRepository shopRepository;
-
     private final AccountRepository accountRepository;
     private final AddressService addressService;
     private final WalletRepository walletRepository;
@@ -80,7 +82,7 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public ShopResponse updateShopProfile(ShopRequest shopRequest) {
-        var account = accountRepository.findById(shopRequest.getAccountId()).orElseThrow(() ->new NotFoundException("Account not found"));
+        var account = accountRepository.findById(shopRequest.getAccountId()).orElseThrow(() -> new NotFoundException("Account not found"));
         account.setPhone(shopRequest.getPhone());
         account.setUsername(shopRequest.getUsername());
         account.setUsername(shopRequest.getUsername());
@@ -105,5 +107,21 @@ public class ShopServiceImpl implements ShopService {
             addressService.save(editAddress);
         }
         return findShopByAccountId(account.getId());
+    }
+
+    @Override
+    public List<ShopResponse> getNearbyShop(double latitude, double longitude) {
+        final double MAX_DISTANCE = 5;
+        List<ShopResponse> result = new ArrayList<>();
+        List<Shop> shops = shopRepository.findAll();
+        // Get the list of nearby shops
+        for (Shop shop : shops) {
+            double distance = distanceUtil.haversine(shop.getLatitude(), shop.getLongitude(),
+                    latitude, longitude);
+            if (distance <= MAX_DISTANCE) {
+                result.add(modelMapper.map(shop, ShopResponse.class));
+            }
+        }
+        return result;
     }
 }

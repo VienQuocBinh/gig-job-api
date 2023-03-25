@@ -1,6 +1,7 @@
 package gigjob.service;
 
-import gigjob.common.meta.Shift;
+import gigjob.model.request.CheckInRequest;
+import gigjob.model.request.CheckOutRequest;
 import gigjob.model.response.SessionResponse;
 import gigjob.model.response.SessionShopResponse;
 
@@ -22,10 +23,10 @@ public interface SessionService {
     /**
      * Check in working session. Create working session for worker
      *
-     * @param workerId {@code UUID}
-     * @param jobId    {@code Long}
-     * @return SessionResponse
+     * @param checkInRequest@return SessionResponse
      * @author Vien Binh
      */
-    SessionResponse checkIn(UUID workerId, Long jobId, int duration, Shift shift);
+    SessionResponse checkIn(CheckInRequest checkInRequest);
+
+    SessionResponse checkOut(CheckOutRequest checkOutRequest);
 }

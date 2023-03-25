@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SortCriteria {
-    @Schema(description = "The criteria for sorting",
+    @Schema(description = "The criteria for sorting: createdDate, id",
             example = "id",
             defaultValue = "id")
     private String sortKey;

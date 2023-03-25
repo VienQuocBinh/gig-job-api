@@ -52,9 +52,8 @@ public class SecurityConfig {
                         "/api/v1/account/login", "/api/v1/account/login/google",
                         "/api/v1/job/**",
                         "/api/v1/shop", "/api/v1/shop/profile",
-                        "/api/v1/session/**",
-                        "/api/v1/account/register/shop",
-                        "/api/v1/worker/**")
+                        "/api/v1/account/register/shop"
+                )
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()

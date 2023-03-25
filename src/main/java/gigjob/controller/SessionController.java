@@ -1,8 +1,11 @@
 package gigjob.controller;
 
+import gigjob.common.util.DateTimeUtil;
 import gigjob.model.request.CheckInRequest;
+import gigjob.model.request.CheckOutRequest;
 import gigjob.model.response.SessionResponse;
 import gigjob.model.response.SessionShopResponse;
+import gigjob.repository.SessionRepository;
 import gigjob.service.SessionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,6 +24,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class SessionController {
     private final SessionService sessionService;
+    private final DateTimeUtil dateTimeUtil;
+    private final SessionRepository sessionRepository;
+
 
     /**
      * Query the timekeeping date of a shop in 1 day
@@ -43,6 +49,11 @@ public class SessionController {
     @Operation(description = "shift: DAY, AFTERNOON, MIDNIGHT, NIGHT")
     public ResponseEntity<SessionResponse> checkIn(@RequestBody CheckInRequest checkInRequest) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(sessionService.checkIn(checkInRequest.getWorkerId(), checkInRequest.getJobId(), checkInRequest.getDuration(), checkInRequest.getShift()));
+                .body(sessionService.checkIn(checkInRequest));
+    }
+
+    @PostMapping("/v1/session/check-out")
+    public ResponseEntity<SessionResponse> checkOut(@RequestBody CheckOutRequest checkOutRequest) {
+        return ResponseEntity.status(HttpStatus.OK).body(sessionService.checkOut(checkOutRequest));
     }
 }
