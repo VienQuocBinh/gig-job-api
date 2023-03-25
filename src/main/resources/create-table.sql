@@ -103,13 +103,14 @@ DROP TABLE IF EXISTS `history`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `history` (
                            `id` bigint NOT NULL AUTO_INCREMENT,
-                           `duration` double DEFAULT NULL,
+                           `end_date` datetime DEFAULT NULL,
                            `position` varchar(255) DEFAULT NULL,
+                           `start_date` datetime DEFAULT NULL,
                            `worker_id` varchar(255) DEFAULT NULL,
                            PRIMARY KEY (`id`),
-                           UNIQUE KEY `UK_des40i69qp91ny7b3tgq83r1c` (`worker_id`),
+                           KEY `FKs21mnvll0n3y8jgp03rk3xllf` (`worker_id`),
                            CONSTRAINT `FKs21mnvll0n3y8jgp03rk3xllf` FOREIGN KEY (`worker_id`) REFERENCES `worker` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -295,4 +296,4 @@ CREATE TABLE `working_session` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-23 23:00:58
+-- Dump completed on 2023-03-24 23:58:07
