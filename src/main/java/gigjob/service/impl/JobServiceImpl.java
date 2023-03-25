@@ -15,6 +15,7 @@ import gigjob.repository.specification.JobSpecification;
 import gigjob.service.JobService;
 import gigjob.service.ShopService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.time.DateUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,10 +27,7 @@ import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
 import java.time.Instant;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,12 +41,14 @@ public class JobServiceImpl implements JobService {
     private final RedisTemplate<String, List<JobDetailResponse>> redisTemplate;
 
     @Override
-    public JobResponse addJob(JobRequest jobRequest) {
+    public JobResponse  addJob(JobRequest jobRequest) {
         try {
             Job j = modelMapper.map(jobRequest, Job.class);
-            j.setCreatedDate(Date.from(Instant.now()));
+                j.setCreatedDate(Date.from(Instant.now()));
             j.setUpdatedDate(j.getCreatedDate());
             j.setExpiredDate(jobRequest.getExpiredDate());
+            var validateDate = DateUtils.truncate(j.getCreatedDate(), Calendar.DATE);
+            if (j.getExpiredDate().compareTo(validateDate) < 0) throw new Exception("Expired date cannot before the created date");
             Job job = jobRepository.save(j);
             // add the job to Redis cache if not exist
             JobDetailResponse jobDetailResponse = modelMapper.map(job, JobDetailResponse.class);
